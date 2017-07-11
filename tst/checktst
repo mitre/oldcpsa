@@ -1,0 +1,10 @@
+#! /bin/sh
+
+for f in *.tst
+do
+  b=`basename $f .tst`
+  if test ! -f $b.scm -a ! -f $b.lsp
+  then
+    echo $f
+  fi
+done

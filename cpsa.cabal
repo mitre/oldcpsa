@@ -1,0 +1,222 @@
+Name:			cpsa
+Version:		3.3.2
+Maintainer:		mliskov@mitre.org
+Cabal-Version:		>= 1.6
+License:		BSD3
+License-File:		license.txt
+Synopsis:		Symbolic cryptographic protocol analyzer
+Description:
+  The Cryptographic Protocol Shapes Analyzer (CPSA) attempts to
+  enumerate all essentially different executions possible for a
+  cryptographic protocol.  We call them the shapes of the protocol.
+  Naturally occurring protocols have only finitely many, indeed very
+  few shapes.  Authentication and secrecy properties are easy to
+  determine from them, as are attacks and anomalies.
+  .
+  For each input problem, the CPSA program is given some initial
+  behavior, and it discovers what shapes are compatible with
+  it. Normally, the initial behavior is from the point of view of one
+  participant. The analysis reveals what the other participants must
+  have done, given the participant's view. The search is based on a
+  high-level algorithm that was claimed to be complete, i.e. every
+  shape can in fact be found in a finite number of steps. Further
+  theoretical work showed classes of executions that are not found by
+  the algorithm, however it also showed that every omitted execution
+  requires an unnatural interpretation of a protocol's roles.  Hence
+  the algorithm is complete relative to natural role semantics.
+  .
+  The package contains a set of programs used to perform and display
+  the analysis.  A standards complient browser, such as Firefox,
+  Safari, or Chrome, is required to display the results.  Program
+  documentation is in the doc directory in the source distribution,
+  and installed in the package's data directory.  You can locate the
+  package's data directory by typing "cpsa --help" to a command
+  prompt.  New users should start learning to use the tool from the
+  manual, found at "cpsamanual.pdf" in the data directory.  Examples
+  referenced in the manual can be found in the data directory as well.
+  It is suggested that users make an examples directory and copy
+  "*.scm *.xhtml" to their local examples directory, both so that
+  they may be modified and for ease of access.
+  .
+  Serious Windows users should install MSYS so as to allow the use of
+  make and script execution.
+  .
+  The theory and algorithm used by CPSA was developed with the help of
+  Joshua D. Guttman, John D. Ramsdell, Jon C. Herzog, Shaddin
+  F. Doghmi, F. Javier Thayer, Paul D. Rowe, and Moses D. Liskov.
+  John D. Ramsdell and Moses D. Liskov implemented the algorithm in
+  Haskell.  CPSA was designed and implemented at The MITRE Corporation.
+Category:		Cryptography
+Build-Type:		Simple
+Data-Files:
+  Make.hs cpsa.mk cpsamanual.pdf examples/blanchet.scm examples/blanchet.xhtml
+  examples/bltk_or.scm examples/bltk_or.xhtml examples/envelope.scm
+  examples/envelope.xhtml examples/ffgg.scm examples/fnof_test.scm
+  examples/fnof_yahalom.scm examples/fnof_yahalom.xhtml examples/goals.scm
+  examples/goals.xhtml examples/kerb.scm examples/kerb.xhtml
+  examples/lt_test.scm examples/lt_test.xhtml examples/neq_test.scm
+  examples/neq_test.xhtml examples/ns.scm examples/ns.xhtml examples/or.scm
+  examples/or.xhtml examples/pkinit.scm examples/pkinit.xhtml
+  examples/plaindh.scm examples/plaindh.xhtml examples/priority_test.scm
+  examples/priority_test.xhtml examples/station.scm examples/station.xhtml
+  examples/subsort_test.scm examples/woolam.scm examples/yahalom.scm
+  examples/yahalom.xhtml examples/IKE_variants.tar.gz
+Data-Dir:	    	doc
+Extra-Source-Files:
+  Makefile ChangeLog README.txt NEWS ghci cpsatst setup.bat
+  src/cpsa.el src/cpsaops.scm src/cpsa.pl src/pp.pl
+  src/sexpr.pl src/ghcmemlimit src/cpsajson.py src/split.py
+  tst/checktst tst/updatetst tst/Makefile tst/Make.hs tst/README
+  tst/axiom2.scm tst/axiom2.tst tst/blanchet.scm tst/blanchet.tst
+  tst/bltk_example.lsp tst/bltk_example.tst tst/bltk_test.scm
+  tst/bltk_test.tst tst/dh-ca.scm tst/dh-ca.tst tst/dh_mim2.scm
+  tst/dh_mim2.tst tst/dh_mim.scm tst/dh_mim.tst tst/dhnsl_basic.scm
+  tst/dhnsl_basic.tst tst/dhnsl.lisp tst/dhnsl.tst tst/dhnsl_use.scm
+  tst/dhnsl_use.tst tst/dh_sig.scm tst/dh_sig.tst tst/dh_test.scm
+  tst/dh_test.tst tst/enrich.scm tst/enrich.tst tst/envelope.scm
+  tst/envelope.tst tst/ffgg.scm tst/ffgg.tst tst/fnof_or.scm
+  tst/fnof_or.tst tst/fnof_test.scm tst/fnof_test.tst
+  tst/fnof_woolam.scm tst/fnof_woolam.tst tst/fnof_yahalom.scm
+  tst/fnof_yahalom.tst tst/goals.scm tst/goals.tst tst/iadh_um.scm
+  tst/iadh_um.tst tst/injection.scm tst/injection.tst
+  tst/kerberos++.scm tst/kerberos++.tst tst/lt_test.scm
+  tst/lt_test.tst tst/mtic.scm tst/mtic.tst tst/neq_test.scm
+  tst/neq_test.tst tst/ns.scm tst/ns.tst tst/or.scm tst/or.tst
+  tst/owang.scm tst/owang.tst tst/owat.scm tst/owat.tst tst/pkinit.scm
+  tst/pkinit.tst tst/plaindh.scm tst/plaindh.tst tst/priority_test.scm
+  tst/priority_test.tst tst/staticdh.scm tst/staticdh.tst
+  tst/station2.scm tst/station2.tst tst/station_to_station.scm
+  tst/station_to_station.tst tst/subsort_test.scm tst/subsort_test.tst
+  tst/test_small.scm tst/test_small.tst tst/unilateral.scm
+  tst/unilateral.tst tst/uniq-gen-test.scm tst/uniq-gen-test.tst
+  tst/wang.tst tst/woolam.scm tst/woolam.tst tst/wrap_decrypt.lsp
+  tst/wrap_decrypt.tst tst/yahalom.scm tst/yahalom.tst
+
+-- Algebra implementations must import CPSA.Lib.CPSA.
+-- Tools may additionally import CPSA.Lib.Entry.
+-- No other modules in CPSA.Lib should be imported by applications.
+
+Executable cpsa
+  Main-Is:		CPSA/Lib/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers, parallel
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports -threaded -rtsopts
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Vector CPSA.Lib.Utilities CPSA.Lib.Debug
+    CPSA.Lib.Pretty CPSA.Lib.SExpr CPSA.Lib.Printer
+    CPSA.Lib.DebugLibrary CPSA.Lib.Notation CPSA.Lib.Entry
+    CPSA.Lib.Algebra CPSA.Lib.AlgebraLibrary CPSA.Lib.State
+    CPSA.Lib.Protocol CPSA.Lib.Goal CPSA.Lib.Strand
+    CPSA.Lib.Characteristic CPSA.Lib.Loader CPSA.Lib.Displayer
+    CPSA.Lib.Cohort CPSA.Lib.Expand CPSA.Lib.CPSA CPSA.Lib.Reduction
+    CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra CPSA.Lib.Declaration
+    CPSA.DiffieHellman.IntLinEq
+
+Executable cpsagraph
+  Main-Is:		CPSA/Graph/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Debug CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Lib.DebugLibrary CPSA.Graph.XMLOutput CPSA.Graph.Config
+    CPSA.Graph.SVG CPSA.Graph.Loader CPSA.Graph.Preskeleton
+    CPSA.Graph.Layout CPSA.Graph.Tree CPSA.Graph.CompactView
+    CPSA.Graph.ExpandedView CPSA.Graph.LaTeXView
+
+Executable cpsashapes
+  Main-Is:		CPSA/Shapes/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Shapes.Shapes
+
+Executable cpsaannotations
+  Main-Is:		CPSA/Annotations/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Debug CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Lib.DebugLibrary CPSA.Annotations.Formulas
+    CPSA.Annotations.Annotations CPSA.Basic.Algebra
+    CPSA.DiffieHellman.Algebra CPSA.DiffieHellman.IntLinEq
+
+Executable cpsapp
+  Main-Is:		CPSA/Pretty/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Debug CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Lib.DebugLibrary
+
+Executable cpsajson
+  Main-Is:		CPSA/JSON/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Debug CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Lib.DebugLibrary
+
+Executable cpsadiff
+  Main-Is:		CPSA/Diff/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.Lib.CPSA
+
+Executable cpsasas
+  Main-Is:		CPSA/SAS/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  if impl(ghc >= 8.0.0)
+    Extensions: AllowAmbiguousTypes
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Lib.State CPSA.Lib.Protocol CPSA.Lib.Strand CPSA.Lib.Loader
+    CPSA.Lib.Debug CPSA.Lib.Displayer CPSA.Lib.Cohort CPSA.Lib.CPSA
+    CPSA.Lib.DebugLibrary CPSA.SAS.SAS CPSA.Basic.Algebra
+    CPSA.DiffieHellman.Algebra CPSA.DiffieHellman.IntLinEq

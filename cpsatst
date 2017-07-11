@@ -1,0 +1,13 @@
+#! /bin/sh
+
+# This script runs the test suite, and then reduces the data for
+# inspection.  If make fails, something is very wrong.  If differences
+# appear in the output, there might be a problem.
+
+# The following scripts in the tst directory might also serve as a
+# template for your needs, but probably not.  Look at doc/cpsa.mk
+# first.
+
+cd tst
+make clean
+make "$@"

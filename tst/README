@@ -1,0 +1,20 @@
+This directory contains the test suite for CPSA.  Files with a .scm
+extension are expected to succeed, ones with a .lsp extension expected
+are expected to fail, and ones with a .lisp are not run.  The .lisp
+files may run for a long time and succeed or maybe they fail.  The
+test suite is usually run by typing "./cpsatst" in the parent
+directory.
+
+After running the test suite, you will note files with the extension
+.xhtml.  These are XHTML/SVG compound documents that can be viewed by
+standards compliant browsers.
+
+New users should study CPSA's analysis of the following protocols in
+order, Needham-Schroeder (ns.xhtml), Woo-Lam (woolan.xhtml), Yahalom
+(yahalom.xhtml), ffgg (ffgg.xhtml), and finally Otway-Rees (or.xhtml).
+When studying the full output, simultaneously display the extracted
+shapes.  The shapes file has an extension of _shapes.xhtml.
+
+On the first pass, just look at the first two problems in the analysis
+of the Needham-Schroeder Protocol, and return to this test case when
+reading about role origination assumptions in the primer.

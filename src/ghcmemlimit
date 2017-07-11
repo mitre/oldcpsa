@@ -1,0 +1,15 @@
+#! /bin/sh
+# Compute the free memory on a Linux system with /proc/meminfo.
+# Set GHCRTS accordingly.
+# Source this file or pass it a command to run in the extended environment.
+
+GHCRTS=-M`awk '
+/^MemFree:/ { free += $2 }
+/^Buffers:/ { free += $2 }
+/^Cached:/  { free += $2 }
+END         { print free "k" }' /proc/meminfo`
+export GHCRTS
+if [ -n "$1" ]
+then
+  "$@"
+fi

@@ -1,0 +1,50 @@
+CPSA NEWS
+
+  June, 2016:
+
+* New feature: tag sort.  Introduced a new sort "tag" in both the basic and
+  diffie-hellman algebras.  Quoted string constants are now considered to be
+  of this sort rather than of least sort mesg.  This allows a user to specify
+  a variable that may stand for a string constant, without forcing the user to
+  use a variable of the mesg sort for that purpose.
+
+* New feature: depth limit.  When a depth limit is specified, analysis of
+  skeletons will proceed as long as the skeleton's depth in the search tree
+  is below the limit.  Skeletons not analyzed are marked as "(fringe)" to
+  indicate the incomplete nature of those branches of the analysis.  Unlike
+  hitting a strand bound, the tool does not exit with an error when the depth
+  limit is reached.
+
+* IKE_variants.tar.gz added: This is an archive of over 30 variants of
+  IKEv1 and IKEv2 protocols modeled in CPSA.  The archive can be found in the
+  doc/examples directory.
+
+  February, 2016: CPSA version 3 released to the public.
+
+Version 3 of CPSA is a major update to the tool including many new features.
+The most important new features included are:
+
+* Working support for Diffie-Hellman components in protocols, with two
+  main restrictions: first, exponent multiplication is modeled but
+  exponent addition is not, and second, that "bare" exponents are not
+  allowed.  This means that exponents in a role or skeleton must be
+  found within an exponentiation, and not directly (e.g. as in a pair
+  or encryption).
+
+* Support for protocols that interact with long-term state
+
+* Bidirectional long-term keys, in which the order of the two names is
+  ignored.  This more appropriately models shared symmetric keys in a
+  setting where participants are not clearly distinguishable as
+  clients or servers.
+
+* Numerous declarable constraints that allow a user to more carefully
+  limit the tool's search to executions of interest.  Including:
+  - inequality of values
+  - functional relationships between values
+  - a new type of secrecy assumption for potentially leakable long-term secrets
+
+* New, improved documentation.  Included with the release is the CPSA
+  manual which thoroughly documents the new and existing features of
+  the tool and is also a good starting place for new users.
+

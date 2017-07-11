@@ -1,0 +1,5 @@
+:set -isrc:dist/build/autogen
+:set -fbreak-on-error
+:set args tst/dh_mim.scm
+-- ghci src/CPSA/Lib/Main.hs
+-- :trace main

@@ -1,0 +1,19 @@
+#! /bin/sh
+
+for f in *.scm
+do
+  if test -f "$f"
+  then
+    b=`basename $f .scm`
+    mv "$b.txt" "$b.tst"
+  fi
+done
+
+for f in *.lsp
+do
+  if test -f "$f"
+  then
+    b=`basename $f .lsp`
+    mv "$b.txt" "$b.tst"
+  fi
+done
