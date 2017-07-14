@@ -11,7 +11,7 @@ $ cabal update
 $ cabal install cpsa
 
 Find the documentation directory by typing "cpsa -h" in a command
-shell, and view index.html in a browser.
+shell, and view cpsamanual.pdf
 
 INSTALLING FROM A TARBALL
 
@@ -30,7 +30,7 @@ $ firefox -remote "openFile(`pwd`/prob.xhtml)"
 $ cpsa -h
 
 : To view the user guide:
-$ firefox -remote "openFile($HOME/share/cpsa-X.Y.Z/doc/cpsauser.html)"
+$ firefox -remote "openFile($HOME/share/cpsa-X.Y.Z/cpsamanual.pdf)"
 : where X.Y.Z is the CPSA version number.
 
 QUICK START (Mac)
@@ -48,7 +48,7 @@ $ open prob.xhtml
 $ cpsa -h
 
 : To view the user guide:
-$ open $HOME/share/cpsa-X.Y.Z/doc/cpsauser.html
+$ open $HOME/share/cpsa-X.Y.Z/cpsamanual.pdf
 : where X.Y.Z is the CPSA version number.
 
 QUICK START (Windows)
@@ -68,13 +68,13 @@ Documentation and samples are in the directory given by
 C:\...> cpsa -h
 
 The installed programs can be run from the command prompt or via a
-batch file.  Alternatively, copy doc/Make.hs into the directory
+batch file.  Alternatively, copy Make.hs into the directory
 containing your CPSA problem statements, and load it into a Haskell
 interpreter.  Read the source for usage instructions.
 
 MAKEFILE
 
-The file $HOME/share/cpsa-X.Y.Z/doc/cpsa.mk contains useful GNU Make
+The file $HOME/share/cpsa-X.Y.Z/cpsa.mk contains useful GNU Make
 rules for inclusion, where X.Y.Z is CPSA version number.
 
 Alternatively, copy the file Make.hs in the same directory into the
@@ -87,30 +87,6 @@ CPSA is built so it can make use of multiple processors.  To make use
 of more than one processor, start CPSA with a runtime flag that
 specifies the number of processors to be used, such as "+RTS -N4
 -RTS".  The GHC documentation describes the -N option in detail.
-
-DOCUMENTATION
-
-The starting point for CPSA documentation doc/index.html.  Most users
-should read it and skip the rest of this section.
-
-To build the documentation, the file supp-pdf.tex must be installed.
-It is part of the TexLive texmf ConTeXt package.  On Linux, the name
-of the package is context or texlive-context.  The design document and
-the specification document require the xy-pic package, which is
-included in texlive-pictures.
-
-The documentation includes a user guide as an XHTML document, and
-three LaTeX documents.  The CPSA Primer provides the background
-required to make effective use of the CPSA tool collection.  For those
-interested in the implementation, The CPSA Theory contains a
-high-level description of the algorithm and the current state of the
-effort to show that when program terminates, it produces a description
-of every possible execution of the protocol consistent with the
-initial point-of-view skeleton.  The CPSA Specification formally
-describes the implemented algorithm as a term reduction system.  The
-CPSA Design describes implementation details and assumes The CPSA
-Specification has been read.  The CPSA Design should be read if one is
-interested in reading the Haskell source for the tool collection.
 
 TEST SUITE
 
