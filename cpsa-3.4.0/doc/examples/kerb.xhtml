@@ -1,0 +1,620 @@
+<?xml version="1.0"?>
+<!-- CPSA 3.4.0 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>kerb-flawed</title>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+ <style>
+  svg.diagram { border-width: 1px; border-style: solid }
+ </style>
+</head>
+<body>
+
+<pre>(comment &quot;CPSA 3.4.0&quot;)
+(comment &quot;All input read from kerb.scm&quot;)</pre>
+
+<p id="top">Trees: <a href="#t0">0</a> <a href="#t5">5</a>.</p>
+
+<p id="t0">Tree <a href="#top">0</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='279.600pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 279.600 79.920' font-size='12.000'>
+  <text
+   x='239.640' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k4&quot;, &quot;_self&quot;)'>4</text>
+  <line
+   x1='189.720' y1='39.960' x2='239.640' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='189.720' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k3&quot;, &quot;_self&quot;)'>3</text>
+  <line
+   x1='139.800' y1='39.960' x2='189.720' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='139.800' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k2&quot;, &quot;_self&quot;)'>2</text>
+  <line
+   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='89.880' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k1&quot;, &quot;_self&quot;)'>1</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k0&quot;, &quot;_self&quot;)'>0</text>
+  </svg></div>
+
+<pre>(defprotocol kerb-flawed basic
+  (defrole init
+    (vars (a b s name) (m n text) (k skey))
+    (trace (send (cat a b n))
+      (recv (cat (enc k n (ltk a s)) (enc k a b (ltk b s))))
+      (send (cat (enc m k) (enc k a b (ltk b s)))))
+    (uniq-orig n))
+  (defrole resp
+    (vars (a b s name) (m text) (k skey))
+    (trace (recv (cat (enc m k) (enc k a b (ltk b s))))))
+  (defrole keyserv
+    (vars (a b s name) (n text) (k skey))
+    (trace (recv (cat a b n))
+      (send (cat (enc k n (ltk a s)) (enc k a b (ltk b s)))))
+    (uniq-orig k)))</pre>
+
+<p id="k0">Item <a href="#t0">0</a>, Child: <a href="#k1">1</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='304.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 304.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>m</title><circle cx='139.920' cy='189.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: red;' cx='139.920' cy='114.960' r='6.000'/></g>
+  <g><title>(cat (enc m k) (enc k a b (ltk b s)))</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='89.940' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed 0</text></svg></div>
+
+<pre>(defskeleton kerb-flawed
+  (vars (m n text) (a b s name) (k skey))
+  (defstrand init 3 (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n)
+  (label 0)
+  (unrealized (0 1) (1 0))
+  (preskeleton)
+  (comment &quot;Not a skeleton&quot;))</pre>
+
+<p id="k1">Item <a href="#t0">1</a>, Parent: <a href="#k0">0</a>, Child: <a href="#k2">2</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) (enc k a b (ltk b s)))</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='89.940' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed 1</text></svg></div>
+
+<pre>(defskeleton kerb-flawed
+  (vars (m n text) (a b s name) (k skey))
+  (defstrand init 3 (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (precedes ((0 2) (1 0)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n)
+  (label 1)
+  (parent 0)
+  (unrealized (0 1))
+  (origs (n (0 0)) (m (0 2)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k2">Item <a href="#t0">2</a>, Parent: <a href="#k1">1</a>, Child: <a href="#k3">3</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='279.840pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 279.840 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b-0 (ltk b-0 s)))</title>
+   <circle cx='239.880' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b-0 n)</title>
+   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) (enc k a b (ltk b s)))</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <path
+   d='M 39.960 114.960 Q 136.920 77.460 233.880 114.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n n) (a a) (b b-0) (s s) (k k))</title>
+   <text
+    x='239.880' y='77.460' style='text-anchor: middle;'>keyserv</text>
+   </g>
+  <g><title>((m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='139.920' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed 2</text></svg></div>
+
+<pre>(defskeleton kerb-flawed
+  (vars (m n text) (a b s b-0 name) (k skey))
+  (defstrand init 3 (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (defstrand keyserv 2 (n n) (a a) (b b-0) (s s) (k k))
+  (precedes ((0 0) (2 0)) ((0 2) (1 0)) ((2 1) (0 1)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n k)
+  (operation encryption-test (added-strand keyserv 2)
+    (enc k n (ltk a s)) (0 1))
+  (label 2)
+  (parent 1)
+  (unrealized (0 1))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k3">Item <a href="#t0">3</a>, Parent: <a href="#k2">2</a>, Child: <a href="#k4">4</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='279.840pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 279.840 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
+   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle cx='239.880' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: red;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) (enc k a b (ltk b s)))</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <path
+   d='M 39.960 114.960 Q 136.920 77.460 233.880 114.960'
+   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n n) (a a) (b b) (s s) (k k))</title>
+   <text
+    x='239.880' y='77.460' style='text-anchor: middle;'>keyserv</text>
+   </g>
+  <g><title>((m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='139.920' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed 3</text></svg></div>
+
+<pre>(defskeleton kerb-flawed
+  (vars (m n text) (a s b name) (k skey))
+  (defstrand init 3 (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (defstrand keyserv 2 (n n) (a a) (b b) (s s) (k k))
+  (precedes ((0 0) (2 0)) ((0 2) (1 0)) ((2 1) (0 1)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n k)
+  (operation encryption-test (displaced 3 2 keyserv 2)
+    (enc k a b-0 (ltk b-0 s)) (0 1))
+  (label 3)
+  (parent 2)
+  (unrealized (1 0))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k4">Item <a href="#t0">4</a>, Parent: <a href="#k3">3</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='379.800pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 379.800 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='339.840' y1='189.960' x2='339.840' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 339.840 264.960 Q 242.880 227.460 145.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>k</title><circle cx='339.840' cy='264.960' r='6.000'/></g>
+  <g><title>k</title>
+   <circle style='fill: red;' cx='339.840' cy='189.960' r='6.000'/></g>
+  <path
+   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
+   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <path
+   d='M 239.880 189.960 Q 286.860 189.960 333.840 189.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle cx='239.880' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) (enc k a b (ltk b s)))</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b (ltk b s)))</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <path
+   d='M 39.960 114.960 Q 136.920 77.460 233.880 114.960'
+   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n n) (a a) (b b) (s s) (k k))</title>
+   <text
+    x='239.880' y='77.460' style='text-anchor: middle;'>keyserv</text>
+   </g>
+  <g><title>((m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='189.900' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed 4</text></svg></div>
+
+<pre>(defskeleton kerb-flawed
+  (vars (m n text) (a s b name) (k skey))
+  (defstrand init 3 (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (defstrand keyserv 2 (n n) (a a) (b b) (s s) (k k))
+  (deflistener k)
+  (precedes ((0 0) (2 0)) ((0 2) (1 0)) ((2 1) (0 1)) ((2 1) (3 0))
+    ((3 1) (1 0)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n k)
+  (operation nonce-test (added-listener k) m (1 0) (enc m k))
+  (label 4)
+  (parent 3)
+  (unrealized (3 0))
+  (comment &quot;empty cohort&quot;))</pre>
+
+<p id="t5">Tree <a href="#top">5</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.760pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.760 79.920' font-size='12.000'>
+  <text
+   x='139.800' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k7&quot;, &quot;_self&quot;)'>7</text>
+  <line
+   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='89.880' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k6&quot;, &quot;_self&quot;)'>6</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k5&quot;, &quot;_self&quot;)'>5</text>
+  </svg></div>
+
+<pre>(defprotocol kerb-flawed2 basic
+  (defrole init
+    (vars (a b s name) (ticket mesg) (m n text) (k skey))
+    (trace (send (cat a b n)) (recv (cat (enc k n (ltk a s)) ticket))
+      (send (cat (enc m k) ticket)))
+    (uniq-orig n))
+  (defrole resp
+    (vars (a b s name) (m text) (k skey))
+    (trace (recv (cat (enc m k) (enc k a b (ltk b s))))))
+  (defrole keyserv
+    (vars (a b s name) (n text) (k skey))
+    (trace (recv (cat a b n))
+      (send (cat (enc k n (ltk a s)) (enc k a b (ltk b s)))))
+    (uniq-orig k)))</pre>
+
+<p id="k5">Item <a href="#t5">5</a>, Child: <a href="#k6">6</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='304.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 304.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>m</title><circle cx='139.920' cy='189.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: red;' cx='139.920' cy='114.960' r='6.000'/></g>
+  <g><title>(cat (enc m k) ticket)</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) ticket)</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='89.940' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed2 5</text></svg></div>
+
+<pre>(defskeleton kerb-flawed2
+  (vars (ticket mesg) (m n text) (a b s name) (k skey))
+  (defstrand init 3 (ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n)
+  (label 5)
+  (unrealized (0 1) (1 0))
+  (preskeleton)
+  (comment &quot;Not a skeleton&quot;))</pre>
+
+<p id="k6">Item <a href="#t5">6</a>, Parent: <a href="#k5">5</a>, Child: <a href="#k7">7</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) ticket)</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) ticket)</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='89.940' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed2 6</text></svg></div>
+
+<pre>(defskeleton kerb-flawed2
+  (vars (ticket mesg) (m n text) (a b s name) (k skey))
+  (defstrand init 3 (ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (precedes ((0 2) (1 0)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n)
+  (label 6)
+  (parent 5)
+  (unrealized (0 1))
+  (origs (n (0 0)) (m (0 2)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k7">Item <a href="#t5">7</a>, Parent: <a href="#k6">6</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='279.840pt' height='379.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 279.840 379.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='139.920' y1='264.960' x2='139.920' y2='339.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc k n (ltk a s)) (enc k a b-0 (ltk b-0 s)))</title>
+   <circle cx='239.880' cy='189.960' r='6.000'/></g>
+  <g><title>(cat a b-0 n)</title>
+   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
+  <g><title>m</title><circle cx='139.920' cy='339.960' r='6.000'/></g>
+  <g><title>m</title>
+   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
+  <path
+   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat (enc m k) ticket)</title>
+   <circle cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(cat (enc k n (ltk a s)) ticket)</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <path
+   d='M 39.960 114.960 Q 136.920 77.460 233.880 114.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(cat a b n)</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n n) (a a) (b b-0) (s s) (k k))</title>
+   <text
+    x='239.880' y='77.460' style='text-anchor: middle;'>keyserv</text>
+   </g>
+  <g>
+   <title>((ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='139.920' y='39.960'
+   style='text-anchor: middle;'>kerb-flawed2 7 (realized)</text></svg>
+ </div>
+
+<pre>(defskeleton kerb-flawed2
+  (vars (ticket mesg) (m n text) (a b s b-0 name) (k skey))
+  (defstrand init 3 (ticket ticket) (m m) (n n) (a a) (b b) (s s) (k k))
+  (deflistener m)
+  (defstrand keyserv 2 (n n) (a a) (b b-0) (s s) (k k))
+  (precedes ((0 0) (2 0)) ((0 2) (1 0)) ((2 1) (0 1)))
+  (non-orig (ltk a s) (ltk b s))
+  (uniq-orig m n k)
+  (operation encryption-test (added-strand keyserv 2)
+    (enc k n (ltk a s)) (0 1))
+  (label 7)
+  (parent 6)
+  (unrealized)
+  (shape)
+  (maps ((0 1) ((a a) (b b) (s s) (m m) (ticket ticket) (n n) (k k))))
+  (origs (k (2 1)) (n (0 0)) (m (0 2))))</pre>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+for f in *.tst
+do
+    b=`basename $f .tst`
+    echo graphing $f
+    ../dist/build/cpsagraph/cpsagraph -o "o_${b}.xhtml" "$f"
+    ../dist/build/cpsashapes/cpsashapes -o "o_${b}.txt" "$f"
+    ../dist/build/cpsagraph/cpsagraph -o "o_${b}_shapes.xhtml" "o_${b}.txt"
+done

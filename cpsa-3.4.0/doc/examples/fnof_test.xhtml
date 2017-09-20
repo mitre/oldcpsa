@@ -1,0 +1,658 @@
+<?xml version="1.0"?>
+<!-- CPSA 3.4.0 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Function constraint test protocol</title>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+ <style>
+  svg.diagram { border-width: 1px; border-style: solid }
+ </style>
+</head>
+<body>
+
+<pre>(herald &quot;Function constraint test protocol&quot;
+  (comment &quot;Skeletons 2, 4, and 7 should have no shapes.&quot;))
+(comment &quot;CPSA 3.4.0&quot;)
+(comment &quot;All input read from fnof_test.scm&quot;)</pre>
+
+<p id="top">Trees: <a href="#t0">0</a> <a href="#t2">2</a> <a href="#t3">3</a> <a href="#t5">5</a> <a href="#t6">6</a> <a href="#t8">8</a> <a href="#t10">10</a>.</p>
+
+<p id="t0">Tree <a href="#top">0</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='129.840pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 129.840 79.920' font-size='12.000'>
+  <text
+   x='89.880' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k1&quot;, &quot;_self&quot;)'>1</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k0&quot;, &quot;_self&quot;)'>0</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest basic
+  (defrole init
+    (vars (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)))</pre>
+
+<p id="k0">Item <a href="#t0">0</a>, Child: <a href="#k1">1</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc an0 an1 n0 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an0) (an1 an1) (n0 n0) (n1 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>fnoftest 0</text>
+  </svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an0 an1 n0 n1 text) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n1) (k k))
+  (non-orig k)
+  (uniq-orig n0 n1)
+  (label 0)
+  (unrealized (0 1))
+  (origs (n0 (0 0)) (n1 (0 0)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k1">Item <a href="#t0">1</a>, Parent: <a href="#k0">0</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n0</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc an0 an1 n0 n0 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an0) (an1 an1) (n0 n0) (n1 n0) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest 1 (realized)</text></svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an0 an1 n0 text) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n0) (k k))
+  (non-orig k)
+  (uniq-orig n0)
+  (operation nonce-test (displaced 1 0 init 1) n1 (0 1)
+    (enc an0 an1 n0 n1 k))
+  (label 1)
+  (parent 0)
+  (unrealized)
+  (shape)
+  (maps ((0) ((an0 an0) (an1 an1) (n0 n0) (n1 n0) (k k))))
+  (origs (n0 (0 0))))</pre>
+
+<p id="t2">Tree <a href="#top">2</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 79.920' font-size='12.000'>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k2&quot;, &quot;_self&quot;)'>2</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest basic
+  (defrole init
+    (vars (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)))</pre>
+
+<p id="k2">Item <a href="#t2">2</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc an0 an1 n0 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an0) (an1 an1) (n0 n0) (n1 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>fnoftest 2</text>
+  </svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an0 an1 n0 n1 text) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n1) (k k))
+  (fn-of (a (an0 n0) (an1 n1)))
+  (neq (an0 an1))
+  (non-orig k)
+  (uniq-orig n0 n1)
+  (label 2)
+  (unrealized (0 1))
+  (origs (n0 (0 0)) (n1 (0 0)))
+  (comment &quot;empty cohort&quot;))</pre>
+
+<p id="t3">Tree <a href="#top">3</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='129.840pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 129.840 79.920' font-size='12.000'>
+  <text
+   x='89.880' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k4&quot;, &quot;_self&quot;)'>4</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k3&quot;, &quot;_self&quot;)'>3</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest basic
+  (defrole init
+    (vars (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)))</pre>
+
+<p id="k3">Item <a href="#t3">3</a>, Child: <a href="#k4">4</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc an0 an1 n1 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an0) (an1 an1) (n0 n1) (n1 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest 3 (realized)</text></svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an0 an1 n1 text) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n1) (n1 n1) (k k))
+  (fn-of (a (an0 n1) (an1 n1)))
+  (non-orig k)
+  (uniq-orig n1)
+  (label 3)
+  (unrealized)
+  (preskeleton)
+  (comment &quot;Not a skeleton&quot;))</pre>
+
+<p id="k4">Item <a href="#t3">4</a>, Parent: <a href="#k3">3</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc an1 an1 n1 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an1) (an1 an1) (n0 n1) (n1 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest 4 (realized)</text></svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an1 n1 text) (k skey))
+  (defstrand init 2 (an0 an1) (an1 an1) (n0 n1) (n1 n1) (k k))
+  (fn-of (a (an1 n1)))
+  (non-orig k)
+  (uniq-orig n1)
+  (label 4)
+  (parent 3)
+  (unrealized)
+  (shape)
+  (maps ((0) ((an1 an1) (n1 n1) (k k))))
+  (origs (n1 (0 0))))</pre>
+
+<p id="t5">Tree <a href="#top">5</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 79.920' font-size='12.000'>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k5&quot;, &quot;_self&quot;)'>5</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest basic
+  (defrole init
+    (vars (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)))</pre>
+
+<p id="k5">Item <a href="#t5">5</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc an0 an1 n1 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((an0 an0) (an1 an1) (n0 n1) (n1 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest 5 (realized)</text></svg></div>
+
+<pre>(defskeleton fnoftest
+  (vars (an0 an1 n1 text) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n1) (n1 n1) (k k))
+  (fn-of (a (an0 n1) (an1 n1)))
+  (neq (an0 an1))
+  (non-orig k)
+  (uniq-orig n1)
+  (label 5)
+  (unrealized)
+  (comment &quot;Input cannot be made into a skeleton--nothing to do&quot;))</pre>
+
+<p id="t6">Tree <a href="#top">6</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='129.840pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 129.840 79.920' font-size='12.000'>
+  <text
+   x='89.880' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k7&quot;, &quot;_self&quot;)'>7</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k6&quot;, &quot;_self&quot;)'>6</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest2 basic
+  (defrole init
+    (vars (bn0 bn1 name) (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)
+    (fn-of (a (an0 n0) (an1 n1)) (b ((pubk bn0) an0)))))</pre>
+
+<p id="k6">Item <a href="#t6">6</a>, Child: <a href="#k7">7</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0) (bn1 bn1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>fnoftest2 6</text>
+  </svg></div>
+
+<pre>(defskeleton fnoftest2
+  (vars (an0 an1 n0 n1 text) (bn0 bn1 name) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0)
+    (bn1 bn1) (k k))
+  (fn-of (a (an0 n0) (an1 n1)) (b ((pubk bn1) an1) ((pubk bn0) an0)))
+  (non-orig k)
+  (uniq-orig n0 n1)
+  (label 6)
+  (unrealized (0 1))
+  (origs (n0 (0 0)) (n1 (0 0)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k7">Item <a href="#t6">7</a>, Parent: <a href="#k6">6</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n0</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc bn1 bn1 an1 an1 n0 n0 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((an0 an1) (an1 an1) (n0 n0) (n1 n0) (bn0 bn1) (bn1 bn1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest2 7 (realized)</text></svg>
+ </div>
+
+<pre>(defskeleton fnoftest2
+  (vars (an1 n0 text) (bn1 name) (k skey))
+  (defstrand init 2 (an0 an1) (an1 an1) (n0 n0) (n1 n0) (bn0 bn1)
+    (bn1 bn1) (k k))
+  (fn-of (a (an1 n0)) (b ((pubk bn1) an1)))
+  (non-orig k)
+  (uniq-orig n0)
+  (operation nonce-test (displaced 1 0 init 1) n1 (0 1)
+    (enc bn0 bn1 an0 an1 n0 n1 k))
+  (label 7)
+  (parent 6)
+  (unrealized)
+  (shape)
+  (maps
+    ((0)
+      ((bn0 bn1) (bn1 bn1) (an0 an1) (an1 an1) (n0 n0) (n1 n0) (k k))))
+  (origs (n0 (0 0))))</pre>
+
+<p id="t8">Tree <a href="#top">8</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='129.840pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 129.840 79.920' font-size='12.000'>
+  <text
+   x='89.880' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k9&quot;, &quot;_self&quot;)'>9</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k8&quot;, &quot;_self&quot;)'>8</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest2 basic
+  (defrole init
+    (vars (bn0 bn1 name) (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)
+    (fn-of (a (an0 n0) (an1 n1)) (b ((pubk bn0) an0)))))</pre>
+
+<p id="k8">Item <a href="#t8">8</a>, Child: <a href="#k9">9</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0) (bn1 bn1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>fnoftest2 8</text>
+  </svg></div>
+
+<pre>(defskeleton fnoftest2
+  (vars (an0 an1 n0 n1 text) (bn0 bn1 name) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0)
+    (bn1 bn1) (k k))
+  (decl foo ((n0 n1) (0 1)) ((k k k n0) (0 0) (0 0) (0 1)))
+  (fn-of (a (an0 n0) (an1 n1)) (b ((pubk bn0) an0))
+    (c ((pubk bn1) an1)))
+  (non-orig k)
+  (uniq-orig n0 n1)
+  (label 8)
+  (unrealized (0 1))
+  (origs (n0 (0 0)) (n1 (0 0)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k9">Item <a href="#t8">9</a>, Parent: <a href="#k8">8</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n0</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc bn0 bn1 an1 an1 n0 n0 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((an0 an1) (an1 an1) (n0 n0) (n1 n0) (bn0 bn0) (bn1 bn1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest2 9 (realized)</text></svg>
+ </div>
+
+<pre>(defskeleton fnoftest2
+  (vars (an1 n0 text) (bn0 bn1 name) (k skey))
+  (defstrand init 2 (an0 an1) (an1 an1) (n0 n0) (n1 n0) (bn0 bn0)
+    (bn1 bn1) (k k))
+  (decl foo ((n0 n0) (0 1)) ((k k k n0) (0 0) (0 0) (0 1)))
+  (fn-of (a (an1 n0)) (b ((pubk bn0) an1)) (c ((pubk bn1) an1)))
+  (non-orig k)
+  (uniq-orig n0)
+  (operation nonce-test (displaced 1 0 init 1) n1 (0 1)
+    (enc bn0 bn1 an0 an1 n0 n1 k))
+  (label 9)
+  (parent 8)
+  (unrealized)
+  (shape)
+  (maps
+    ((0)
+      ((bn0 bn0) (bn1 bn1) (an0 an1) (an1 an1) (n0 n0) (n1 n0) (k k))))
+  (origs (n0 (0 0))))</pre>
+
+<p id="t10">Tree <a href="#top">10</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 79.920' font-size='12.000'>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k10&quot;, &quot;_self&quot;)'>10</text>
+  </svg></div>
+
+<pre>(defprotocol fnoftest2 basic
+  (defrole init
+    (vars (bn0 bn1 name) (an0 an1 n0 n1 text) (k skey))
+    (trace (send (cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))) (recv n1))
+    (non-orig k)
+    (uniq-orig n0 n1)
+    (fn-of (a (an0 n0) (an1 n1)) (b ((pubk bn0) an0)))))</pre>
+
+<p id="k10">Item <a href="#t10">10</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g>
+   <title>((an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0) (bn1 bn1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>fnoftest2 10</text></svg></div>
+
+<pre>(defskeleton fnoftest2
+  (vars (an0 an1 n0 n1 text) (bn0 bn1 name) (k skey))
+  (defstrand init 2 (an0 an0) (an1 an1) (n0 n0) (n1 n1) (bn0 bn0)
+    (bn1 bn1) (k k))
+  (decl foo ((n0 n1) (0 1)) ((k k k n0) (0 0) (0 0) (0 1)))
+  (fn-of (a (an0 n0) (an1 n1)) (b ((privk bn0) an1) ((pubk bn0) an0)))
+  (non-orig k)
+  (uniq-orig n0 n1)
+  (label 10)
+  (unrealized (0 1))
+  (origs (n0 (0 0)) (n1 (0 0)))
+  (comment &quot;empty cohort&quot;))</pre>
+
+</body>
+</html>

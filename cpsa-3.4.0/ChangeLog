@@ -1,0 +1,323 @@
+2017-09-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/DiffieHellman/Algebra.hs (unifyTerms):  Added calls to
+	chase before calling unifyBase which prevents a failure in the
+	occurs check.
+
+2017-09-14  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (tryPerm): Add missing inverse
+	permutation to second checkOrigs in tryPerm.
+
+2017-09-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal:  Removed CPSA.Lib.CPSA globally and removed
+	unnecessary dependencies.
+
+2017-08-30  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal: Added missing modules and source repository
+	location.
+
+	* src/CPSA/Lib/DebugLibrary.hs (zi): Fixed erroneous parameters in
+	Instance.
+
+2017-08-28  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Cohort.hs (solved): Fixed condition 5.  It was
+	using ct instead of ct'.
+
+2017-06-30  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Cohort.hs (transformingNode, maybeAug, nextNode):
+	Rewrote code so that it no longer fails the ambiguity check.
+
+2017-05-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/DiffieHellman/Algebra.hs (mkInitMatchDecis): Ensure
+	initial distinctions to not include fresh variables.
+	(partition): Do not move variables of sort expn to lhs, even if
+	they are freshly generated.
+
+2017-05-16  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/DiffieHellman/Algebra.hs (displaySubst):  Removed
+	erroneous substitution to fix substitution displaying.
+
+2017-05-10  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Strand.hs (findReplacement, permutations): Merge
+	generators so that no variable in a term has an identifier that is
+	greater than or equal to the generator.
+
+2017-02-02  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Basic/Algebra.hs (loadInvk): Added support for reading
+	(invk (privk ...)) and (invk (invk ...)).
+
+2017-01-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (strandForm): Remove conjoin and use
+	concatMap when creating a characteristic skeleton.
+
+2017-01-09  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (loadPrimary): Removed generator
+	parameter that was not used.
+
+2016-12-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Cohort.hs (solved): In Condition 4, applied
+	substitutions to the encryption keys before testing for
+	derivability.
+
+2016-10-04  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Basic/Algebra.hs (matchRenaming):  Make isomorphism
+	check work in presence of asymmetric keys.
+
+2016-09-30  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Algebra.hs: Added isObtainedVar for variables of
+	sort expr in the Diffie-Hellman algebra.
+
+2016-08-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (form): Changed "defsas" to "defgoal" as the
+	keyword for a generated shape analysis sentence.  This makes the
+	program compatible with its documentation.
+
+2016-06-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Extension): Add allow ambiguous types when compiling
+	with GHC 8.0.0 or later.
+
+2016-06-21  Moses D. Liskov <mliskov@mitre.org>
+
+	* src/CPSA/DiffieHellman/Algebra.hs: Added code to implement the
+	"tag" sort, which quoted string tags belong to.
+
+2016-06-03  Moses D. Liskov <mliskov@mitre.org>
+
+	* doc/examples/IKE_variants.tar.gz: Added this compressed archive
+	of IKEv1 and IKEv2 variant input files.
+
+2016-03-30  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs: Added support for fringe skeletons so that
+	cpassas makes use of depth limited output.  When a tree depth
+	limit is exceeded, a fringe labeled skeleton is printed.  cpsasas
+	produces a sentence with a right-hand-side that encodes both the
+	shapes and the fringe.  Thus, when cpsa is running the a tree
+	depth limit of one, cpsasas computes a cohort analysis sentence.
+
+2016-03-29  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Reduction.hs (LPreskel): Added a depth field, so
+	that CPSA aborts when the depth of one branch exceeds a bound.
+
+	* src/CPSA/Lib/Algebra.hs: Added escapeSet to Term class and remove
+	protectors, thus computing the escape set in a more
+	straightforward way.
+
+2015-11-23  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/Main.hs (main): Changed start up so that the herald
+	is read and used to find the correct algebra for further
+	processing.
+
+2015-10-02  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* doc/{index,cpsauser}.html: Added width limit of 48em.
+
+2015-07-09  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Graph/ExpandedView.hs (purgeTraces): By default, the
+	graph program now does not show traces in skeletons.  Added
+	--show-traces option to the graph program, which restores the
+	previous behavior and traces are displayed in skeletons.
+
+2015-07-02  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Algebra.hs: Added constituent to the algebra
+	interface and the algebras.  An atom is a constituent of a term if
+	the atom is among the set of atoms required to construct the term.
+	Changed occursIn so that it just applies to variables.
+
+2015-07-01  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/{Basic,DiffieHellman}/Algebra.hs (occursIn): Restricted
+	first argument of occursIn to variables and atoms and corrected
+	the implementation.
+
+2015-06-30  John D. Ramsdell  <ramsdell@mitre.org>
+
+ 	* cpsa3.cabal (Version): Tagged as 3.2.2.
+
+2015-06-25  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (geq): Removed dynamic role specific test
+	because it erroneously reports violations.  The existing static
+	role specific test correctly does the job.
+
+2015-05-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+ 	* cpsa3.cabal (Version): Tagged as 3.2.1.
+
+	* src/CPSA/DiffieHellman/Algebra.hs (displayTerm):  Made it so
+	that CPSA prints each bltk atoms in a canonical form so that the
+	graph program draws solid arrows when it should.
+
+2015-04-27  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (ReturnFail): Added ReturnFail Monad so
+	that fail is correctly handled.  Added Functor and Applicative
+	instance to support GHC 7.10 base library.
+
+2015-04-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Characteristic.hs (mkDcls): Fixed tag for non-orig
+	and pen-non-orig.
+
+2015-04-10  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (mkListener): The role used for listener
+	strands is now the one stored in the protocol.  It has a single
+	variable x of sort mesg as its set of variables.  This change
+	enables satisfaction checking on skeleton that include listeners.
+
+2015-04-07  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (toSkeleton): Removed hulling to the
+	process of converting an input preskeleton into a skeleton as it
+	causes bugs in printing.
+
+	* Imported CPSA2's implementation of goals and expunged support
+	for subgoals.
+
+2015-03-27  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (toSkeleton): Added hulling to the
+	process of converting an input preskeleton into a skeleton.
+
+2015-03-25  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Goal.hs: Added uniq to goal language.
+
+2015-03-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (form): Generate a defsas form rather than a
+	naked sentence.
+
+	* src/CPSA/Lib/Loader.hs (loadPrimary): Renamed equals function
+	symbol to =.
+
+2015-03-05  John D. Ramsdell  <ramsdell@mitre.org>
+
+ 	* cpsa3.cabal (Version): Tagged as 3.2.0.
+
+2015-02-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* Added support for subgoals within point-of-view skeletons.  The
+	subgoals are evaluated for each shape, and (satisfies-a-subgoal)
+	is added to a shape when it satisfies one of the subgoals.
+
+2014-12-11  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Entry.hs (defaultOptions): Changed the default
+	strand bound to 12.
+
+2014-11-15  John D.  Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs: Changed the language used for a shape
+	analysis sentence to be node-oriented.
+
+2014-11-07  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (loadPriorities): Allowed priority
+	declarations on state synchronization nodes other than
+	initiatizers.
+
+2014-11-07  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Cohort.hs (explainable): Added the nodes reachable
+	by strand succession so that a transition can be explained by a
+	previous transition within a strand.
+
+2014-10-31  John D. Ramsdell  <ramsdell@mitre.org>
+
+	*  Changed the name of the logic producing program to cpsa3sas.
+
+2014-09-01  John D.  Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (noStateSplit): An observer node should have
+	at most one transition node after it too.
+
+2014-08-31  John D.  Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/State.hs: Made labels optional.  Use "tran" for
+	state synchronization events with labels, and "sync" for ones
+	without.
+
+2014-08-29  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/*.hs: Added support for analyzing protocols with
+	state.  A state synchronization event sync was added to the events
+	that can occur in a trace, along with a new method for state-based
+	augmentation.  An example using sync events is in
+	tst/envelope.scm.
+
+2014-08-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa3.cabal:  Removed cpsaparameters program.
+
+2014-08-25  John D.  Ramsdell  <ramsdell@mitre.org>
+
+	* src/split.py: Added the skeleton split program that copies the
+	skeletons in a CPSA source file into separate files.
+
+2014-08-23  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/cpsajson.py (load): Added a reader in Python for JSON
+	produced by CPSA's pretty printer program cpsa3pp -j.
+
+2014-08-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/JSON/Main.hs: Added the program cpsa3json that
+	translates JSON encoded CPSA into CPSA S-Expressions.  It expects
+	the JSON input to follow the conventions of the JSON produced by
+	the cpsapp program when given the -j option.
+
+	* src/CPSA/Lib/SExpr.hs (numOrSym): Enabled parsing a number with
+	a plus sign by removing the sign before translating the string of
+	digits into a number.
+
+2014-06-12  John D.  Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa3.cabal (Version): Tagged as 3.0.3.
+
+2014-02-06  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa3.cabal (Version): Tagged as 3.0.2.
+
+2013-12-14  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa3.cabal (Version): Tagged as 3.0.1.
+
+	* cpsa3.cabal (Extra-Source-Files): Added more DH tests
+
+2013-03-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPET/Annotations/Annotations.hs (obligation): Replaced an
+	irrefutable pattern that raised an exception with a maybeToList.
+
+2013-02-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPET/DiffieHellman/Algebra.hs: Added the Diffie-Hellman
+	algebra based on Abelian groups.
+
+	* src/CPET/Basic/Algebra.hs:  Removed support for GHC 6.x.
+
+2013-02-06  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpet.cabal (Version): Tagged as 0.0.0.
