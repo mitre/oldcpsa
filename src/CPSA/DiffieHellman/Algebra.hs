@@ -308,11 +308,14 @@ getGroupVar :: Group -> Id
 getGroupVar x = head $ M.keys x
                 
 -- Create group var as a basis element if be is true
-groupVar :: Bool -> Id -> Term
-groupVar be x = G $ M.singleton x (be, 1)
+groupVarG :: Bool -> Id -> Group
+groupVarG be x = M.singleton x (be, 1)
 
+groupVar :: Bool -> Id -> Term
+groupVar be x = G $ groupVarG be x
+                
 groupVarGroup :: Id -> Group
-groupVarGroup x = M.singleton x (False, 1)
+groupVarGroup x = groupVarG False x
 
 dMapCoef :: (Coef -> Coef) -> Desc -> Desc
 dMapCoef f (be, c) = (be, f c)
@@ -782,6 +785,7 @@ foldVars f acc (F Hash [t])     = -- Hashing
     foldVars f acc t
 foldVars f acc t@(D _) = f acc t          -- Node variable
 foldVars _ acc (C _) = acc
+foldVars _ acc (P _) = acc
 foldVars _ _ t = error $ "Algebra.foldVars: Bad term " ++ show t
 
 -- Fold f through a term applying it to each term that is carried by the term.
@@ -1441,6 +1445,7 @@ chase (Subst s) (D x) =
       Just t -> chase (Subst s) t
 chase s (F Invk [t]) = chaseInvk s t
 chase s (F Exp [t0, G t1]) = chaseExp s t0 t1
+chase (Subst s) (G t) = G $ chaseGroup s t
 chase _ t = t
 
 chaseInvk :: Subst -> Term -> Term
@@ -1456,19 +1461,39 @@ chaseExp s t0 t1
     | M.null t1 = chase s t0
 chaseExp s@(Subst ss) (I x) t1 =
     case chase s (I x) of
-      F Exp [t0', G t1'] -> -- chaseExp s t0' (mul t1 t1')
-        if M.null t1t1'
-           then t0'
-           else F Exp [t0', G t1t1']
-        where t1t1' = mul t1' (groupSubst ss t1)
-      t0 -> F Exp [t0, chaseGroup s t1]
+      F Exp [t0', G t1'] ->
+        chaseExpFinalize t0' t1t1'
+        where t1t1' = mul t1' (chaseGroup ss t1)
+      t0 -> chaseExpFinalize t0 t1'
+        where t1' = chaseGroup ss t1
 chaseExp s (F Exp [t0', G t1']) t1 =
     chaseExp s t0' (mul t1 t1')
-chaseExp s t0 t1 = F Exp [t0, chaseGroup s t1]
+chaseExp (Subst s) t0 t1 =
+    chaseExpFinalize t0 t1'
+    where t1' = chaseGroup s t1
 
-chaseGroup :: Subst -> Group -> Term
-chaseGroup (Subst s) x = G $ groupSubst s x
+chaseExpFinalize :: Term -> Group -> Term
+chaseExpFinalize t0 t1 =
+    if M.null t1
+       then t0
+       else F Exp [t0, G t1]
+                
+chaseGroup :: IdMap -> Group -> Group
+chaseGroup s t =
+    M.foldrWithKey f M.empty t
+     where
+       f x (be, c) t =
+           mul (expg (chaseGroupLookup s be x) c) t
 
+chaseGroupLookup :: IdMap -> Bool -> Id -> Group
+chaseGroupLookup s be x =
+    case M.lookup x s of
+      Nothing -> groupVarG be x
+      Just (G t) -> chaseGroup s t
+      Just w -> error ("Algebra.chaseGroupLookup: Bad substitution: " ++
+                     show x ++ " -> " ++ show w)
+               
+                   
 -- Does x occur in t?
 occurs :: Id -> Term -> Bool
 occurs x (I y) = x == y
@@ -1604,7 +1629,7 @@ chaseMap (Subst s) =
 -- A chasing version of substitution.
 
 substChase :: Subst -> Term -> Term
-substChase subst t =
+substChase subst@(Subst ss) t =
     case chase subst t of
       t@(I _) -> t
       t@(C _) -> t
@@ -1615,24 +1640,15 @@ substChase subst t =
       F Exp [t0, G t1] ->
           case substChase subst t0 of
             F Exp [t0', G t1'] ->
-              case mul t1' $ groupChase subst t1 of
+              case mul t1' $ chaseGroup ss t1 of
                 t2 | M.null t2 -> t0'
                    | otherwise -> F Exp [t0', G t2]
-            t -> expChase subst t t1
+            t -> chaseExp subst t t1
       F s u ->
           F s (map (substChase subst) u)
-      G t -> G $ groupChase subst t
+      G t -> G $ chaseGroup ss t
       t@(D _) -> t
       t@(P _) -> t
-
-expChase :: Subst -> Term -> Group -> Term
-expChase subst t0 t1 =
-    case groupChase subst t1 of
-      t1' | M.null t1' -> t0
-          | otherwise -> F Exp [t0, G t1']
-
-groupChase :: Subst -> Group -> Group
-groupChase (Subst subst) t = groupSubst subst t
 
 destroyer :: Term -> Maybe Subst
 destroyer t@(G m) | isVar t =

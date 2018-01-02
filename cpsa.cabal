@@ -1,5 +1,5 @@
 Name:			cpsa
-Version:		3.4.0
+Version:		3.4.1
 Maintainer:		mliskov@mitre.org
 Cabal-Version:		>= 1.6
 License:		BSD3
@@ -97,7 +97,9 @@ Extra-Source-Files:
   tst/unilateral.tst tst/uniq-gen-test.scm tst/uniq-gen-test.tst
   tst/wang.tst tst/woolam.scm tst/woolam.tst tst/wrap_decrypt.lsp
   tst/wrap_decrypt.tst tst/yahalom.scm tst/yahalom.tst
-
+  tst/aik.scm tst/aik.tst tst/reflect.scm tst/reflect.tst
+  tst/station.scm tst/station.tst tst/kerb.scm tst/kerb.tst
+  
 Source-Repository head
   Type:     git
   Location: git://github.com/mitre/cpsa.git
@@ -208,3 +210,15 @@ Executable cpsasas
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.SAS.SAS
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
+
+Executable cpsadebase
+  Main-Is:		CPSA/Debase/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Basic.Algebra
+

@@ -73,6 +73,7 @@ data Options = Options {
       optFile :: Maybe FilePath, -- Nothing specifies standard output
       optAlg :: String,          -- Name of the algebra
       optAnalyze :: Bool,        -- False when only expanding macros
+      optDoAnalyze :: Bool,      -- False when only printing inputs
       optNoIsoChk :: Bool, -- True when not performing isomorphism checks
       optCheckNoncesFirst :: Bool, -- True when checking nonces first
       optTryOldStrandsFirst :: Bool, -- True when visiting old strands first
@@ -90,6 +91,7 @@ defaultOptions = Options {
   optFile = Nothing,
   optAlg = CPSA.Basic.Algebra.name,
   optAnalyze = True,
+  optDoAnalyze = True,
   optNoIsoChk = False,
   optCheckNoncesFirst = False,
   optTryOldStrandsFirst = False,

@@ -400,7 +400,7 @@ data Method t
     = Deleted Node
     | Weakened Pair
     | Separated t
-    | Forgot t
+    | Forgot (SkelDeclarations t)
     deriving Show
 
 -- The operation used to generate the preskeleteton is either new via
@@ -648,6 +648,16 @@ kvars k =
       dvars = foldl f S.empty $ declsTerms (decls k)
       f s t = foldVars (flip S.insert) s t
 
+traceBase :: Int
+traceBase = 3
+
+-- Convert a trace to a number based on its pattern of events
+tracePattern :: Trace t -> Int
+tracePattern [] = 1
+tracePattern (In _:r) = traceBase*(tracePattern r)
+tracePattern (Out _:r) = traceBase*(tracePattern r) + 1
+tracePattern (Sync _:r) = traceBase*(tracePattern r) + 2                         
+                          
 -- Isomorphism Check
 
 -- Are two skeletons equivalent?  Two skeletons are equivalent if they
@@ -673,6 +683,7 @@ data Gist t g = Gist
       gtraces :: [(Int, Trace t)],
       gorderings :: [Pair],
       gleadsto :: [Pair],
+      gpatterns :: [Int],
       gdecls :: SkelDeclarations t,
       nvars :: !Int,           -- Number of variables
       ntraces :: !Int,         -- Number of traces
@@ -688,16 +699,20 @@ gist k =
            gorderings = gorderings,
            gleadsto = gleadsto,
            gdecls = gdecls,
+           gpatterns = patterns,
            nvars = length (kvars k),
            ntraces = length gtraces,
            norderings = length gorderings,
            nleadsto = length gleadsto,
-           nsndecls = nsdecls gdecls }
+           nsndecls = nsds gdecls }
     where
       gtraces = map (\i -> (height i, trace i)) (insts k)
       gorderings = orderings k
       gleadsto = leadsto k
       gdecls = decls k
+      patterns = L.sort (map (tracePattern . trace) (insts k))
+      nsds decls = [length (dknon decls), length (dkpnon decls), length (dkunique decls)]
+
 
 -- Test to see if two preskeletons are isomorphic
 
@@ -723,6 +738,7 @@ isomorphic g g' =
 --    nvars g == nvars g' &&  -- Wrong in DH
     ntraces g == ntraces g' &&
     norderings g == norderings g' &&
+    gpatterns g == gpatterns g' &&
     nleadsto g == nleadsto g' &&
     nsndecls g == nsndecls g' &&
     any (tryPerm g g') (permutations g g')
@@ -1959,17 +1975,19 @@ kuniqexp k = map head $ filter (\ts -> not $ null ts) $ map dterms $ tagDecls "u
 --}
 
 -- Exported
+{-
 nsdecls :: Declarations t l -> [Int]
 nsdecls decls =
   [length (dknon decls), length (dkpnon decls), length (dkunique decls)]
+-}
 
 -- Exported
 -- JDR: duplicate code with mkPreskel
 forgetSomeTerm :: Algebra t p g s e c => Preskel t g s e ->
                   [Candidate t p g s e c]
 forgetSomeTerm k =
-  [ addIdentity (k { decls = d, operation = Generalized (Forgot t) }) |
-      (t, d) <- forgetSomeDecls (decls k),
+  [ addIdentity (k { decls = d, operation = Generalized (Forgot dd) }) |
+      (dd, d) <- forgetSomeDecls (decls k),
       let insts' = insts k,
       let rd = foldl addInstOrigs (declsUnion [])
                (zip (nats (length insts')) insts'),

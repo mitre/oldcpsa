@@ -11,7 +11,7 @@ module CPSA.Lib.Declaration
         dknon, dkpnon, dkunique, dkuniqFull, mkDecls, declsUnion, dkuniqgen,
         tagDeclsTermsOnly, tagDeclsLocsOnly, declFormats, declInputFormats,
         dterms, dlocs, daux, declInst, declInstAux, DeclInst, dkugenFull,
-        dkabsent, declsTerms, addDeclInst, declMember,
+        dkabsent, declsTerms, addDeclInst, declMember, nsdecls,
         DeclInstList, Declaration, DeclInFormat(..), DeclOutFormat(..),
         DeclList, declarationRoleTags,
 --        BasicOutFmt, MultiTermOutFmt, NullOutFmt, BasicRoleOutFmt, GeneralOutFmt,
@@ -216,6 +216,8 @@ dkabsent d =
 
 modname :: (Algebra t p g s e c, Loc l) => String -> DeclInstList t l ->
            Declarations t l -> Declarations t l
+modname name [] decls =
+    mkDecls (filter (\(n, _) -> not (n == name) ) (dlist decls))
 modname name ds decls =
   case lookup name (dlist decls) of
     Nothing -> mkDecls ((dlist decls) ++ [(name, ds)])
@@ -256,14 +258,13 @@ declCompare :: Declaration t l -> Declaration t l -> Ordering
 declCompare dec1 dec2 = compare (fst dec1) (fst dec2)
 
 -- Exported
--- MDL: Note "Forgot t" limitation here (use of head)
 forgetSomeDecls :: (Algebra t p g s e c, Loc l) => Declarations t l ->
-                   [(t, Declarations t l)]
+                   [(Declarations t l, Declarations t l)]
 forgetSomeDecls decls =
   concatMap delNamedDecl (map fst (dlist decls))
   where
     delNamedDecl name =
-      [ (head $ dterms d, modname name (delete d (tagDecls name decls)) decls)
+      [ (Declarations {dlist = [(name, [d])]}, modname name (delete d (tagDecls name decls)) decls)
       | d <- tagDecls name decls ]
 
 declsNub :: (Algebra t p g s e c, Loc l) => Declarations t l ->
@@ -394,6 +395,14 @@ validateDeclMap d d' locmap env =
     f dinst = declInstAux (map (instantiate env) $ dterms dinst)
                        (map locmap $ dlocs dinst) (daux dinst)
 
+-- Exported
+nsdecls :: Declarations t l -> Set (String, Int)
+nsdecls decls =
+  nsdeclsloop S.empty (dlist decls)
+  where
+    nsdeclsloop s [] = s
+    nsdeclsloop s ((tag, ds) : rest) = nsdeclsloop (S.insert (tag, length ds) s) rest
+                                                  
 avoidTerms :: Algebra t p g s e c => Declarations t l -> Set t
 avoidTerms decls =
   S.unions [ns, as, uos, ugs]

@@ -1,5 +1,18 @@
 CPSA NEWS
 
+  December, 2017:
+
+* The release of CPSA version 3.4.1 includes the following changes:
+  - Fixed a bug that caused a crash in certain situations involving
+    generalization
+  - Fixed a bug in the chase algorithm that caused the tool to enter
+    an infinite loop
+  - Added a new declaration "eq" which declares pairs of values to be
+    equal to each other.
+  - Added a new command-line flag to skip analysis, "noanalyze" / -z.
+    This allows defgoal inputs to be read in and characteristic
+    skeletons computed, for model debugging.
+
   September, 2017:
 
 * In CPSA version 3.4, the algorithm for handling Diffie-Hellman

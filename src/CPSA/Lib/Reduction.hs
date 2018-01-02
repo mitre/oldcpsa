@@ -125,6 +125,12 @@ solve :: Algebra t p g s e c => Options -> Handle ->
          [Preskel t g s e] -> Int -> IO ()
 solve _ h [] _ =                -- Done
     hClose h
+solve p h (k : ks) n | (not $ optDoAnalyze p) =
+    do 
+      wrt p h (displayProt (protocol k))
+      -- Just display the preskel
+      wrt p h (displayPreskel k [])
+      solve p h ks n
 solve p h (k : ks) n =
     do
       wrt p h (displayProt (protocol k)) -- show protocol

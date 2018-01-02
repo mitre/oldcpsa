@@ -10,18 +10,18 @@ SHAPES	= ../dist/build/cpsashapes/cpsashapes$(EXE)
 SAS	= ../dist/build/cpsasas/cpsasas$(EXE)
 ANNOTATIONS = ../dist/build/cpsaannotations/cpsaannotations$(EXE)
 GRAPH	= ../dist/build/cpsagraph/cpsagraph$(EXE)
-CPSAFLAGS = +RTS -M512m -RTS
+CPSAFLAGS = +RTS -M512m -N8 -RTS
 
 # The expected answers are in files with the .tst extension.
 
 # Analyze protocols for shapes expecting success
 %.txt:	%.scm $(CPSA)
-	$(CPSA) $(CPSAFLAGS) -o $@ $*.scm
+	time $(CPSA) $(CPSAFLAGS) -o $@ $*.scm
 	-$(DIFF) $(DIFFFLAGS) $*.tst $*.txt
 
 # Analyze protocols for shapes expecting failure
 %.txt:	%.lsp $(CPSA)
-	-$(CPSA) $(CPSAFLAGS) -o $@ $*.lsp
+	-time $(CPSA) $(CPSAFLAGS) -o $@ $*.lsp
 	-$(DIFF) $(DIFFFLAGS) $*.tst $*.txt
 
 # Extract shapes

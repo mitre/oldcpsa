@@ -773,7 +773,7 @@
   (defstrand init 4 (n n) (h (exp (gen) y)) (x x))
   (uniq-gen x)
   (uniq-orig n)
-  (operation generalization forgot y)
+  (operation generalization forgot ((absent (y (exp (gen) x)))))
   (traces
     ((send (exp (gen) x)) (recv (exp (gen) y))
       (send (enc n (exp (gen) (mul y x)))) (recv n)))
@@ -3311,7 +3311,7 @@
   (precur (1 0))
   (uniq-gen x)
   (uniq-orig n)
-  (operation generalization forgot y)
+  (operation generalization forgot ((absent (y (exp (gen) (mul w x))))))
   (traces
     ((send (exp (gen) x)) (recv (exp (gen) (mul y w)))
       (send (enc n (exp (gen) (mul y w x)))) (recv n))

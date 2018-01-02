@@ -396,8 +396,8 @@ displayOperation k ctx rest =
           [S () "weakened", L () [displayNode n0, displayNode n1] ]
       displayMethod ctx (Separated t) =
           [S () "separated", displayOpTerm ctx t]
-      displayMethod ctx (Forgot t) =
-          [S () "forgot", displayOpTerm ctx t]
+      displayMethod ctx (Forgot decls) = 
+          [S () "forgot", L () (displaySkelDeclarations ctx decls [])]
 
 -- Terms in the operation field may contain variables not in the skeleton
 displayOpTerm :: Algebra t p g s e c => c -> t -> SExpr ()

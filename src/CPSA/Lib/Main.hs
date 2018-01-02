@@ -194,6 +194,7 @@ data Flag
     | Depth String              -- Tree depth bound
     | Margin String             -- Output line length
     | Expand                    -- Expand macros only
+    | NoAnalyze                 -- Don't analyze, just echo outputs
     | NoIsoChk                  -- Disable isomorphism checks
     | CheckNoncesFirst          -- Check nonces first
     | TryOldStrandsFirst        -- Try old strands first
@@ -218,6 +219,7 @@ options =
       ("set output margin (default " ++ show (optMargin defaultOptions) ++ ")"),
       Option ['e'] ["expand"]   (NoArg Expand)
       "expand macros only; don't analyze",
+      Option ['z'] ["noanalyze"] (NoArg NoAnalyze) "don't analyze",
       Option ['n'] ["noisochk"] (NoArg NoIsoChk)
       "disable isomorphism checks",
       Option ['c'] ["check-nonces"] (NoArg CheckNoncesFirst)
@@ -277,6 +279,8 @@ interp algs opts flags =
                   abort msg
       loop (Expand : flags) opts =
           loop flags $ opts { optAnalyze = False }
+      loop (NoAnalyze : flags) opts =
+          loop flags $ opts { optDoAnalyze = False }
       loop (NoIsoChk : flags) opts =
           loop flags $ opts { optNoIsoChk = True }
       loop (CheckNoncesFirst : flags) opts =
