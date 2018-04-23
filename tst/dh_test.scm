@@ -3,7 +3,7 @@
 (comment
 (defprotocol foo diffie-hellman
   (defrole init
-    (vars (h base) (k akey) (x expn))
+    (vars (h base) (k akey) (x rndx))
     (trace
        (send (enc (exp (gen) x) k))
        (recv (enc (exp h x) k))
@@ -19,7 +19,7 @@
 
 (defprotocol bar diffie-hellman
   (defrole init
-    (vars (h base) (x z expn))
+    (vars (h base) (x z rndx))
     (trace
        (send (exp (gen) x))
        (recv (exp (gen) (mul x z)))
@@ -29,12 +29,12 @@
 )
 
 (defskeleton bar
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand init 2 (x x)))
 
 (defprotocol bar2 diffie-hellman
   (defrole init
-    (vars (h base) (x z expn))
+    (vars (h base) (x z rndx))
     (trace
        (send (exp h x))
        (recv (exp (gen) x))
@@ -44,12 +44,12 @@
 )
 
 (defskeleton bar2
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand init 2 (x x)))
 
 (defprotocol baz diffie-hellman
   (defrole init
-    (vars (h base) (x z expn) (k akey))
+    (vars (h base) (x z rndx) (k akey))
     (trace
        (send (enc (exp (gen) x) k))
        (recv (enc (exp (gen) (mul x z)) k))
@@ -60,12 +60,12 @@
 )
 
 (defskeleton baz
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand init 2 (x x)))
 
 (defprotocol bazar diffie-hellman
   (defrole init
-    (vars (h base) (t text) (x z expn) (k skey))
+    (vars (h base) (t text) (x z rndx) (k skey))
     (trace
        (send (enc (exp (gen) (mul x z)) k))
        (recv (exp (gen) x))
@@ -87,7 +87,7 @@
 
 (defprotocol foo2 diffie-hellman
   (defrole init
-    (vars (h base) (x expn))
+    (vars (h base) (x rndx))
     (trace
        (send (cat (exp (gen) x)
 		  (enc "foo" (exp h x))))
@@ -104,10 +104,10 @@
     (vars (h base))
     (trace (recv h)))
   (defrole init
-    (vars (x expn))
+    (vars (x rndx))
     (trace (send (exp (gen) x)))))
 
 (defskeleton foo3
-   (vars (x expn))
+   (vars (x rndx))
    (defstrand resp 1 (h (exp (gen) x)))
    (non-orig x))

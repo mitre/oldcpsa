@@ -14,18 +14,20 @@
 
 (defprotocol station-to-station diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (a b name))
+    (vars (x rndx) (y expt) (a b name))
     (trace
      (send (exp (gen) x))
-     (recv (cat h (enc (enc h (exp (gen) x) (privk b)) (exp h x))))
-     (send (enc (enc (exp (gen) x) h (privk a)) (exp h x))))
+     (recv (cat (exp (gen) y)
+		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul y x)))))
+     (send (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul y x)))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (a b name))
+    (vars (y rndx) (x expt) (a b name))
     (trace
-     (recv h)
-     (send (cat (exp (gen) y) (enc (enc (exp (gen) y) h (privk b)) (exp h y))))
-     (recv (enc (enc h (exp (gen) y) (privk a)) (exp h y))))
+     (recv (exp (gen) x))
+     (send (cat (exp (gen) y)
+		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul x y)))))
+     (recv (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul x y)))))
     (uniq-gen y))
 )
 
@@ -43,31 +45,35 @@
 
 (defprotocol station-weak diffie-hellman
   (defrole weak-init
-    (vars (x expn) (h base) (a b name))
+    (vars (x rndx) (y expt) (a b name))
     (trace
      (send (exp (gen) x))
-     (recv (cat h (enc (enc h (exp (gen) x) (privk b)) (exp h x))))
-     (send (enc (enc (exp (gen) x) h (privk a)) (exp h x))))
-  )
+     (recv (cat (exp (gen) y)
+		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul y x)))))
+     (send (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul y x)))))
+					;(uniq-gen x)
+    )
   (defrole weak-resp
-    (vars (y expn) (h base) (a b name))
+    (vars (y rndx) (x expt) (a b name))
     (trace
-     (recv h)
-     (send (cat (exp (gen) y) (enc (enc (exp (gen) y) h (privk b)) (exp h y))))
-     (recv (enc (enc h (exp (gen) y) (privk a)) (exp h y))))
-    (absent (y h))
+     (recv (exp (gen) x))
+     (send (cat (exp (gen) y)
+		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul x y)))))
+     (recv (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul x y)))))
+					;    (uniq-gen y)
+     (absent (y (exp (gen) x)))
     )
 )
 
 (defskeleton station-weak
-  (vars (a b name) (x expn))
+  (vars (a b name) (x rndx))
   (defstrand weak-init 3 (a a) (b b) (x x))
   (uniq-gen x)
   (non-orig (privk b) (privk a))
 )
 
 (defskeleton station-weak
-  (vars (a b name) (y expn))
+  (vars (a b name) (y rndx))
   (defstrand weak-resp 3 (a a) (b b) (y y))
   (uniq-gen y)
   (non-orig (privk a) (privk b))

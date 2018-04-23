@@ -2423,6 +2423,9 @@ mkVar pos sort x
   | sort == "akey" = return $ F Akey [I x]
   | sort == "base" = return $ F Base [I x]
   | sort == "tag" = return $ F Tag [I x]
+  | sort == "expt" = return $ groupVar False x
+  | sort == "rndx" = return $ groupVar True x
+  -- Legecy names
   | sort == "expr" = return $ groupVar False x
   | sort == "expn" = return $ groupVar True x
   | sort == "node" = return $ D x
@@ -2655,8 +2658,8 @@ displayVar ctx (F Akey [I x]) = displaySortId "akey" ctx x
 displayVar ctx (F Base [I x]) = displaySortId "base" ctx x
 displayVar ctx (F Tag [I x]) = displaySortId "tag" ctx x
 displayVar ctx t@(G x)
-    | isBasisVar x = displaySortId "expn" ctx (varId t)
-    | isGroupVar x = displaySortId "expr" ctx (varId t)
+    | isBasisVar x = displaySortId "rndx" ctx (varId t)
+    | isGroupVar x = displaySortId "expt" ctx (varId t)
 displayVar ctx (D x) = displaySortId "node" ctx x
 displayVar _ _ =
     C.assertError "Algebra.displayVar: term not a variable with its sort"

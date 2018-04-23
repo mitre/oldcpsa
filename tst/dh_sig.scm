@@ -3,18 +3,18 @@
 
 (defprotocol dh_sig diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (a b name))
+    (vars (x rndx) (y expt) (a b name))
     (trace
      (send (exp (gen) x))
-     (recv (enc h (exp (gen) x) (privk b)))
-     (send (enc h (exp (gen) x) (privk a))))
+     (recv (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (send (enc (exp (gen) y) (exp (gen) x) (privk a))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (a b name))
+    (vars (y rndx) (x expt) (a b name))
     (trace
-     (recv h)
-     (send (enc (exp (gen) y) h (privk b)))
-     (recv (enc (exp (gen) y) h (privk a))))
+     (recv (exp (gen) x))
+     (send (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (recv (enc (exp (gen) y) (exp (gen) x) (privk a))))
     (uniq-gen y))
 )
 
@@ -32,18 +32,18 @@
 
 (defprotocol dh_sig2 diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (a b name))
+    (vars (x rndx) (y expt) (a b name))
     (trace
      (send (exp (gen) x))
-     (recv (enc h (exp (gen) x) (privk b)))
-     (send (enc (exp (gen) x) h b (privk a))))
+     (recv (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (send (enc (exp (gen) x) (exp (gen) y) b (privk a))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (a b name))
+    (vars (y rndx) (x expt) (a b name))
     (trace
-     (recv h)
-     (send (enc (exp (gen) y) h (privk b)))
-     (recv (enc h (exp (gen) y) b (privk a))))
+     (recv (exp (gen) x))
+     (send (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (recv (enc (exp (gen) x) (exp (gen) y) b (privk a))))
     (uniq-gen y))
 )
 

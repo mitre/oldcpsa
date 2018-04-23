@@ -4,7 +4,7 @@
 
 (defprotocol test diffie-hellman
   (defrole init
-    (vars (hr base) (a b name) (xi expn))
+    (vars (hr base) (a b name) (xi rndx))
     (trace
      (recv (enc hr (privk b)))
      (send (enc (hash (exp hr xi)) (exp (gen) xi) (privk a))))
@@ -12,7 +12,7 @@
 ;    (non-orig (privk b))
 )
   (defrole resp
-    (vars (xr expn) (a b name) (hi base))
+    (vars (xr rndx) (a b name) (hi base))
     (trace
      (send (enc (exp (gen) xr) (privk b)))
      (recv (enc (hash (exp hi xr)) hi (privk a))))

@@ -18,20 +18,19 @@ data ReturnFail a
     = Return a
     | Fail String
 
-instance Functor (ReturnFail) where
-    fmap _ (Fail x) = Fail x
+instance Functor ReturnFail where
+    fmap _ (Fail x)   = Fail x
     fmap f (Return y) = Return (f y)
 
-instance Applicative (ReturnFail) where
-    pure          = Return
-    Fail e <*> _ = Fail e
+instance Applicative ReturnFail where
+    pure           = Return
+    Fail e <*> _   = Fail e
     Return f <*> r = fmap f r
 
 instance Monad ReturnFail where
-    return = Return
-    Fail l >>= _ = Fail l
+    Fail l >>= _   = Fail l
     Return r >>= k = k r
-    fail s = Fail s
+    fail s = Fail s             -- This must be moved to MonadFail
 
 adjoin :: Eq a => a -> [a] -> [a]
 adjoin x xs

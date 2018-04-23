@@ -13,14 +13,14 @@
 
 (defprotocol dh_mim diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (n text))
+    (vars (x rndx) (h base) (n text))
     (trace
      (send (exp (gen) x))
      (recv h)
      (send (enc n (exp h x))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (n text))
+    (vars (y rndx) (h base) (n text))
     (trace
      (recv h)
      (send (exp (gen) y))
@@ -30,7 +30,7 @@
 
 
 (defskeleton dh_mim
-  (vars (n text) (hx hy base) (x y expn))
+  (vars (n text) (hx hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h hx) (y y))
   (precedes ((0 2) (1 2)))

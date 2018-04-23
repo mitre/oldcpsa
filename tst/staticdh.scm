@@ -3,7 +3,7 @@
 
 (defprotocol staticdh diffie-hellman
   (defrole init
-    (vars (b ca name) (h base) (x expn) (n text))
+    (vars (b ca name) (h base) (x rndx) (n text))
     (trace
        (recv (enc "cert" h b (privk ca)))
        (send (enc n (exp h x)))
@@ -11,14 +11,14 @@
     (uniq-orig n)
     (non-orig (privk ca) x))
   (defrole resp
-    (vars (a ca name) (h base) (y expn) (n text))
+    (vars (a ca name) (h base) (y rndx) (n text))
     (trace
        (recv (enc "cert" h a (privk ca)))
        (recv (enc n (exp h y)))
        (send n))
     (non-orig (privk ca) y))
   (defrole ca
-    (vars (p ca name) (x expn))
+    (vars (p ca name) (x rndx))
     (trace
        (send (enc "cert" (exp (gen) x) p (privk ca))))
     (non-orig x)
@@ -32,7 +32,7 @@
 
 (defprotocol staticdh1 diffie-hellman
   (defrole init
-    (vars (a b ca name) (h base) (x expn) (n text))
+    (vars (a b ca name) (h base) (x rndx) (n text))
     (trace
        (recv (enc "cert" (exp (gen) x) a (privk ca)))
        (recv (enc "cert" h b (privk ca)))
@@ -42,7 +42,7 @@
     (neq (a b))
     (non-orig (privk ca)))
   (defrole resp
-    (vars (a b ca name) (h base) (y expn) (n text))
+    (vars (a b ca name) (h base) (y rndx) (n text))
     (trace
        (recv (enc "cert" h a (privk ca)))
        (recv (enc "cert" (exp (gen) y) b (privk ca)))
@@ -51,7 +51,7 @@
     (neq (a b))
     (non-orig (privk ca)))
   (defrole ca
-    (vars (p ca name) (x expn) (n text))
+    (vars (p ca name) (x rndx) (n text))
     (trace
        (send (enc "cert" (exp (gen) x) p (privk ca))))
     (non-orig x)

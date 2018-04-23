@@ -97,7 +97,7 @@ vars [] = ([], [])
 vars (L () x : xs)
   | symStr (last x) == "base" =
       let (xs', ss) = vars xs in
-        (lst (butLast x ++ [sym "expr"]) : xs',
+        (lst (butLast x ++ [sym "expt"]) : xs',
          map symStr (butLast x) ++ ss)
   | otherwise =
       let (xs', ss) = vars xs in

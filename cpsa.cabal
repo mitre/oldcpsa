@@ -1,5 +1,5 @@
 Name:			cpsa
-Version:		3.4.1
+Version:		3.5.0
 Maintainer:		mliskov@mitre.org
 Cabal-Version:		>= 1.6
 License:		BSD3
@@ -49,23 +49,29 @@ Description:
 Category:		Cryptography
 Build-Type:		Simple
 Data-Files:
-  Make.hs cpsa.mk cpsamanual.pdf examples/blanchet.scm examples/blanchet.xhtml
-  examples/bltk_or.scm examples/bltk_or.xhtml examples/envelope.scm
-  examples/envelope.xhtml examples/ffgg.scm examples/ffgg.xhtml
-  examples/fnof_test.scm examples/fnof_test.xhtml 
-  examples/fnof_yahalom.scm examples/fnof_yahalom.xhtml examples/goals.scm
-  examples/goals.xhtml examples/kerb.scm examples/kerb.xhtml
-  examples/lt_test.scm examples/lt_test.xhtml examples/neq_test.scm
-  examples/neq_test.xhtml examples/ns.scm examples/ns.xhtml examples/or.scm
-  examples/or.xhtml examples/pkinit.scm examples/pkinit.xhtml
-  examples/plaindh.scm examples/plaindh.xhtml examples/priority_test.scm
-  examples/priority_test.xhtml examples/station.scm examples/station.xhtml
-  examples/subsort_test.scm examples/woolam.scm examples/yahalom.scm
-  examples/yahalom.xhtml examples/IKE_variants.tar.gz examples/iadh_um.scm
-  examples/iadh_um.xhtml examples/subsort_test.xhtml examples/woolam.xhtml
-  examples/dh_mim.scm examples/dh_mim.xhtml examples/fluffy_draft03_fixing_gske.scm
-  examples/fluffy_draft03_gske.scm examples/fluffy_draft03_improving_pske.scm
-  examples/fluffy_draft03_pske.scm         
+  Make.hs cpsa.mk cpsamanual.pdf examples/blanchet.scm
+  examples/blanchet.xhtml examples/bltk_or.scm examples/bltk_or.xhtml
+  examples/envelope.scm examples/envelope.xhtml examples/ffgg.scm
+  examples/ffgg.xhtml examples/fnof_test.scm examples/fnof_test.xhtml
+  examples/fnof_yahalom.scm examples/fnof_yahalom.xhtml
+  examples/goals.scm examples/goals.xhtml examples/kerb.scm
+  examples/kerb.xhtml examples/lt_test.scm examples/lt_test.xhtml
+  examples/neq_test.scm examples/neq_test.xhtml examples/ns.scm
+  examples/ns.xhtml examples/or.scm examples/or.xhtml
+  examples/pkinit.scm examples/pkinit.xhtml examples/plaindh.scm
+  examples/plaindh.xhtml examples/priority_test.scm
+  examples/priority_test.xhtml examples/station.scm
+  examples/station.xhtml examples/subsort_test.scm examples/woolam.scm
+  examples/yahalom.scm examples/yahalom.xhtml
+  examples/IKE_variants.tar.gz examples/IKE_variants_nobase.tar.gz
+  examples/iadh_um.scm examples/iadh_um.xhtml
+  examples/subsort_test.xhtml examples/woolam.xhtml
+  examples/dh_mim.scm examples/dh_mim.xhtml
+  examples/fluffy_draft03_fixing_gske.scm
+  examples/fluffy_draft03_gske.scm
+  examples/fluffy_draft03_improving_pske.scm
+  examples/fluffy_draft03_pske.scm examples/eq_test.scm
+  examples/eq_test.xhtml
 Data-Dir:	    	doc
 Extra-Source-Files:
   Makefile ChangeLog README.txt NEWS ghci cpsatst setup.bat

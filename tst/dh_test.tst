@@ -1,16 +1,16 @@
 (herald "Diffie-Hellman protocol, man-in-the-middle attack"
   (algebra diffie-hellman) (bound 20))
 
-(comment "CPSA 3.4.0")
+(comment "CPSA 3.5.0")
 (comment "All input read from dh_test.scm")
 (comment "Strand count bounded at 20")
 
 (defprotocol foo3 diffie-hellman
   (defrole resp (vars (h base)) (trace (recv h)))
-  (defrole init (vars (x expn)) (trace (send (exp (gen) x)))))
+  (defrole init (vars (x rndx)) (trace (send (exp (gen) x)))))
 
 (defskeleton foo3
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand resp 1 (h (exp (gen) x)))
   (non-orig x)
   (traces ((recv (exp (gen) x))))
@@ -20,7 +20,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton foo3
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand resp 1 (h (exp (gen) x)))
   (defstrand init 1 (x x))
   (precedes ((1 0) (0 0)))
@@ -35,7 +35,7 @@
   (origs))
 
 (defskeleton foo3
-  (vars (x expn) (w expr))
+  (vars (x rndx) (w expt))
   (defstrand resp 1 (h (exp (gen) x)))
   (deflistener (cat (exp (gen) (mul x (rec w))) w))
   (precedes ((1 1) (0 0)))
@@ -53,7 +53,7 @@
   (comment "1 in cohort - 1 not yet seen"))
 
 (defskeleton foo3
-  (vars (x x-0 expn))
+  (vars (x x-0 rndx))
   (defstrand resp 1 (h (exp (gen) x)))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0))))
   (defstrand init 1 (x x-0))
@@ -71,7 +71,7 @@
   (comment "1 in cohort - 1 not yet seen"))
 
 (defskeleton foo3
-  (vars (x expn))
+  (vars (x rndx))
   (defstrand resp 1 (h (exp (gen) x)))
   (deflistener (cat (exp (gen) x) (one)))
   (defstrand init 1 (x x))

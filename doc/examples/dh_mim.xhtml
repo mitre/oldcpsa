@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- CPSA 3.4.0 -->
+<!-- CPSA 3.5.0 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
  <title>Diffie-Hellman protocol, man-in-the-middle attack</title>
@@ -12,7 +12,7 @@
 
 <pre>(herald &quot;Diffie-Hellman protocol, man-in-the-middle attack&quot;
   (algebra diffie-hellman))
-(comment &quot;CPSA 3.4.0&quot;)
+(comment &quot;CPSA 3.5.0&quot;)
 (comment &quot;All input read from dh_mim.scm&quot;)</pre>
 
 <p id="t0">Tree 0.</p>
@@ -3449,11 +3449,11 @@
 
 <pre>(defprotocol dh_mim diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (n text))
+    (vars (x rndx) (h base) (n text))
     (trace (send (exp (gen) x)) (recv h) (send (enc n (exp h x))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (n text))
+    (vars (y rndx) (h base) (n text))
     (trace (recv h) (send (exp (gen) y)) (recv (enc n (exp h y))))
     (uniq-gen y)
     (absent (y h)))
@@ -3506,7 +3506,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hx hy base) (x y expn))
+  (vars (n text) (hx hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h hx) (y y))
   (precedes ((0 2) (1 2)))
@@ -3573,7 +3573,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x y expn))
+  (vars (n text) (hy base) (x y rndx))
   (defstrand init 3 (n n) (h (exp hy y)) (x x))
   (defstrand resp 3 (n n) (h (exp hy x)) (y y))
   (precedes ((0 0) (1 0)) ((0 2) (1 2)) ((1 1) (0 1)))
@@ -3649,7 +3649,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hx hy base) (x y expn))
+  (vars (n text) (hx hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h hx) (y y))
   (deflistener (exp hx y))
@@ -3718,7 +3718,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (precedes ((0 0) (1 0)) ((0 2) (1 2)) ((1 1) (0 1)))
@@ -3787,7 +3787,7 @@
    style='text-anchor: middle;'>dh_mim 4 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y))
   (precedes ((0 0) (1 0)) ((0 2) (1 2)) ((1 1) (0 1)))
@@ -3868,7 +3868,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -3949,7 +3949,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -4027,7 +4027,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x y expn) (w expr))
+  (vars (n text) (hy base) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp hy y)) (x x))
   (defstrand resp 3 (n n) (h (exp hy x)) (y y))
   (deflistener (cat (exp hy (mul x (rec w))) w))
@@ -4104,7 +4104,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x y expn))
+  (vars (n text) (hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -4189,7 +4189,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hx hy base) (x y expn) (w expr))
+  (vars (n text) (hx hy base) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h hx) (y y))
   (deflistener (exp hx y))
@@ -4270,7 +4270,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) (mul (rec x) y (rec w))) w))
@@ -4362,7 +4362,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn) (w expr))
+  (vars (n text) (x y x-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -4458,7 +4458,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn) (w expr))
+  (vars (n text) (h base) (x y y-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -4541,7 +4541,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (gen) w))
@@ -4621,7 +4621,7 @@
    style='text-anchor: middle;'>dh_mim 14 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y w))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x))) (y y))
   (deflistener (cat (exp (gen) x) w))
@@ -4711,7 +4711,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) w))
@@ -4805,7 +4805,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w y-0))) (y y))
   (deflistener (cat (exp (gen) y-0) w))
@@ -4886,7 +4886,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -4975,7 +4975,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x y expn))
+  (vars (n text) (hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -5063,7 +5063,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -5154,7 +5154,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (w expr) (x y expn))
+  (vars (n text) (hy base) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x))) (y y))
   (deflistener (exp (gen) (mul w x y)))
@@ -5253,7 +5253,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0))) (y y))
   (deflistener (exp (gen) (mul w x-0 y)))
@@ -5342,7 +5342,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -5442,7 +5442,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (hy h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w y))) (y y-0))
   (deflistener (exp (gen) (mul w y y-0)))
@@ -5524,7 +5524,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (gen) (mul (rec x) y)))
@@ -5604,7 +5604,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) x) (mul y (rec x) (rec x))))
@@ -5694,7 +5694,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) x-0) (mul (rec x) y (rec x-0))))
@@ -5775,7 +5775,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) y) (rec x)))
@@ -5867,7 +5867,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) y-0) (mul (rec x) y (rec y-0))))
@@ -5959,7 +5959,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -6053,7 +6053,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y))
   (defstrand init 1 (x x))
@@ -6145,7 +6145,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -6248,7 +6248,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 x-1 expn))
+  (vars (n text) (x y x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -6341,7 +6341,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 y expn))
+  (vars (n text) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -6446,7 +6446,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y x-0 y-0 expn))
+  (vars (n text) (h base) (x y x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (defstrand init 1 (x x-0))
@@ -6541,7 +6541,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -6637,7 +6637,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -6742,7 +6742,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 x-0 expn))
+  (vars (n text) (h base) (x y y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -6837,7 +6837,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y)) (y y-0))
   (defstrand resp 2 (h h) (y y))
@@ -6931,7 +6931,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -7038,7 +7038,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (x y y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (x y y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (defstrand resp 2 (h h) (y y-0))
@@ -7120,7 +7120,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y))
   (deflistener (cat (gen) x))
@@ -7209,7 +7209,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w w-0 expr))
+  (vars (n text) (x y rndx) (w w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (gen) w))
@@ -7282,7 +7282,7 @@
    style='text-anchor: middle;'>dh_mim 43 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y w))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x))) (y y))
   (precedes ((0 0) (1 0)) ((0 2) (1 2)) ((1 1) (0 1)))
@@ -7375,7 +7375,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 y expn))
+  (vars (n text) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0))))
@@ -7479,7 +7479,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn) (w-0 expr))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) w))
@@ -7577,7 +7577,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y))))
@@ -7683,7 +7683,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn) (w-0 expr))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y w y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w y-0))) (y y))
   (deflistener (cat (exp (gen) y-0) w))
@@ -7781,7 +7781,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -7874,7 +7874,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -7965,7 +7965,7 @@
    style='text-anchor: middle;'>dh_mim 50 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -8069,7 +8069,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -8166,7 +8166,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -8272,7 +8272,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -8373,7 +8373,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x y expn) (w expr))
+  (vars (n text) (hy base) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -8472,7 +8472,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -8573,7 +8573,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (w expr) (x y expn))
+  (vars (n text) (hy base) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x))) (y y))
   (deflistener (exp (gen) (mul w x y)))
@@ -8682,7 +8682,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0))) (y y))
   (deflistener (exp (gen) (mul w x-0 y)))
@@ -8775,7 +8775,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -8877,7 +8877,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (y expn))
+  (vars (n text) (hy base) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -8989,7 +8989,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (hy h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w y))) (y y-0))
   (deflistener (exp (gen) (mul w y y-0)))
@@ -9084,7 +9084,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) y) (rec x)))
@@ -9175,7 +9175,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (gen) (mul x w)))
@@ -9268,7 +9268,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y))
   (deflistener (cat (gen) (mul w x x)))
@@ -9370,7 +9370,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (gen) (mul x w x-0)))
@@ -9462,7 +9462,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (gen) (mul x w)))
@@ -9566,7 +9566,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (gen) (mul x w y)))
@@ -9669,7 +9669,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w)))
@@ -9774,7 +9774,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0 x-0))) (y y))
   (deflistener (cat (exp (gen) x) (mul (rec x) w x-0 x-0)))
@@ -9877,7 +9877,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x w)))
@@ -9991,7 +9991,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (x-1 y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (x-1 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-1 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-1))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w x-1)))
@@ -10095,7 +10095,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w)))
@@ -10211,7 +10211,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x x-0 expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x x-0 rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w y)))
@@ -10317,7 +10317,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w)))
@@ -10424,7 +10424,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (x y-0 expn))
+  (vars (n text) (h base) (y rndx) (w expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul (rec y) w x x)))
@@ -10540,7 +10540,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w x-0)))
@@ -10646,7 +10646,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w)))
@@ -10751,7 +10751,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x w)))
@@ -10869,7 +10869,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (x y expn) (w expr) (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (x y rndx) (w expt) (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y-0))) (y y-1))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w y-0)))
@@ -10965,7 +10965,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11060,7 +11060,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11165,7 +11165,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11260,7 +11260,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11367,7 +11367,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11472,7 +11472,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11553,7 +11553,7 @@
    style='text-anchor: middle;'>dh_mim 85 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) x))
@@ -11668,7 +11668,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn) (w expr))
+  (vars (n text) (x y x-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11783,7 +11783,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -11907,7 +11907,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn) (w expr))
+  (vars (n text) (h base) (x y y-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12013,7 +12013,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12116,7 +12116,7 @@
    style='text-anchor: middle;'>dh_mim 90 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12232,7 +12232,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12341,7 +12341,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12459,7 +12459,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -12555,7 +12555,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x)) (y y))
   (deflistener (exp (gen) (mul x y)))
@@ -12659,7 +12659,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -12763,7 +12763,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -12866,7 +12866,7 @@
    style='text-anchor: middle;'>dh_mim 97 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -12982,7 +12982,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -13091,7 +13091,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -13209,7 +13209,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -13322,7 +13322,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (hy base) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (hy base) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h hy) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -13426,7 +13426,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (gen) (mul x w)))
@@ -13527,7 +13527,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y))
   (deflistener (cat (gen) (mul w x x)))
@@ -13639,7 +13639,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (gen) (mul x w x-0)))
@@ -13732,7 +13732,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (gen) (one)))
@@ -13823,7 +13823,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (gen) w))
@@ -13923,7 +13923,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (gen) (mul x w)))
@@ -14037,7 +14037,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (gen) (mul x w y)))
@@ -14150,7 +14150,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w)))
@@ -14263,7 +14263,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x-0 x-0))) (y y))
   (deflistener (cat (exp (gen) x) (mul (rec x) w x-0 x-0)))
@@ -14376,7 +14376,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x w)))
@@ -14500,7 +14500,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (x-1 y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (x-1 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-1 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-1))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w x-1)))
@@ -14605,7 +14605,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) x-0)) (y y))
   (deflistener (cat (exp (gen) x-0) (one)))
@@ -14709,7 +14709,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (exp (gen) x) (mul (rec x) w)))
@@ -14813,7 +14813,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x w)))
@@ -14938,7 +14938,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x x-0 expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x x-0 rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (exp (gen) x-0) (mul x (rec x-0) w y)))
@@ -15054,7 +15054,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w)))
@@ -15169,7 +15169,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (x y-0 expn))
+  (vars (n text) (h base) (y rndx) (w expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul (rec y) w x x)))
@@ -15295,7 +15295,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w x-0)))
@@ -15402,7 +15402,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) y-0)) (y y))
   (deflistener (cat (exp (gen) y-0) (one)))
@@ -15508,7 +15508,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (cat (exp (gen) y) (mul (rec y) w)))
@@ -15614,7 +15614,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y-0))) (y y))
   (deflistener (cat (exp (gen) y-0) (mul x w)))
@@ -15728,7 +15728,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (cat (exp (gen) y) (mul x w)))
@@ -15856,7 +15856,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (x y expn) (w expr) (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (x y rndx) (w expt) (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y-0))) (y y-1))
   (deflistener (cat (exp (gen) y) (mul x (rec y) w y-0)))
@@ -15962,7 +15962,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16067,7 +16067,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16172,7 +16172,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16288,7 +16288,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16397,7 +16397,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16515,7 +16515,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16582,7 +16582,7 @@
    style='text-anchor: middle;'>dh_mim 131 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (precedes ((0 2) (1 2)))
@@ -16698,7 +16698,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16820,7 +16820,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -16941,7 +16941,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17073,7 +17073,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 x-1 expn))
+  (vars (n text) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17198,7 +17198,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 y expn))
+  (vars (n text) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17332,7 +17332,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17446,7 +17446,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17559,7 +17559,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17682,7 +17682,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17795,7 +17795,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -17920,7 +17920,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18043,7 +18043,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18167,7 +18167,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18301,7 +18301,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18428,7 +18428,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -18551,7 +18551,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18687,7 +18687,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18792,7 +18792,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -18894,7 +18894,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19010,7 +19010,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19119,7 +19119,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19237,7 +19237,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19353,7 +19353,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w w-0 expr))
+  (vars (n text) (x y rndx) (w w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19445,7 +19445,7 @@
    style='text-anchor: middle;'>dh_mim 155 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) (mul w x)))
@@ -19559,7 +19559,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19677,7 +19677,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19794,7 +19794,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -19925,7 +19925,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 x-1 expn))
+  (vars (n text) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-1)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20050,7 +20050,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 y expn))
+  (vars (n text) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20184,7 +20184,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20316,7 +20316,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn) (w-0 expr))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20429,7 +20429,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20538,7 +20538,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20660,7 +20660,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20770,7 +20770,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -20894,7 +20894,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21017,7 +21017,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21139,7 +21139,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21259,7 +21259,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21392,7 +21392,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21519,7 +21519,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -21639,7 +21639,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21774,7 +21774,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-1)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -21908,7 +21908,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn) (w-0 expr))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -22018,7 +22018,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (exp (gen) (mul x w y)))
@@ -22125,7 +22125,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y))
   (deflistener (exp (gen) (mul w x x y)))
@@ -22241,7 +22241,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (exp (gen) (mul x w x-0 y)))
@@ -22347,7 +22347,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (exp (gen) (mul x w y)))
@@ -22465,7 +22465,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (exp (gen) (mul x w y y-0)))
@@ -22581,7 +22581,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -22676,7 +22676,7 @@
    style='text-anchor: middle;'>dh_mim 182 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (exp (gen) y) w))
@@ -22804,7 +22804,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -22930,7 +22930,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23065,7 +23065,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn) (w-0 expr))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23182,7 +23182,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23296,7 +23296,7 @@
    style='text-anchor: middle;'>dh_mim 187 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23423,7 +23423,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23544,7 +23544,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w w-0 expr) (y expn))
+  (vars (n text) (x rndx) (w w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23674,8 +23674,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y expn) (w-0 expr)
-    (y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y rndx) (w-0 expt)
+    (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -23782,7 +23782,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (gen) (one)))
@@ -23886,7 +23886,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (gen) w))
@@ -24001,7 +24001,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (exp (gen) x) (mul (rec x) w)))
@@ -24117,7 +24117,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (cat (exp (gen) x-0) (mul x w)))
@@ -24235,7 +24235,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (cat (exp (gen) y) (mul (rec y) w)))
@@ -24353,7 +24353,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y-0))) (y y))
   (deflistener (cat (exp (gen) y-0) (mul x w)))
@@ -24468,7 +24468,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -24583,7 +24583,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -24712,7 +24712,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -24835,7 +24835,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -24967,7 +24967,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25081,7 +25081,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25197,7 +25197,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr))
+  (vars (n text) (y x rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25314,7 +25314,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25444,7 +25444,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25568,7 +25568,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25701,7 +25701,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -25783,7 +25783,7 @@
    style='text-anchor: middle;'>dh_mim 208 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (cat (exp (gen) x) w))
@@ -25909,7 +25909,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn) (w expr))
+  (vars (n text) (y x x-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26043,7 +26043,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26175,7 +26175,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26321,7 +26321,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn) (w expr) (x-1 expn))
+  (vars (n text) (y x x-0 rndx) (w expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26460,7 +26460,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26608,7 +26608,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x x-0 rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26733,7 +26733,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr))
+  (vars (n text) (x y rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26858,7 +26858,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -26995,7 +26995,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27119,7 +27119,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27258,7 +27258,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27392,7 +27392,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn) (w expr))
+  (vars (n text) (h base) (y x y-0 rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27528,7 +27528,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27676,7 +27676,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn) (w expr) (x-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -27817,7 +27817,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -27951,7 +27951,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -28101,7 +28101,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 expn) (w expr) (y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 rndx) (w expt) (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -28219,7 +28219,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (exp (gen) (mul x w y)))
@@ -28334,7 +28334,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul w x x))) (y y))
   (deflistener (exp (gen) (mul w x x y)))
@@ -28460,7 +28460,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w x-0))) (y y))
   (deflistener (exp (gen) (mul x w x-0 y)))
@@ -28568,7 +28568,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -28673,7 +28673,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -28790,7 +28790,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w))) (y y))
   (deflistener (exp (gen) (mul x w y)))
@@ -28919,7 +28919,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) (mul x w y))) (y y-0))
   (deflistener (exp (gen) (mul x w y y-0)))
@@ -29037,7 +29037,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29153,7 +29153,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29280,7 +29280,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29401,7 +29401,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29531,7 +29531,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29613,7 +29613,7 @@
    style='text-anchor: middle;'>dh_mim 238 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) x))
@@ -29738,7 +29738,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -29871,7 +29871,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30003,7 +30003,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30146,7 +30146,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 x-1 expn))
+  (vars (n text) (w expt) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30282,7 +30282,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 y expn))
+  (vars (n text) (w expt) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30427,7 +30427,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30552,7 +30552,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30676,7 +30676,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30810,7 +30810,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y x-0 expn))
+  (vars (n text) (w expt) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -30934,7 +30934,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31070,7 +31070,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31204,7 +31204,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31339,7 +31339,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 x expn))
+  (vars (n text) (h base) (w expt) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31484,7 +31484,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31622,7 +31622,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -31756,7 +31756,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -31903,7 +31903,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32019,7 +32019,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32132,7 +32132,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32259,7 +32259,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32380,7 +32380,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32510,7 +32510,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32638,7 +32638,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 w-1 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 w-1 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -32745,7 +32745,7 @@
    style='text-anchor: middle;'>dh_mim 262 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (exp (gen) y) w))
@@ -32871,7 +32871,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33001,7 +33001,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33130,7 +33130,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33273,7 +33273,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 x-1 expn))
+  (vars (n text) (w expt) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-1)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33409,7 +33409,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 y expn))
+  (vars (n text) (w expt) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33554,7 +33554,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33699,8 +33699,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn) (w-0 expr) (x-0 expn)
-    (w-1 expr))
+  (vars (n text) (x rndx) (w expt) (y rndx) (w-0 expt) (x-0 rndx)
+    (w-1 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33825,7 +33825,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -33946,7 +33946,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34080,7 +34080,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y x-0 expn))
+  (vars (n text) (w expt) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34201,7 +34201,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) y)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34337,7 +34337,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34471,7 +34471,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w w-0 expr) (y expn) (w-1 expr))
+  (vars (n text) (x rndx) (w w-0 expt) (y rndx) (w-1 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34604,7 +34604,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34736,7 +34736,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 x expn))
+  (vars (n text) (h base) (w expt) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -34881,7 +34881,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) x-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -35019,7 +35019,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -35150,7 +35150,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -35297,7 +35297,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) y-1)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -35444,8 +35444,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y expn) (w-0 expr)
-    (y-0 expn) (w-1 expr))
+  (vars (n text) (h base) (x rndx) (w expt) (y rndx) (w-0 expt)
+    (y-0 rndx) (w-1 expt))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -35567,7 +35567,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -35683,7 +35683,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -35808,7 +35808,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr))
+  (vars (n text) (y x rndx) (w expt))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -35926,7 +35926,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36043,7 +36043,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36168,7 +36168,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36300,7 +36300,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36434,7 +36434,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36566,7 +36566,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36690,7 +36690,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36814,7 +36814,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -36937,7 +36937,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37070,7 +37070,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37206,7 +37206,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37340,7 +37340,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37409,7 +37409,7 @@
    style='text-anchor: middle;'>dh_mim 298 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (precedes ((0 2) (1 2)))
@@ -37535,7 +37535,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37668,7 +37668,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37801,7 +37801,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -37933,7 +37933,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38067,7 +38067,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38200,7 +38200,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38333,7 +38333,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38466,7 +38466,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38607,7 +38607,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38754,7 +38754,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 x-1 expn))
+  (vars (n text) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -38904,7 +38904,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 x-1 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 (rec x-1)))) (x x-1))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39052,7 +39052,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 x-1 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 x-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39200,7 +39200,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn) (w expr) (x-1 expn))
+  (vars (n text) (y x x-0 rndx) (w expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39340,7 +39340,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 y expn))
+  (vars (n text) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39480,7 +39480,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39619,7 +39619,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39758,7 +39758,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -39907,7 +39907,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40059,7 +40059,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40209,7 +40209,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40359,7 +40359,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x x-0 rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40485,7 +40485,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn))
+  (vars (n text) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40609,7 +40609,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40733,7 +40733,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40856,7 +40856,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -40981,7 +40981,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41104,7 +41104,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41242,7 +41242,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y x-0 expn))
+  (vars (n text) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41382,7 +41382,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41521,7 +41521,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41660,7 +41660,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41785,7 +41785,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -41908,7 +41908,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42040,7 +42040,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42180,7 +42180,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42322,7 +42322,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42463,7 +42463,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -42604,7 +42604,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42739,7 +42739,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -42874,7 +42874,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43009,7 +43009,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43143,7 +43143,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43279,7 +43279,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (x y-0 expn))
+  (vars (n text) (h base) (y rndx) (w expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43414,7 +43414,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43563,7 +43563,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43714,7 +43714,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x x-0 expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -43864,7 +43864,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -44014,7 +44014,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn) (w expr) (x-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -44156,7 +44156,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y y-0 expn))
+  (vars (n text) (h base) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -44298,7 +44298,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -44439,7 +44439,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -44580,7 +44580,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -44715,7 +44715,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -44849,7 +44849,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -44992,7 +44992,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45143,7 +45143,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45296,7 +45296,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y y-0 expn) (w expr) (y-1 x expn))
+  (vars (n text) (h h-0 base) (y y-0 rndx) (w expt) (y-1 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-1 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45448,7 +45448,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x expn) (w expr) (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (y x rndx) (w expt) (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45600,7 +45600,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 expn) (w expr) (y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 rndx) (w expt) (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45722,7 +45722,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -45841,7 +45841,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -45967,7 +45967,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46094,7 +46094,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46163,7 +46163,7 @@
    style='text-anchor: middle;'>dh_mim 362 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (gen)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (precedes ((0 2) (1 2)))
@@ -46298,7 +46298,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46432,7 +46432,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46575,7 +46575,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46700,7 +46700,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) x)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46827,7 +46827,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -46956,7 +46956,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47098,7 +47098,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47233,7 +47233,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47377,7 +47377,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47470,7 +47470,7 @@
    style='text-anchor: middle;'>dh_mim 372 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w-0 x)))
@@ -47607,7 +47607,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn) (w-0 expr))
+  (vars (n text) (w expt) (y x x-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47752,7 +47752,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -47895,7 +47895,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48052,7 +48052,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn) (w-0 expr) (x-1 expn))
+  (vars (n text) (w expt) (y x x-0 rndx) (w-0 expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48203,7 +48203,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x x-0 rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48363,7 +48363,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48500,7 +48500,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn) (w-0 expr))
+  (vars (n text) (w expt) (x y rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48636,7 +48636,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48784,7 +48784,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (x y rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -48920,7 +48920,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49070,7 +49070,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49216,7 +49216,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn) (w-0 expr))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49363,7 +49363,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49522,7 +49522,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49675,7 +49675,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -49821,7 +49821,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -49982,8 +49982,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 expn) (w-0 expr)
-    (y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 rndx) (w-0 expt)
+    (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -50113,7 +50113,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50240,7 +50240,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50367,7 +50367,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50494,7 +50494,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50636,7 +50636,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50778,7 +50778,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -50912,7 +50912,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51045,7 +51045,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51188,7 +51188,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51332,7 +51332,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51474,7 +51474,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51616,7 +51616,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51758,7 +51758,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -51900,7 +51900,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52043,7 +52043,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn))
+  (vars (n text) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52185,7 +52185,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52342,7 +52342,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 x-1 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 (rec x-1)))) (x x-1))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52500,7 +52500,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn) (w expr) (x-0 x-1 expn))
+  (vars (n text) (y x rndx) (w expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 x-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52658,7 +52658,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x x-0 expn) (w expr) (x-1 expn))
+  (vars (n text) (y x x-0 rndx) (w expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52808,7 +52808,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -52957,7 +52957,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y x-0 expn))
+  (vars (n text) (x rndx) (w expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53106,7 +53106,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x x-0 expn) (w expr) (y expn))
+  (vars (n text) (x x-0 rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53266,7 +53266,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53426,7 +53426,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53586,7 +53586,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x x-0 expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x x-0 rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53722,7 +53722,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53855,7 +53855,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (y expn))
+  (vars (n text) (x rndx) (w expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -53988,7 +53988,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54121,7 +54121,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x expn))
+  (vars (n text) (y rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54269,7 +54269,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y expn) (w expr) (x x-0 expn))
+  (vars (n text) (y rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54418,7 +54418,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x expn) (w expr) (x-0 y expn))
+  (vars (n text) (x rndx) (w expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54567,7 +54567,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (x y expn) (w expr) (x-0 expn))
+  (vars (n text) (x y rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54702,7 +54702,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (y x expn))
+  (vars (n text) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54835,7 +54835,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -54984,7 +54984,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -55135,7 +55135,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -55286,7 +55286,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -55431,7 +55431,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -55575,7 +55575,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -55719,7 +55719,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (x y-0 expn))
+  (vars (n text) (h base) (y rndx) (w expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -55863,7 +55863,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -56022,7 +56022,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 expn) (w expr) (x x-0 expn))
+  (vars (n text) (h base) (y y-0 rndx) (w expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -56182,7 +56182,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x expn) (w expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (y x rndx) (w expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -56342,7 +56342,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y x y-0 expn) (w expr) (x-0 expn))
+  (vars (n text) (h base) (y x y-0 rndx) (w expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -56494,7 +56494,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -56645,7 +56645,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x expn) (w expr) (y y-0 expn))
+  (vars (n text) (h base) (x rndx) (w expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y y-0))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -56796,7 +56796,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (x y expn) (w expr) (y-0 expn))
+  (vars (n text) (h base) (x y rndx) (w expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y-0))
   (deflistener (exp (gen) y-0))
@@ -56941,7 +56941,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y y-0 x expn))
+  (vars (n text) (h base) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -57085,7 +57085,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (y expn) (w expr) (y-0 x expn))
+  (vars (n text) (h base) (y rndx) (w expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -57245,7 +57245,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y y-0 expn) (w expr) (y-1 x expn))
+  (vars (n text) (h h-0 base) (y y-0 rndx) (w expt) (y-1 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-1 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -57407,7 +57407,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x expn) (w expr) (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (y x rndx) (w expt) (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -57569,7 +57569,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (y x y-0 expn) (w expr) (y-1 expn))
+  (vars (n text) (h h-0 base) (y x y-0 rndx) (w expt) (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w)) (x x))
   (defstrand resp 3 (n n) (h (gen)) (y y))
   (deflistener (exp (gen) y))
@@ -57700,7 +57700,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -57828,7 +57828,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -57965,7 +57965,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58094,7 +58094,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58223,7 +58223,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58360,7 +58360,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58503,7 +58503,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58649,7 +58649,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58793,7 +58793,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -58929,7 +58929,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59065,7 +59065,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (y x expn))
+  (vars (n text) (w w-0 expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59199,7 +59199,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59343,7 +59343,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59490,7 +59490,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59636,7 +59636,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -59720,7 +59720,7 @@
    style='text-anchor: middle;'>dh_mim 457 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (cat (exp (gen) x) w-0))
@@ -59856,7 +59856,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60000,7 +60000,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60144,7 +60144,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60288,7 +60288,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60433,7 +60433,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60577,7 +60577,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60721,7 +60721,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -60866,7 +60866,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61018,7 +61018,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61176,7 +61176,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 x-1 expn))
+  (vars (n text) (w expt) (y x x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61338,7 +61338,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 x-1 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 (rec x-1))))
     (x x-1))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
@@ -61499,7 +61499,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 x-1 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 x-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61659,7 +61659,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn) (w-0 expr) (x-1 expn))
+  (vars (n text) (w expt) (y x x-0 rndx) (w-0 expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61811,7 +61811,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 y expn))
+  (vars (n text) (w expt) (x x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -61964,7 +61964,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y x-0 expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -62115,7 +62115,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y x-0 expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -62266,7 +62266,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x x-0 rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -62427,7 +62427,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -62591,7 +62591,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x-0))))
     (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
@@ -62754,7 +62754,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -62916,7 +62916,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63054,7 +63054,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn))
+  (vars (n text) (w expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63189,7 +63189,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63324,7 +63324,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63458,7 +63458,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63594,7 +63594,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (x y expn))
+  (vars (n text) (w w-0 expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63729,7 +63729,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -63878,7 +63878,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y x-0 expn))
+  (vars (n text) (w expt) (x y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64031,7 +64031,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64182,7 +64182,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (x-0 y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64333,7 +64333,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (x y rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64470,7 +64470,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64604,7 +64604,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (y x expn))
+  (vars (n text) (w w-0 expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64747,7 +64747,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -64898,7 +64898,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65052,7 +65052,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65205,7 +65205,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x expn) (w-0 expr) (y y-0 expn))
+  (vars (n text) (h base) (w expt) (x rndx) (w-0 expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -65358,7 +65358,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65505,7 +65505,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65651,7 +65651,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65797,7 +65797,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -65943,7 +65943,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 x expn))
+  (vars (n text) (h base) (w expt) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66090,7 +66090,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (x y-0 expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66236,7 +66236,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66396,7 +66396,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66560,7 +66560,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66722,7 +66722,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -66884,7 +66884,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -67038,7 +67038,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y y-0 expn))
+  (vars (n text) (h base) (w expt) (x y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -67192,7 +67192,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -67345,7 +67345,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x expn) (w-0 expr) (y y-0 expn))
+  (vars (n text) (h base) (w expt) (x rndx) (w-0 expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -67498,7 +67498,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -67645,7 +67645,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 x expn))
+  (vars (n text) (h base) (w expt) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -67790,7 +67790,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -67944,7 +67944,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68106,7 +68106,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul (rec x) y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68271,8 +68271,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y y-0 expn) (w-0 expr)
-    (y-1 x expn))
+  (vars (n text) (h h-0 base) (w expt) (y y-0 rndx) (w-0 expt)
+    (y-1 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-1 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68437,8 +68437,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x expn) (w-0 expr)
-    (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x rndx) (w-0 expt)
+    (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68602,8 +68602,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 expn) (w-0 expr)
-    (y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 rndx) (w-0 expt)
+    (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68745,7 +68745,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -68883,7 +68883,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69021,7 +69021,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (rec x))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69159,7 +69159,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69313,7 +69313,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69466,7 +69466,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69611,7 +69611,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (y x expn))
+  (vars (n text) (w w-0 expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69755,7 +69755,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -69909,7 +69909,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70064,7 +70064,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70135,7 +70135,7 @@
    style='text-anchor: middle;'>dh_mim 527 (realized)</text></svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (precedes ((0 2) (1 2)))
@@ -70281,7 +70281,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70434,7 +70434,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70587,7 +70587,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70740,7 +70740,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -70894,7 +70894,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn))
+  (vars (n text) (w expt) (y x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -71048,7 +71048,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -71216,7 +71216,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 x-1 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 (rec x-1))))
     (x x-1))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
@@ -71386,7 +71386,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn) (w-0 expr) (x-0 x-1 expn))
+  (vars (n text) (w expt) (y x rndx) (w-0 expt) (x-0 x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 x-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -71555,7 +71555,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x x-0 expn) (w-0 expr) (x-1 expn))
+  (vars (n text) (w expt) (y x x-0 rndx) (w-0 expt) (x-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -71717,7 +71717,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y x-0 expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -71877,7 +71877,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y x-0 expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72037,7 +72037,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x x-0 expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x x-0 rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72208,7 +72208,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x-0))))
     (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
@@ -72380,7 +72380,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 x-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 x-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72551,7 +72551,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x x-0 expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x x-0 rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72698,7 +72698,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72842,7 +72842,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -72986,7 +72986,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (x y expn))
+  (vars (n text) (w w-0 expt) (x y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73130,7 +73130,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73290,7 +73290,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (w expt) (y rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73450,7 +73450,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x expn) (w-0 expr) (x-0 y expn))
+  (vars (n text) (w expt) (x rndx) (w-0 expt) (x-0 y rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 y))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73610,7 +73610,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (x y expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (w expt) (x y rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73756,7 +73756,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w expr) (y x expn))
+  (vars (n text) (w expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -73900,7 +73900,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (w w-0 expr) (y x expn))
+  (vars (n text) (w w-0 expt) (y x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -74060,7 +74060,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -74222,7 +74222,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x expn) (w-0 expr) (y y-0 expn))
+  (vars (n text) (h base) (w expt) (x rndx) (w-0 expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -74384,7 +74384,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -74540,7 +74540,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -74695,7 +74695,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -74850,7 +74850,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (x y-0 expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (x y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -75005,7 +75005,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -75176,7 +75176,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 expn) (w-0 expr) (x x-0 expn))
+  (vars (n text) (h base) (w expt) (y y-0 rndx) (w-0 expt) (x x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x (rec x-0)))) (x x-0))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -75347,7 +75347,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x expn) (w-0 expr) (x-0 y-0 expn))
+  (vars (n text) (h base) (w expt) (y x rndx) (w-0 expt) (x-0 y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 x-0 y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -75518,7 +75518,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y x y-0 expn) (w-0 expr) (x-0 expn))
+  (vars (n text) (h base) (w expt) (y x y-0 rndx) (w-0 expt) (x-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -75681,7 +75681,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -75843,7 +75843,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x expn) (w-0 expr) (y y-0 expn))
+  (vars (n text) (h base) (w expt) (x rndx) (w-0 expt) (y y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y y-0))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -76005,7 +76005,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (x y expn) (w-0 expr) (y-0 expn))
+  (vars (n text) (h base) (w expt) (x y rndx) (w-0 expt) (y-0 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y-0))
   (deflistener (exp (gen) (mul w y-0)))
@@ -76161,7 +76161,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y y-0 x expn))
+  (vars (n text) (h base) (w expt) (y y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -76316,7 +76316,7 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h base) (w expr) (y expn) (w-0 expr) (y-0 x expn))
+  (vars (n text) (h base) (w expt) (y rndx) (w-0 expt) (y-0 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -76487,8 +76487,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y y-0 expn) (w-0 expr)
-    (y-1 x expn))
+  (vars (n text) (h h-0 base) (w expt) (y y-0 rndx) (w-0 expt)
+    (y-1 x rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-1 (rec x)))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -76662,8 +76662,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x expn) (w-0 expr)
-    (y-0 y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x rndx) (w-0 expt)
+    (y-0 y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) (mul w-0 y-0 y-1))) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))
@@ -76836,8 +76836,8 @@
   </svg></div>
 
 <pre>(defskeleton dh_mim
-  (vars (n text) (h h-0 base) (w expr) (y x y-0 expn) (w-0 expr)
-    (y-1 expn))
+  (vars (n text) (h h-0 base) (w expt) (y x y-0 rndx) (w-0 expt)
+    (y-1 rndx))
   (defstrand init 3 (n n) (h (exp (gen) w-0)) (x x))
   (defstrand resp 3 (n n) (h (exp (gen) w)) (y y))
   (deflistener (exp (gen) (mul w y)))

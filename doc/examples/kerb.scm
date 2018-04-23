@@ -15,9 +15,9 @@
     (vars (a b s name) (m n text) (k skey))
     (trace
        ;; Make the request
-       (send (cat a b n)) 
+       (send (cat a b n))
        ;; Receive the encrypted key and ticket
-       (recv (cat (enc k n (ltk a s)) (enc k a b (ltk b s)))) 
+       (recv (cat (enc k n (ltk a s)) (enc k a b (ltk b s))))
        (send (cat (enc m k) (enc k a b (ltk b s)))))
     (uniq-orig n))
   (defrole resp
@@ -42,13 +42,13 @@
   (non-orig (ltk a s) (ltk b s))
   (uniq-orig m))
 
-; This version of the protocol is not modeled properly, with a generic variable (ticket)
+; This version of the protocol is modeled properly, with a generic variable (ticket)
 (defprotocol kerb-flawed2 basic
   (defrole init
     (vars (a b s name) (ticket mesg) (m n text) (k skey))
     (trace
        ;; Make the request
-       (send (cat a b n)) 
+       (send (cat a b n))
        ;; Receive the encrypted key and ticket
        (recv (cat (enc k n (ltk a s)) ticket))
        (send (cat (enc m k) ticket)))
@@ -67,7 +67,7 @@
     (uniq-orig k))
 )
 
-; This skeleton should have a shape, demonstrating that m may be leaked.  
+; This skeleton should have a shape, demonstrating that m may be leaked.
 (defskeleton kerb-flawed2
   (vars (a b s name) (m text))
   (defstrand init 3 (a a) (b b) (s s) (m m))

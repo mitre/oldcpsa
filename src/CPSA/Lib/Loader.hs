@@ -341,8 +341,10 @@ showst t =
 mkListenerRole :: (Algebra t p g s e c, Monad m) => Pos -> g -> m (g, Role t)
 mkListenerRole pos g =
   do
-    (g, [x]) <- loadVars g [L pos [S pos "x", S pos "mesg"]]
-    return (g, mkRole "" [x] [In x, Out x] [] [] [] False)
+    (g, xs) <- loadVars g [L pos [S pos "x", S pos "mesg"]]
+    case xs of
+      [x] -> return (g, mkRole "" [x] [In x, Out x] [] [] [] False)
+      _ -> fail "Loader.mkListenerRole: Expection one variable"
 
 -- Association lists
 
@@ -951,7 +953,9 @@ loadPrimary _ _ kvars (L pos [S _ "=", x, y]) =
   do
     t <- loadTerm kvars False x
     t' <- loadTerm kvars False y
-    return (pos, Equals t t')
+    case isNodeVar t == isNodeVar t' of
+      True -> return (pos, Equals t t')
+      False -> fail (shows pos "Sort mismatch in equality")
 loadPrimary _ _ kvars (L pos [S _ "non", x]) =
   do
     t <- loadAlgTerm kvars x

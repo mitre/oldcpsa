@@ -13,26 +13,26 @@
 
 (defprotocol dh_mim diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (n text))
+    (vars (x rndx) (y expt) (n text))
     (trace
      (send (exp (gen) x))
-     (recv h)
-     (send (enc n (exp h x))))
+     (recv (exp (gen) y))
+     (send (enc n (exp (gen) (mul y x)))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (n text))
+    (vars (y rndx) (x expt) (n text))
     (trace
-     (recv h)
+     (recv (exp (gen) x))
      (send (exp (gen) y))
-     (recv (enc n (exp h y))))
+     (recv (enc n (exp (gen) (mul x y)))))
     (uniq-gen y))
   (comment "Diffie-hellman key exchange followed by an encryption"))
 
 
 (defskeleton dh_mim
-  (vars (n text) (hx hy base) (x y expn))
-  (defstrand init 3 (n n) (h hy) (x x))
-  (defstrand resp 3 (n n) (h hx) (y y))
+  (vars (n text) (x0 y0 expt) (x y rndx))
+  (defstrand init 3 (n n) (y y0) (x x))
+  (defstrand resp 3 (n n) (x x0) (y y))
   (precedes ((0 2) (1 2)))
   (uniq-orig n)
   (pen-non-orig x y)

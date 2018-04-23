@@ -4,22 +4,21 @@
 
 (defprotocol plaindh diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (n text))
-    (trace (send (exp (gen) x)) 
-           (recv h) 
-           (send (enc n (exp h x)))
+    (vars (x rndx) (y expt) (n text))
+    (trace (send (exp (gen) x))
+           (recv (exp (gen) y))
+           (send (enc n (exp (gen) (mul x y))))
            (recv n))
     (uniq-orig n)
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (n text))
-    (trace (recv h) 
-           (send (exp (gen) y)) 
-           (recv (enc n (exp h y)))
+    (vars (y rndx) (x expt) (n text))
+    (trace (recv (exp (gen) x))
+           (send (exp (gen) y))
+           (recv (enc n (exp (gen) (mul x y))))
            (send n))
     (uniq-gen y))
   (comment "Diffie-hellman key exchange followed by an encryption"))
-
 
 (defskeleton plaindh
   (vars )

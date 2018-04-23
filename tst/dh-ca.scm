@@ -2,30 +2,30 @@
 
 (defprotocol dhca diffie-hellman
   (defrole init
-    (vars (x expn) (a b ca name) (h base) (n text))
+    (vars (x rndx) (a b ca name) (y expt) (n text))
     (trace
      (send (enc "reg" (exp (gen) x) a (privk a)))
      (recv (enc (exp (gen) x) a (privk ca)))
      (send (cat (exp (gen) x) (enc (exp (gen) x) a (privk ca))))
-     (recv (cat h (enc h b (privk ca)) (enc n (exp h x))))
-     (send (enc "check" n (exp h x))))
+     (recv (cat (exp (gen) y) (enc (exp (gen) y) b (privk ca)) (enc n (exp (gen) (mul y x)))))
+     (send (enc "check" n (exp (gen) (mul y x)))))
     (uniq-gen x)
     (non-orig (privk ca)))
   (defrole resp
-    (vars (y expn) (a b ca name) (h base) (n text))
+    (vars (y rndx) (a b ca name) (x expt) (n text))
     (trace
      (send (enc "reg" (exp (gen) y) b (privk b)))
      (recv (enc (exp (gen) y) b (privk ca)))
-     (recv (cat h (enc h a (privk ca))))
+     (recv (cat (exp (gen) x) (enc (exp (gen) x) a (privk ca))))
      (send (cat (exp (gen) y) (enc (exp (gen) y) b (privk ca))
-		(enc n (exp h y))))
-     (recv (enc "check" n (exp h y))))
+		(enc n (exp (gen) (mul x y)))))
+     (recv (enc "check" n (exp (gen) (mul x y)))))
     (uniq-gen y)
     (non-orig (privk ca)))
-  (defrole ca (vars (subject ca name) (h base))
+  (defrole ca (vars (subject ca name) (x expt))
     (trace
-     (recv (enc "reg" h subject (privk subject)))
-     (send (enc h subject (privk ca))))
+     (recv (enc "reg" (exp (gen) x) subject (privk subject)))
+     (send (enc (exp (gen) x) subject (privk ca))))
     (non-orig (privk subject))
     )
   (comment A diffie-hellman exchange which uses a certificate
@@ -45,9 +45,9 @@
 )
 
 (defskeleton dhca
-  (vars (a b ca name) (x y expn) (n text))
-  (defstrand init 5 (x x) (h (exp (gen) y)) (ca ca) (a a) (b b) (n n))
-  (defstrand resp 5 (y y) (h (exp (gen) x)) (ca ca) (a a) (b b) (n n))
+  (vars (a b ca name) (x y rndx) (n text))
+  (defstrand init 5 (x x) (y y) (ca ca) (a a) (b b) (n n))
+  (defstrand resp 5 (y y) (x x) (ca ca) (a a) (b b) (n n))
 (uniq-orig n)
 (comment point of view in which init and resp each complete and
     they agree on the relevant parameters)

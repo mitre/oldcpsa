@@ -42,7 +42,7 @@
   (non-orig (ltk a s) (ltk b s))
   (uniq-orig m))
 
-; This version of the protocol is not modeled properly, with a generic variable (ticket)
+; This version of the protocol is modeled properly, with a generic variable (ticket)
 (defprotocol kerb-flawed2 basic
   (defrole init
     (vars (a b s name) (ticket mesg) (m n text) (k skey))

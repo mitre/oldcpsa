@@ -1,3 +1,22 @@
+2018-04-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+ 	* cpsa.cabal (Version): Tagged as 3.5.0.
+
+2018-03-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/DiffieHellman/Algebra.hs (displayVar, mkVar): Changed
+	sort names.  expn -> rndx and expr -> expt.
+
+2018-02-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (disjoin): Changed output to (false) on an
+	empty disjunction instead of (or).
+
+2018-01-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (mkListenerRole): Changed do pattern to
+	be irrefutable.
+
 2017-09-15  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/CPSA/DiffieHellman/Algebra.hs (unifyTerms):  Added calls to

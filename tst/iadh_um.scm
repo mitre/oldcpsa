@@ -28,18 +28,18 @@
 
 (defprotocol iadh-um diffie-hellman
   (defrole participant
-    (vars (l e expn) (hl he base) (self peer name) (key n data))
+    (vars (l e rndx) (lp ep expt) (self peer name) (key n data))
     (trace
      (recv (enc "cert" (exp (gen) l) self (privk self)))
-     (recv (enc "cert" hl peer (privk peer)))
+     (recv (enc "cert" (exp (gen) lp) peer (privk peer)))
      (send (exp (gen) e))
-     (recv he)
+     (recv (exp (gen) ep))
      (send key))
-    (fn-of (foo ((hash (exp hl l) (exp he e)) key)))
+    (fn-of (foo ((hash (exp (gen) (mul l lp)) (exp (gen) (mul e ep))) key)))
     (uniq-gen e)
-    (neq (he (gen))))
+    (neq (ep (one))))
   (defrole ltx-gen
-    (vars (self name) (l expn))
+    (vars (self name) (l rndx))
     (trace
      (send (enc "cert" (exp (gen) l) self (privk self)))
      (send l))
@@ -51,7 +51,7 @@
 ;; Implicit authentication: participants will agree on the resulting key
 ;; foo(key).  Therefore they should agree on the names A and B.
  (defskeleton iadh-um
-  (vars (key data) (eA lA eB lB expn) (A B C D name))
+  (vars (key data) (eA lA eB lB rndx) (A B C D name))
   (defstrand participant 5 (key key) (e eA) (l lA) (self A) (peer C))
   (defstrand participant 5 (key key) (e eB) (l lB) (self B) (peer D))
   (non-orig lA lB)
@@ -62,10 +62,10 @@
 
  ;; Security: 
 (defskeleton iadh-um
-  (vars (e1 e2 l expn) (hl base) (A B name))
-  (defstrand participant 5 (e e1) (l l) (he (exp (gen) e2)) (hl hl) (self A) (peer B))
+  (vars (e1 e2 l rndx) (lp expt) (A B name))
+  (defstrand participant 5 (e e1) (l l) (ep e2) (lp lp) (self A) (peer B))
   (defstrand participant 3 (e e2))
-  (deflistener (hash (exp hl l) (exp (gen) (mul e1 e2))))
+  (deflistener (hash (exp (gen) (mul l lp)) (exp (gen) (mul e1 e2))))
   (non-orig (privk A) (privk B))
 )
 

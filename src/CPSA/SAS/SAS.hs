@@ -745,6 +745,7 @@ conjoin conjuncts =
 disjoin :: [SExpr ()] -> SExpr ()
 disjoin conjuncts =
     case concatMap f conjuncts of
+      [] -> L () [S () "false"]
       [x] -> x
       xs -> L () (S () "or" : xs)
     where

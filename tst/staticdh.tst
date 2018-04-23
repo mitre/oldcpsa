@@ -1,11 +1,11 @@
 (herald "Static DH key exchange" (algebra diffie-hellman))
 
-(comment "CPSA 3.4.0")
+(comment "CPSA 3.5.0")
 (comment "All input read from staticdh.scm")
 
 (defprotocol staticdh1 diffie-hellman
   (defrole init
-    (vars (a b ca name) (h base) (x expn) (n text))
+    (vars (a b ca name) (h base) (x rndx) (n text))
     (trace (recv (enc "cert" (exp (gen) x) a (privk ca)))
       (recv (enc "cert" h b (privk ca))) (send (enc n (exp h x)))
       (recv n))
@@ -13,20 +13,20 @@
     (uniq-orig n)
     (neq (a b)))
   (defrole resp
-    (vars (a b ca name) (h base) (y expn) (n text))
+    (vars (a b ca name) (h base) (y rndx) (n text))
     (trace (recv (enc "cert" h a (privk ca)))
       (recv (enc "cert" (exp (gen) y) b (privk ca)))
       (recv (enc n (exp h y))) (send n))
     (non-orig (privk ca))
     (neq (a b)))
   (defrole ca
-    (vars (p ca name) (x expn))
+    (vars (p ca name) (x rndx))
     (trace (send (enc "cert" (exp (gen) x) p (privk ca))))
     (non-orig x)
     (fn-of (owner-of (p x)))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (h base) (x expn))
+  (vars (n text) (a b ca name) (h base) (x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h h) (x x))
   (neq (a b))
   (non-orig (privk ca))
@@ -41,7 +41,7 @@
   (comment "1 in cohort - 1 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (h base) (x expn))
+  (vars (n text) (a b ca name) (h base) (x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h h) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (precedes ((1 0) (0 0)))
@@ -61,7 +61,7 @@
   (comment "1 in cohort - 1 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -84,7 +84,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca a-0 b-0 ca-0 name) (x x-0 y expn))
+  (vars (n text) (a b ca a-0 b-0 ca-0 name) (x x-0 y rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -113,7 +113,7 @@
   (comment "4 in cohort - 4 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -138,7 +138,7 @@
   (comment "1 in cohort - 1 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca b-0 name) (y x expn))
+  (vars (n text) (a b ca b-0 name) (y x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x y))
   (defstrand ca 1 (p a) (ca ca) (x y))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -166,7 +166,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca b-0 ca-0 name) (y x expn))
+  (vars (n text) (a b ca b-0 ca-0 name) (y x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x y))
   (defstrand ca 1 (p a) (ca ca) (x y))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -197,7 +197,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca b-0 name) (y x expn))
+  (vars (n text) (a b ca b-0 name) (y x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) y)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x y))
@@ -225,7 +225,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca b-0 ca-0 name) (y x expn))
+  (vars (n text) (a b ca b-0 ca-0 name) (y x rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) y)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x y))
@@ -256,7 +256,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn) (w expr))
+  (vars (n text) (a b ca name) (x x-0 rndx) (w expt))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -286,7 +286,7 @@
   (comment "2 in cohort - 2 not yet seen"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x x-0))
   (defstrand ca 1 (p a) (ca ca) (x x-0))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -316,7 +316,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x x-0))
   (defstrand ca 1 (p a) (ca ca) (x x-0))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -348,7 +348,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x x-0))
   (defstrand ca 1 (p a) (ca ca) (x x-0))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -380,7 +380,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca ca-0 name) (x x-0 expn))
+  (vars (n text) (a b ca ca-0 name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x)) (x x-0))
   (defstrand ca 1 (p a) (ca ca) (x x-0))
   (defstrand ca 1 (p b) (ca ca) (x x))
@@ -415,7 +415,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -445,7 +445,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -477,7 +477,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -509,7 +509,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca ca-0 name) (x x-0 expn))
+  (vars (n text) (a b ca ca-0 name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -544,7 +544,7 @@
   (origs (n (0 2))))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca name) (x x-0 expn))
+  (vars (n text) (a b ca name) (x x-0 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))
@@ -572,7 +572,7 @@
   (comment "empty cohort"))
 
 (defskeleton staticdh1
-  (vars (n text) (a b ca p ca-0 name) (x x-0 x-1 expn))
+  (vars (n text) (a b ca p ca-0 name) (x x-0 x-1 rndx))
   (defstrand init 4 (n n) (a a) (b b) (ca ca) (h (exp (gen) x-0)) (x x))
   (defstrand ca 1 (p a) (ca ca) (x x))
   (defstrand ca 1 (p b) (ca ca) (x x-0))

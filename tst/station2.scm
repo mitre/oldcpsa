@@ -4,18 +4,18 @@
 
 (defprotocol station-to-station diffie-hellman
   (defrole init
-    (vars (x expn) (h base) (a b name))
+    (vars (x rndx) (y expt) (a b name))
     (trace
      (send (exp (gen) x))
-     (recv (enc h (exp (gen) x) (privk b)))
-     (send (enc (enc (exp (gen) x) h (exp h x)) (privk a))))
+     (recv (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (send (enc (enc (exp (gen) x) (exp (gen) y) (exp (gen) (mul y x))) (privk a))))
     (uniq-gen x))
   (defrole resp
-    (vars (y expn) (h base) (a b name))
+    (vars (y rndx) (x expt) (a b name))
     (trace
-     (recv h)
-     (send (enc (exp (gen) y) h (privk b)))
-     (recv (enc (enc h (exp (gen) y) (exp h y)) (privk a))))
+     (recv (exp (gen) x))
+     (send (enc (exp (gen) y) (exp (gen) x) (privk b)))
+     (recv (enc (enc (exp (gen) x) (exp (gen) y) (exp (gen) (mul x y))) (privk a))))
     (uniq-gen y))
 )
 

@@ -1,5 +1,13 @@
 CPSA NEWS
 
+  April, 2018:
+
+* The release of CPSA version 3.5.0 contains one user visiable change.
+  The names of the exponent sorts have been changed.  Sort expn is now
+  rndx, and expr is now expt.  The change was made because people
+  found the old sort name confusing.  For compatibility, the reader
+  accepts the old names and translates them into the new ones.
+
   December, 2017:
 
 * The release of CPSA version 3.4.1 includes the following changes:
