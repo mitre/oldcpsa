@@ -48,20 +48,25 @@ unrealized :: Algebra t p g s e c => Preskel t g s e -> [Node]
 unrealized k =
     foldl unrealizedInStrand [] (strands k)
     where
-      a = avoid k
       unrealizedInStrand acc s =
-          fst $ foldl unrealizedInNode (acc, S.empty) (nodes s)
-      unrealizedInNode (acc, ns) n =
-          case event n of
-            In t ->
-              let ns' = addSendingBefore ns n
-                  ts = transmissionsBefore ns n in
-              case derivable a ts t of
-                True -> (acc, ns')
-                False -> (graphNode n : acc, ns')
-            Sync (Tran (Just _, _, _)) | not (explainable k n (leadsto k)) ->
-              (graphNode n : acc, ns)
-            _ -> (acc, ns)
+          fst $ foldl (unrealizedInNode k) (acc, S.empty) (nodes s)
+
+-- Lifted here because of ambiguity complains in GHC 8.4.2
+unrealizedInNode :: Algebra t p g s e c => Preskel t g s e ->
+                    ([Node], Set (Vertex t e)) -> Vertex t e ->
+                    ([Node], Set (Vertex t e))
+unrealizedInNode k (acc, ns) n =
+  case event n of
+    In t ->
+      let ns' = addSendingBefore ns n
+          ts = transmissionsBefore ns n in
+        case derivable (avoid k) ts t of
+          True -> (acc, ns')
+          False -> (graphNode n : acc, ns')
+    Sync (Tran (Just _, _, _))
+      | not (explainable k n (leadsto k)) ->
+          (graphNode n : acc, ns)
+    _ -> (acc, ns)
 
 transmissionsBefore :: Algebra t p g s e c => Set (Vertex t e) ->
                        Vertex t e -> Set t
@@ -285,7 +290,7 @@ solvePath k a ct pos eks n t escape =
     mgs $ cons ++ augs ++ lsns ++ dhs
     where
       dhs = theDHSubcohort k a ct pos eks n escape cause
-      cons = contractions k ct pos eks n t escape cause 
+      cons = contractions k ct pos eks n t escape cause
       augs = augmentations k ct pos eks n escape cause
       lsns = addListeners k ct pos eks n t escape cause
       cause = Cause (dir eks) n ct escape
@@ -382,7 +387,6 @@ contractions k ct pos eks n t escape cause =
       -- algebraSolve is strictly more general otherwise
       anc = if (isNum ct) then ancs else (ct : ancs)
       ancs = (ancestors t pos)
-
 
 constSolve :: Algebra t p g s e c => (g, s) -> t -> [t] -> [(g, s)]
 constSolve subst ct kts =
@@ -632,6 +636,7 @@ roleSPAugs cause _ k n t r =
   [ k' | (subst, inst) <- nextNode t (gen k) r,
          (k', _, _, _) <- augment k n cause r subst inst True ]
 
+{- New failure of ambiguity check: this breaks!
 -- Identify all distinct potential next nodes
 nextNode :: Algebra t p g s e c => t -> g -> Role t ->
             [((g, s), Instance t e)]
@@ -660,6 +665,35 @@ nextNode now g role =
           where
             itrace = map (evtMap $ substitute subst) (take ht (rtrace role))
 -}
+-}
+
+-- Identify all distinct potential next nodes
+nextNode :: Algebra t p g s e c => t -> g -> Role t ->
+            [((g, s), Instance t e)]
+nextNode now g role =
+  loop 1 [] (rtrace role)
+  where
+    -- loop height past acc trace
+    loop _ acc [] = acc
+    loop ht acc (In _ : c) =
+      loop (ht + 1) acc c
+    loop ht acc (Out _ : c) =
+      loop (ht + 1) acc c
+    loop ht acc (Sync (Tran (_, Nothing, _)) : c) =
+      loop (ht + 1) acc c
+    loop ht acc (Sync (Tran (_, Just next, _)) : c) =
+      loop (ht + 1) acc' c
+      where
+        acc' = nextNodeA now g role ht next acc
+
+-- Lifted here because of ambiguity complains in GHC 8.4.2
+nextNodeA :: Algebra t p g s e c => t -> g -> Role t -> Int -> t ->
+            [((g, s), Instance t e)] -> [((g, s), Instance t e)]
+nextNodeA now g role ht next acc =
+  foldl f acc substs
+  where
+    f = nextNodeF role ht
+    substs = unify now next (cloneRoleVars g role)
 
 nextNodeF :: Algebra t p g s e c => Role t -> Int ->
              [((g, s), Instance t e)] -> (g, s) -> [((g, s), Instance t e)]

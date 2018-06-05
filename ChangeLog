@@ -1,3 +1,8 @@
+2018-05-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Cohort.hs (unrealizedInNode, nextNodeA):  Lifted to
+	top-level to satisfy new ambiguity check in GHC 8.4.2.
+
 2018-04-17  John D. Ramsdell  <ramsdell@mitre.org>
 
  	* cpsa.cabal (Version): Tagged as 3.5.0.
