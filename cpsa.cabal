@@ -1,5 +1,5 @@
 Name:			cpsa
-Version:		3.5.1
+Version:		3.6.0
 Maintainer:		mliskov@mitre.org
 Cabal-Version:		>= 1.6
 License:		BSD3
@@ -110,17 +110,6 @@ Source-Repository head
   Type:     git
   Location: git://github.com/mitre/cpsa.git
 
-Executable cpsamatch
-  Main-Is:		CPSA/Match/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
-  GHC-Options:
-    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
-  Other-Modules:
-    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
-    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.Match.Match
-    CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
-
 Executable cpsa
   Main-Is:		CPSA/Lib/Main.hs
   Build-Depends:	base >= 3 && < 5, containers, parallel
@@ -131,7 +120,7 @@ Executable cpsa
     Paths_cpsa CPSA.Lib.Utilities
     CPSA.Lib.Pretty CPSA.Lib.SExpr CPSA.Lib.Printer CPSA.Lib.Entry
     CPSA.Lib.Algebra CPSA.Lib.AlgebraLibrary CPSA.Lib.State
-    CPSA.Lib.Protocol CPSA.Lib.Goal CPSA.Lib.Strand
+    CPSA.Lib.Protocol CPSA.Lib.Strand
     CPSA.Lib.Characteristic CPSA.Lib.Loader CPSA.Lib.Displayer
     CPSA.Lib.Cohort CPSA.Lib.Expand CPSA.Lib.Reduction
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra CPSA.Lib.Declaration
@@ -172,28 +161,6 @@ Executable cpsaannotations
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Annotations.Formulas CPSA.Annotations.Annotations
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
-
-Executable cpsapp
-  Main-Is:		CPSA/Pretty/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
-  GHC-Options:
-    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
-  Other-Modules:
-    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
-    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
-    CPSA.Basic.Algebra
-
-Executable cpsajson
-  Main-Is:		CPSA/JSON/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
-  GHC-Options:
-    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
-  Other-Modules:
-    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
-    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
-    CPSA.Basic.Algebra
     
 Executable cpsadiff
   Main-Is:		CPSA/Diff/Main.hs
@@ -217,6 +184,28 @@ Executable cpsasas
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.SAS.SAS
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
 
+Executable cpsapp
+  Main-Is:		CPSA/Pretty/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Basic.Algebra
+
+Executable cpsajson
+  Main-Is:		CPSA/JSON/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Basic.Algebra
+
 Executable cpsadebase
   Main-Is:		CPSA/Debase/Main.hs
   Build-Depends:	base >= 3 && < 5, containers
@@ -228,3 +217,13 @@ Executable cpsadebase
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Basic.Algebra
 
+Executable cpsamatch
+  Main-Is:		CPSA/Match/Main.hs
+  Build-Depends:	base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.Match.Match
+    CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra

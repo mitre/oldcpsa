@@ -18,13 +18,13 @@ import CPSA.Lib.Utilities
 import CPSA.Lib.SExpr
 import CPSA.Lib.Entry
 import CPSA.Lib.Algebra
-import CPSA.Lib.Goal
+import CPSA.Lib.Protocol
 import CPSA.Lib.Strand
 import CPSA.Lib.Cohort
 import CPSA.Lib.Displayer
 
-{--
--- Debugging support (Comment line above)
+--
+{-- Debugging support (Comment line above)
 import CPSA.Lib.Debug
 {--
 import System.IO.Unsafe
@@ -126,7 +126,7 @@ solve :: Algebra t p g s e c => Options -> Handle ->
 solve _ h [] _ =                -- Done
     hClose h
 solve p h (k : ks) n | (not $ optDoAnalyze p) =
-    do 
+    do
       wrt p h (displayProt (protocol k))
       -- Just display the preskel
       wrt p h (displayPreskel k [])
@@ -141,27 +141,12 @@ solve p h (k : ks) n =
               wrt p h (commentPreskel lk [] (unrealized k) Ordinary
                        "Input cannot be made into a skeleton--nothing to do")
               solve p h ks (n + 1)
-{--    -- Shouldn't need this case anymore
-        [k'] ->
-            if isomorphic (gist k) (gist k') then -- Input was a skeleton
-                let lk' = LPreskel k' n 0 Nothing in
-                begin p h ks (n + optLimit p) (n + 1)
-                         (hist (gist k', n)) [lk']
-            else                -- Input was not a skeleton
-                do
-                  let lk = LPreskel k n (-1) Nothing
-                  wrt p h (commentPreskel lk [] (unrealized k) Ordinary
-                           "Not a skeleton")
-                  let lk' = withParent k' (n + 1) lk
-                  begin p h ks (n + optLimit p) (n + 2)
-                           (hist (gist k', n + 1))  [lk']
---}
         ks' ->
             -- If input was a skeleton, just proceed
-            case [k''|k'' <- ks', isomorphic (gist k) (gist k'')] of
+            case [k'' | k'' <- ks', isomorphic (gist k) (gist k'')] of
               (k' : _) -> begin p h ks (n + optLimit p) (n+1)
                             (hist (gist k', n)) [LPreskel k' n 0 Nothing]
-              [] -> 
+              [] ->
                 do
                   let lk = LPreskel k n (-1) Nothing
                   let ks'' = L.nubBy (\k1 k2 -> isomorphic (gist k1) (gist k2)) ks'
@@ -171,14 +156,27 @@ solve p h (k : ks) n =
                   let lks' = map (\(n', k')-> withParent k' n' lk) lk_nums
                   begin p h ks (n + optLimit p) (n+length(ks'')+1)
                            (hist (gist (head ks'), n+1)) lks'
---        _ -> error "Main.solve: can't handle more than one first skeleton"
 
--- Begin by collapsing the point-of-view skeleton as much as possible.
+-- Begin by applying rules as much as possible.
 begin :: Algebra t p g s e c => Options -> Handle ->
          [Preskel t g s e] -> Int -> Int -> Seen t g s e ->
          [LPreskel t g s e] -> IO ()
 begin p h ks m n seen todo =
-    search p h ks m n seen todo []
+  loop n seen todo []
+  where
+    loop n seen [] todo =
+      search p h ks m n seen (reverse todo) []
+    loop n seen (lk : lks) todo =
+      let k = content lk in
+        case rewrite k of
+          Nothing -> loop n seen lks (lk : todo)
+          Just kids ->
+            do
+              wrt p h (commentPreskel lk [] (unrealized k) Ordinary
+                       "Not closed under rules")
+              let (n', seen', todo', _) =
+                    foldl (next lk) (n, seen, todo, []) kids
+              loop n' seen' todo' lks
 
 -- Apply collapse until all possibilities are exhausted.
 search :: Algebra t p g s e c => Options -> Handle ->
@@ -188,7 +186,7 @@ search p h ks m n seen [] done =
     mode p h ks m n seen (reverse done)
 search p h ks m n seen (lk:todo) done =
     do
-      let kids = collapse (content lk)
+      let kids = concatMap simplify (collapse $ content lk)
       let (n', seen', todo', _) =
               foldl (next lk) (n, seen, todo, []) kids
       search p h ks m n' seen' todo' (lk:done)

@@ -1,6 +1,6 @@
 (herald "Station-to-station protocol" (algebra diffie-hellman))
 
-(comment "CPSA 3.5.0")
+(comment "CPSA 3.6.0")
 (comment "All input read from station2.scm")
 
 (defprotocol station-to-station diffie-hellman

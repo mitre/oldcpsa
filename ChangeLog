@@ -1,3 +1,24 @@
+2018-06-25  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.0
+
+2018-06-18  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (gparam): Added support for binding the
+	strand variable in gparam as opposed to relying on it being bound
+	by a role length predicate.
+
+2018-06-11  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/*.hs: Implemented geometric formulas as rewrite
+	rules.  The rules are applied after each cohort step.
+
+2018-06-05  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/*.hs: Converted the goal language to be
+	strand-oriented.  The goal language in incompatible with the
+	previous, node-oriented language.
+
 2018-05-22  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/CPSA/Lib/Cohort.hs (unrealizedInNode, nextNodeA):  Lifted to

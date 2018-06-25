@@ -17,7 +17,6 @@ import CPSA.Lib.AlgebraLibrary
 import CPSA.Lib.Declaration
 import CPSA.Lib.State
 import CPSA.Lib.Protocol
-import CPSA.Lib.Goal
 import CPSA.Lib.Strand
 import CPSA.Lib.Characteristic
 
@@ -66,10 +65,13 @@ loadProt nom origin pos (S _ name : S _ alg : x : xs)
         fail (shows pos $ "Expecting terms in algebra " ++ nom)
     | otherwise =
         do
-          (gen, rs, comment) <- loadRoles origin (x : xs)
-          -- Check for duplicate role names
+          (gen, rs, rest) <- loadRoles origin (x : xs)
           (gen, r) <- mkListenerRole pos gen
-          validate (mkProt name alg gen rs r comment) rs
+          -- Fake protocol is used only for loading rules
+          let fakeProt = mkProt name alg gen rs r [] []
+          (gen, rules, comment) <- loadRules fakeProt gen rest
+          -- Check for duplicate role names
+          validate (mkProt name alg gen rs r rules comment) rs
     where
       validate prot [] = return prot
       validate prot (r : rs) =
@@ -82,16 +84,14 @@ loadProt nom origin pos (S _ name : S _ alg : x : xs)
 loadProt _ _ pos _ = fail (shows pos "Malformed protocol")
 
 loadRoles :: (Algebra t p g s e c, Monad m) => g -> [SExpr Pos] ->
-             m (g, [Role t], [SExpr ()])
+             m (g, [Role t], [SExpr Pos])
 loadRoles gen (L pos (S _ "defrole" : x) : xs) =
     do
       (gen, r) <- loadRole gen pos x
       (gen, rs, comment) <- loadRoles gen xs
       return (gen, r : rs, comment)
 loadRoles gen xs =
-    do
-      comment <- alist [] xs    -- Ensure remaining is an alist
-      return (gen, [], comment)
+  return (gen, [], xs)
 
 loadRole :: (Algebra t p g s e c, Monad m) => g -> Pos ->
             [SExpr Pos] -> m (g, Role t)
@@ -346,6 +346,31 @@ mkListenerRole pos g =
       [x] -> return (g, mkRole "" [x] [In x, Out x] [] [] [] False)
       _ -> fail "Loader.mkListenerRole: Expection one variable"
 
+-- Protocol Rules
+
+loadRules :: (Algebra t p g s e c, Monad m) => Prot t g -> g ->
+             [SExpr Pos] -> m (g, [Rule t], [SExpr ()])
+loadRules prot g (L pos (S _ "defrule" : x) : xs) =
+    do
+      (g, r) <- loadRule prot g pos x
+      (g, rs, comment) <- loadRules prot g xs
+      return (g, r : rs, comment)
+loadRules _ g xs =
+    do
+      comment <- alist [] xs    -- Ensure remaining is an alist
+      return (g, [], comment)
+
+loadRule :: (Algebra t p g s e c, Monad m) => Prot t g -> g ->
+            Pos -> [SExpr Pos] -> m (g, Rule t)
+loadRule prot g pos (S _ name : x : xs) =
+  do
+    (g, goal, _) <- loadSentence UnusedVars pos prot g x
+    comment <- alist [] xs      -- Ensure remaining is an alist
+    return (g, Rule { rlname = name,
+                      rlgoal = goal,
+                      rlcomment = comment })
+loadRule _ _ pos _ = fail (shows pos "Malformed rule")
+
 -- Association lists
 
 -- Make an association list into a comment.  The first argument is the
@@ -545,13 +570,14 @@ loadInsts top p kvars gen insts xs =
       predefs <- loadAllPredefSkelDecls heights kvars xs
       priorities <- loadPriorities (assoc "priority" xs) insts'
       (gen, gs) <- loadGoals top p gen goals
-      loadRest top p gs gen insts' order leadsto
-        (predefs ++ others) kcomment priorities pov
+      loadRest top kvars p gs gen insts' order leadsto
+        (predefs ++ others) fs kcomment priorities pov
     where
       insts' = reverse insts
       heights = map (\ inst -> length $ trace inst) insts'
       order = assoc "precedes" xs
       leadsto = assoc "leadsto" xs
+      fs = assoc "facts" xs
       goals = assoc "goals" xs
       pov = assoc "pov" xs
       kcomment =
@@ -629,12 +655,13 @@ loadListener p kvars gen x =
       t <- loadTerm kvars False x
       return $ mkListener p gen t
 
-loadRest :: (Algebra t p g s e c, Monad m) => Pos ->
+loadRest :: (Algebra t p g s e c, Monad m) => Pos -> [t] ->
             Prot t g -> [Goal t] -> g -> [Instance t e] ->
             [SExpr Pos] -> [SExpr Pos] -> SkelDeclList t ->
-            [SExpr ()] -> [((Int,Int),Int)] -> [SExpr Pos] ->
-            m (Preskel t g s e)
-loadRest pos p gs gen insts orderings leadsto decls comment priorities pov =
+            [SExpr Pos] -> [SExpr ()] -> [((Int,Int),Int)] ->
+            [SExpr Pos] -> m (Preskel t g s e)
+loadRest pos vars p gs gen insts orderings leadsto decls
+         fs comment priorities pov =
     do
       case null insts of
         True -> fail (shows pos "No strands")
@@ -642,9 +669,10 @@ loadRest pos p gs gen insts orderings leadsto decls comment priorities pov =
       let heights = map height insts
       o <- loadOrderings heights orderings True
       l <- loadOrderings heights leadsto False
+      fs <- mapM (loadFact heights vars) fs
       (pov, prob) <- loadPov pos p pov
       checkProb pos (length insts) prob
-      let k = mkPreskel gen p gs insts o l decls comment priorities pov prob
+      let k = mkPreskel gen p gs insts o l decls fs comment priorities pov prob
       case termsWellFormed $ (termsInDlist decls) ++ kterms k of
         True -> return ()
         False -> fail (shows pos "Terms in skeleton not well formed:" ++ show (termsInDlist decls ++ kterms k))
@@ -783,6 +811,25 @@ loadNode heights (L pos [N _ s, N _ p])
           | otherwise = height xs (s - 1)
 loadNode _ x = fail (shows (annotation x) "Malformed node")
 
+loadFact :: (Algebra t p g s e c, Monad m) =>
+            [Int] -> [t] -> SExpr Pos -> m (Fact t)
+loadFact heights vars (L _ (S _ name : fs)) =
+  do
+    fs <- mapM (loadFterm heights vars) fs
+    return $ Fact name fs
+loadFact _ _ x =
+  fail (shows (annotation x) "Malformed fact")
+
+loadFterm :: (Algebra t p g s e c, Monad m) =>
+             [Int] -> [t] -> SExpr Pos -> m (FTerm t)
+loadFterm heights _ (N pos s)
+  | 0 <= s && s < length heights = return $ FSid s
+  | otherwise = fail (shows pos ("Bad strand in fact: " ++ show s))
+loadFterm _ vars x =
+  do
+    t <- loadTerm vars False x
+    return $ FTerm t
+
 loadPov :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
            [SExpr Pos] -> m (Maybe (Preskel t g s e), [Sid])
 loadPov _ _ [] = return (Nothing, [])
@@ -821,7 +868,7 @@ findGoal pos ps (S _ name : x : xs) =
       Nothing -> fail (shows pos $ "Protocol " ++ name ++ " unknown")
       Just p ->
         do
-          (g, goal, antec) <- loadSentence pos p (pgen p) x
+          (g, goal, antec) <- loadSentence RoleSpec pos p (pgen p) x
           let (gs, xs') = findAlist xs
           (g, goals) <- loadGoals pos p g gs
           _ <- alist [] xs'          -- Check syntax of xs
@@ -849,68 +896,85 @@ loadGoals :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
 loadGoals _ _ g [] = return (g, [])
 loadGoals pos prot g (x : xs) =
   do
-    (g, goal, _) <- loadSentence pos prot g x
+    (g, goal, _) <- loadSentence RoleSpec pos prot g x
     (g, goals) <- loadGoals pos prot g xs
     return (g, goal : goals)
+
+data Mode
+  = RoleSpec
+  | UnusedVars
 
 -- Load a single security goal, a universally quantified formula
 -- Returns the goal and the antecedent with position information.
 
-loadSentence :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
-                g -> SExpr Pos -> m (g, Goal t, Conj t)
-loadSentence _ prot g (L pos [S _ "forall", L _ vs, x]) =
+loadSentence :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+                Prot t g -> g -> SExpr Pos -> m (g, Goal t, Conj t)
+loadSentence md _ prot g (L pos [S _ "forall", L _ vs, x]) =
   do
     (g, vars) <- loadVars g vs
-    loadImplication pos prot g (L.nub vars) x
-loadSentence pos _ _ _ = fail (shows pos "Malformed goal sentence")
+    loadImplication md pos prot g (L.nub vars) x
+loadSentence _ pos _ _ _ = fail (shows pos "Malformed goal sentence")
 
 -- Load the top-level implication of a security goal
 
-loadImplication :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadImplication :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
                    g -> [t] -> SExpr Pos -> m (g, Goal t, Conj t)
-loadImplication _ prot g vars (L pos [S _ "implies", a, c]) =
+loadImplication md _ prot g vars (L pos [S _ "implies", a, c]) =
   do
-    antec <- loadRoleSpecific pos prot vars vars a
-    (g, concl) <- loadConclusion pos prot g vars c
+    antec <- loadCheckedConj md pos prot vars vars a
+    (g, vc) <- loadConclusion md pos prot g vars c
+    let (evars, concl) = unzip vc
     let goal =
           Goal { uvars = vars,
                  antec = map snd antec,
+                 evars = evars,
                  concl = map (map snd) concl }
     return (g, goal, antec)
-loadImplication pos _ _ _ _ = fail (shows pos "Malformed goal implication")
+loadImplication _ pos _ _ _ _ = fail (shows pos "Malformed goal implication")
 
 -- The conclusion must be a disjunction.  Each disjunct may introduce
 -- existentially quantified variables.
 
-loadConclusion :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
-                  g -> [t] -> SExpr Pos -> m (g, [Conj t])
-loadConclusion _ _ g _ (L _ [S _ "false"]) = return (g, [])
-loadConclusion _ prot g vars (L pos (S _ "or" : xs)) =
-  loadDisjuncts pos prot g vars xs []
-loadConclusion pos prot g vars x =
+loadConclusion :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
+                  g -> [t] -> SExpr Pos -> m (g, [([t], Conj t)])
+loadConclusion _ _ _ g _ (L _ [S _ "false"]) = return (g, [])
+loadConclusion md _ prot g vars (L pos (S _ "or" : xs)) =
+  loadDisjuncts md pos prot g vars xs []
+loadConclusion md pos prot g vars x =
   do
-    (g, a) <- loadExistential pos prot g vars x
+    (g, a) <- loadExistential md pos prot g vars x
     return (g, [a])
 
-loadDisjuncts :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
-                 g -> [t] -> [SExpr Pos] -> [Conj t] -> m (g, [Conj t])
-loadDisjuncts _ _ g _ [] rest = return (g, reverse rest)
-loadDisjuncts pos prot g vars (x : xs) rest =
+loadDisjuncts :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+                 Prot t g -> g -> [t] -> [SExpr Pos] ->
+                 [([t], Conj t)] -> m (g, [([t], Conj t)])
+loadDisjuncts _ _ _ g _ [] rest = return (g, reverse rest)
+loadDisjuncts md pos prot g vars (x : xs) rest =
   do
-    (g, a) <- loadExistential pos prot g vars x
-    loadDisjuncts pos prot g vars xs (a : rest)
+    (g, a) <- loadExistential md pos prot g vars x
+    loadDisjuncts md pos prot g vars xs (a : rest)
 
-loadExistential :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
-                   g -> [t] -> SExpr Pos -> m (g, Conj t)
-loadExistential _ prot g vars (L pos [S _ "exists", L _ vs, x]) =
+loadExistential :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
+                   g -> [t] -> SExpr Pos -> m (g, ([t], Conj t))
+loadExistential md _ prot g vars (L pos [S _ "exists", L _ vs, x]) =
   do
     (g, evars) <- loadVars g vs
-    as <- loadRoleSpecific pos prot (evars ++ vars) evars x
-    return (g, as)
-loadExistential pos prot g vars x =
+    as <- loadCheckedConj md pos prot (evars ++ vars) evars x
+    return (g, (evars, as))
+loadExistential md pos prot g vars x =
   do
-    as <- loadRoleSpecific pos prot vars [] x
-    return (g, as)
+    as <- loadCheckedConj md pos prot vars [] x
+    return (g, ([], as))
+
+-- Load a conjunction and check the result as determined by the mode
+-- md.
+
+loadCheckedConj :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+                   Prot t g -> [t] -> [t] -> SExpr Pos -> m (Conj t)
+loadCheckedConj RoleSpec pos prot vars unbound x =
+  loadRoleSpecific pos prot vars unbound x
+loadCheckedConj UnusedVars pos prot vars unbound x =
+  loadUsedVars pos prot vars unbound x
 
 --- Load a conjunction of atomic formulas and ensure the formula is
 --- role specific.
@@ -925,6 +989,20 @@ loadRoleSpecific pos prot vars unbound x =
     case unbound of
       [] -> return as'
       (v : _) -> fail (shows (annotation x) ("Malformed defgoal: " ++ showst v " not used"))
+
+-- Load a conjuction of atomic formulas and ensure that all declared
+-- variables are used.
+
+loadUsedVars :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+                [t] -> [t] -> SExpr Pos -> m (Conj t)
+loadUsedVars pos prot vars unbound x =
+  do
+    as <- loadConjunction pos prot vars x
+    -- Compute the free variables in the conjunction
+    let f vars (_, form) = aFreeVars vars form
+    case unbound L.\\ foldl f [] as of
+      [] -> return as
+      (v : _) -> fail (shows (annotation x) (showst v " not used"))
 
 -- Load a conjunction of atomic formulas
 
@@ -953,7 +1031,7 @@ loadPrimary _ _ kvars (L pos [S _ "=", x, y]) =
   do
     t <- loadTerm kvars False x
     t' <- loadTerm kvars False y
-    case isNodeVar t == isNodeVar t' of
+    case isStrdVar t == isStrdVar t' of
       True -> return (pos, Equals t t')
       False -> fail (shows pos "Sort mismatch in equality")
 loadPrimary _ _ kvars (L pos [S _ "non", x]) =
@@ -968,61 +1046,76 @@ loadPrimary _ _ kvars (L pos [S _ "uniq", x]) =
   do
     t <- loadAlgTerm kvars x
     return (pos, Uniq t)
-loadPrimary _ _ kvars (L pos [S _ "uniq-at", x, y]) =
+loadPrimary _ _ kvars (L pos [S _ "uniq-at", x, y, z]) =
   do
     t <- loadAlgTerm kvars x
-    t' <- loadNodeTerm kvars y
+    t' <- loadNodeTerm kvars y z
     return (pos, UniqAt t t')
-loadPrimary _ _ kvars (L pos [S _ "ugen-at", x, y]) =
+loadPrimary _ _ kvars (L pos [S _ "ugen-at", x, y, z]) =
   do
     t <- loadAlgTerm kvars x
-    t' <- loadNodeTerm kvars y
+    t' <- loadNodeTerm kvars y z
     return (pos, UgenAt t t')
 loadPrimary _ _ kvars (L pos [S _ "ugen", x]) =
   do
     t <- loadAlgTerm kvars x
     return (pos, Ugen t)
-loadPrimary _ _ kvars (L pos [S _ "str-prec", x, y]) =
+loadPrimary _ _ kvars (L pos (S _ "fact" : S _ name : fs)) =
   do
-    t <- loadNodeTerm kvars x
-    t' <- loadNodeTerm kvars y
-    return (pos, StrPrec t t')
-loadPrimary _ _ kvars (L pos [S _ "prec", x, y]) =
+    fs <- mapM (loadTerm kvars False) fs
+    return (pos, AFact name fs)
+loadPrimary _ _ kvars (L pos [S _ "prec", w, x, y, z]) =
   do
-    t <- loadNodeTerm kvars x
-    t' <- loadNodeTerm kvars y
+    t <- loadNodeTerm kvars w x
+    t' <- loadNodeTerm kvars y z
     return (pos, Prec t t')
-loadPrimary _ p kvars (L pos [S _ "p", Q _ name, N _ i, x]) =
+loadPrimary _ p kvars (L pos [S _ "p", Q _ name, x, N _ h]) =
   do
     r <- lookupRole pos p name
-    t <- loadNodeTerm kvars x
-    case i < 0 || i >= length (rtrace r) of
+    t <- loadStrdTerm kvars x
+    case h <= 0 || h > length (rtrace r) of
       True -> fail (shows pos "Bad index")
-      False -> return (pos, RolePred r i t)
+      False -> return (pos, Length r t h)
 loadPrimary _ p kvars (L pos [S _ "p", Q _ name, Q var x, y, z]) =
   do
     r <- lookupRole pos p name
     v <- loadAlgTerm (rvars r) (S var x)
-    n <- loadNodeTerm kvars y
+    n <- loadStrdTerm kvars y
     t <- loadAlgTerm kvars z
     case isVar v of
       False -> fail (shows pos "Bad parameter -- not a variable")
-      True -> return (pos, ParamPred r v n t)
+      True ->
+        case firstOccurs v r of
+          Just i -> return (pos, Param r v (i + 1) n t)
+          Nothing ->
+            fail (shows pos ("parameter " ++ x ++ " not in role " ++ name))
 loadPrimary _ _ _ (L pos (S _ "p" : Q _ name : _)) =
   fail (shows pos ("Malformed role specific formula for role " ++ name))
 loadPrimary _ _ _ (L pos (S _ pred : _)) =
   fail (shows pos ("Malformed formula for predicate " ++ pred))
 loadPrimary pos _ _ _ = fail (shows pos "Bad formula")
 
--- Load a term and make sure it has sort node
+-- Load a term and make sure it has sort strd
 
-loadNodeTerm :: (Algebra t p g s e c, Monad m) => [t] -> SExpr Pos -> m t
-loadNodeTerm ts x =
+loadStrdTerm :: (Algebra t p g s e c, Monad m) =>
+                [t] -> SExpr Pos -> m t
+loadStrdTerm ts x =
   do
     t <- loadTerm ts False x
-    case isNodeVar t of
+    case isStrdVar t of
       True -> return t
-      False -> fail (shows (annotation x) "Expecting a node variable")
+      False -> fail (shows (annotation x) "Expecting a strand variable")
+
+-- Load a term and make sure it describes a node
+
+loadNodeTerm :: (Algebra t p g s e c, Monad m) =>
+                [t] -> SExpr Pos -> SExpr Pos -> m (NodeTerm t)
+loadNodeTerm ts x (N _ i) | i >= 0 =
+  do
+    t <- loadStrdTerm ts x
+    return (t, i)
+loadNodeTerm _ _ y =
+  fail (shows (annotation y) "Expecting an integer")
 
 -- Load a term and make sure it does not have sort node
 
@@ -1032,7 +1125,7 @@ loadAlgTerm _ x@(L _ [N _ _, N _ _]) =
 loadAlgTerm ts x =
   do
     t <- loadTerm ts False x
-    case isNodeVar t of
+    case isStrdVar t of
       True -> fail (shows (annotation x) "Expecting an algebra term")
       False -> return t
 
@@ -1049,16 +1142,13 @@ allBound unbound t =
 
 roleSpecific :: (Algebra t p g s e c, Monad m) =>
                 [t] -> (Pos, AForm t) -> m [t]
-roleSpecific unbound (_, RolePred _ _ n) =
-  return $ L.delete n unbound
-roleSpecific unbound (pos, ParamPred _ _ n t)
-  | L.notElem n unbound = return $ unbound L.\\ termVars t
+roleSpecific unbound (_, Length _ z _) =
+  return $ L.delete z unbound
+roleSpecific unbound (pos, Param _ _ _ z t)
+  | L.notElem z unbound = return $ unbound L.\\ termVars t
   | otherwise = fail (shows pos "Unbound variable in parameter predicate")
-roleSpecific unbound (pos, StrPrec n n')
-  | L.notElem n unbound && L.notElem n' unbound = return unbound
-  | otherwise = fail (shows pos "Unbound variable in str-prec")
-roleSpecific unbound (pos, Prec n n')
-  | L.notElem n unbound && L.notElem n' unbound = return unbound
+roleSpecific unbound (pos, Prec (z, _) (z', _))
+  | L.notElem z unbound && L.notElem z' unbound = return unbound
   | otherwise = fail (shows pos "Unbound variable in prec")
 roleSpecific unbound (pos, Non t)
   | allBound unbound t = return unbound
@@ -1069,21 +1159,24 @@ roleSpecific unbound (pos, Pnon t)
 roleSpecific unbound (pos, Uniq t)
   | allBound unbound t = return unbound
   | otherwise = fail (shows pos "Unbound variable in uniq")
-roleSpecific unbound (pos, UniqAt t n)
-  | allBound unbound t && L.notElem n unbound = return unbound
+roleSpecific unbound (pos, UniqAt t (z, _))
+  | allBound unbound t && L.notElem z unbound = return unbound
   | otherwise = fail (shows pos "Unbound variable in uniq-at")
-roleSpecific unbound (pos, UgenAt t n)
-  | allBound unbound t && L.notElem n unbound = return unbound
+roleSpecific unbound (pos, UgenAt t (z, _))
+  | allBound unbound t && L.notElem z unbound = return unbound
   | otherwise = fail (shows pos "Unbound variable in ugen-at")
 roleSpecific unbound (pos, Ugen t)
   | allBound unbound t = return unbound
   | otherwise = fail (shows pos "Unbound variable in ugen")
+roleSpecific unbound (pos, AFact _ fs)
+  | all (allBound unbound) fs = return unbound
+  | otherwise = fail (shows pos "Unbound variable in fact")
 roleSpecific unbound (pos, Equals t t')
-  | isNodeVar t && isNodeVar t' =
+  | isStrdVar t && isStrdVar t' =
     case L.notElem t unbound && L.notElem t' unbound of
       True -> return unbound
       False -> fail (shows pos "Unbound variable in equals")
-  | isNodeVar t = fail (shows pos "Type mismatch in equals")
-  | isNodeVar t' = fail (shows pos "Type mismatch in equals")
+  | isStrdVar t = fail (shows pos "Type mismatch in equals")
+  | isStrdVar t' = fail (shows pos "Type mismatch in equals")
   | allBound unbound t && allBound unbound t' = return unbound
   | otherwise = fail (shows pos "Unbound variable in equals")

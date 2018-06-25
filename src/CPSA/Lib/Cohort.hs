@@ -184,9 +184,10 @@ data Mode = Mode
 reduce :: Algebra t p g s e c => Mode -> Preskel t g s e ->
           [Preskel t g s e]
 reduce mode k =
-    firstJust (map (testNode mode k a) ns)
-                  (whenRealized k) -- Skeleton is realized
+    filterSame k $ concatMap simplify ks -- Apply rewrites
     where
+      ks = firstJust (map (testNode mode k a) ns)
+           (whenRealized k) -- Skeleton is realized
       triples = L.sortBy priorityOrder
                 [(s,i,p) | s <- [0..((length $ strands k)-1)],
                            i <- [0..((height $ instidx s)-1)],
@@ -202,6 +203,14 @@ reduce mode k =
         | p0 /= p1 = compare p1 p0  -- reverse, so that higher number = higher priority
         | s0 /= s1 = compareStrandOrder mode s0 s1
         | otherwise = compareNodeOrder mode (strandidx s0) i0 i1
+
+-- Filter out skeletons in ks that are isomorphic to k.
+filterSame :: Algebra t p g s e c => Preskel t g s e ->
+              [Preskel t g s e] -> [Preskel t g s e]
+filterSame k ks =
+  filter f ks
+  where
+    f k' = not $ isomorphic (gist k) (gist k')
 
 compareStrandOrder :: Mode -> Int -> Int -> Ordering
 compareStrandOrder mode s0 s1 =
@@ -704,16 +713,22 @@ nextNodeF role ht acc (gen, subst) =
   where
     itrace = map (evtMap $ substitute subst) (take ht (rtrace role))
 
--- Maximize a realized skeleton if possible
+-- Maximize a realized skeleton if possible.  Do not consider
+-- generalizations that fail to satisfy the rules of the skeleton's
+-- protocol.
 
 maximize :: Algebra t p g s e c => Preskel t g s e ->
             [Preskel t g s e]
 maximize k =
-    take 1 gens                 -- Return at most the first answer
+    take 1 (filter f gens)      -- Return at most the first answer
     where
       gens = do
         (k', mapping) <- generalize k -- Generalize generates candidates
         specialization k k' mapping   -- Test a candidate
+      f k =
+        case rewrite k of
+          Nothing -> True
+          _ -> False
 
 -- Test to see if realized skeleton k is a specialization of
 -- preskeleton k' using the given strand mapping.  Returns the

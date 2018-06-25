@@ -1,7 +1,7 @@
 (herald "Unique generation test protocols."
   (comment "Skeletons 2, 4, and 7 should have no shapes."))
 
-(comment "CPSA 3.5.0")
+(comment "CPSA 3.6.0")
 (comment "All input read from uniq-gen-test.scm")
 
 (defprotocol uniqgentest basic

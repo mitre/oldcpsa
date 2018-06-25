@@ -8,12 +8,14 @@
 
 module CPSA.Lib.Protocol (Event (..), evtTerms, evtMesgTerms, evtMap, evt,
     recvTerm, Trace, stripSync, tterms, originates,
-    originationPos, gainedPos, genGainedPos, 
+    originationPos, gainedPos, genGainedPos, firstOccurs,
     Role, rname, rvars, rtrace, rdecls, rcomment, rsearch, generationPos,
     ridecls, mkRole, roleWellFormed,
     RoleDeclInst, RoleDeclInstList, RoleDeclaration, RoleDeclList,
     RoleDeclarations, rpriority, defaultPriority,
-    Prot, mkProt, pname, alg, pgen, roles, listenerRole,
+    AForm (..), NodeTerm, Goal (..),
+    aFormOrder, aFreeVars, Rule (..),
+    Prot, mkProt, pname, alg, pgen, roles, rules, listenerRole,
     varsAllAtoms, pcomment) where
 
 import qualified Data.List as L
@@ -221,6 +223,20 @@ data Role t = Role
 defaultPriority :: Int
 defaultPriority = 5
 
+firstOccurs :: Algebra t p g s e c => t -> Role t -> Maybe Int
+firstOccurs v r = firstOccursAt v (rtrace r)
+
+-- | Compute the index of the first event at which the given variable
+-- occurs in a trace.
+firstOccursAt :: Algebra t p g s e c => t -> Trace t -> Maybe Int
+firstOccursAt t c =
+    loop 0 c
+    where
+      loop _ [] = Nothing
+      loop i (e : c)
+          | any (occursIn t) (evtTerms e) = Just i
+          | otherwise = loop (i + 1) c
+
 -- The empty role name is used with listener strands.  All roles in a
 -- protocol must have a name with more than one character.
 
@@ -372,24 +388,194 @@ notListenerPrefix :: Algebra t p g s e c => Trace t -> Bool
 notListenerPrefix (In t : Out t' : _) | t == t' = False
 notListenerPrefix _ = True
 
+-- Security Goals
+
+-- Syntax for the atomic formulas
+data AForm t
+  = Length (Role t) t Int
+  | Param (Role t) t Int t t   -- role param first-height strand value
+  | Prec (NodeTerm t) (NodeTerm t)
+  | Non t
+  | Pnon t
+  | Uniq t
+  | UniqAt t (NodeTerm t)
+  | UgenAt t (NodeTerm t)
+  | Ugen t
+  | AFact String [t]
+  | Equals t t
+  deriving Show
+
+type NodeTerm t = (t, Int)
+
+data Goal t
+  = Goal { uvars :: [t],          -- Universally quantified variables
+           antec :: [AForm t],    -- Antecedent
+           evars :: [[t]],        -- Existentially quantified variables
+           concl :: [[AForm t]] } -- Conclusion
+  deriving Show
+
+-- Ordering used to sort by constructor order.
+aFormOrder :: AForm t -> AForm t -> Ordering
+aFormOrder (Length _ _ _) (Length _ _ _) = EQ
+aFormOrder (Length _ _ _) (Param _ _ _ _ _) = LT
+aFormOrder (Length _ _ _) (Prec _ _) = LT
+aFormOrder (Length _ _ _) (Non _) = LT
+aFormOrder (Length _ _ _) (Pnon _) = LT
+aFormOrder (Length _ _ _) (Uniq _) = LT
+aFormOrder (Length _ _ _) (UniqAt _ _) = LT
+aFormOrder (Length _ _ _) (UgenAt _ _) = LT
+aFormOrder (Length _ _ _) (Ugen _) = LT
+aFormOrder (Length _ _ _) (AFact _ _) = LT
+aFormOrder (Length _ _ _) (Equals _ _) = LT
+aFormOrder (Param _ _ _ _ _) (Length _ _ _) = GT
+aFormOrder (Param _ _ _ _ _) (Param _ _ _ _ _) = EQ
+aFormOrder (Param _ _ _ _ _) (Prec _ _) = LT
+aFormOrder (Param _ _ _ _ _) (Non _) = LT
+aFormOrder (Param _ _ _ _ _) (Pnon _) = LT
+aFormOrder (Param _ _ _ _ _) (Uniq _) = LT
+aFormOrder (Param _ _ _ _ _) (UniqAt _ _) = LT
+aFormOrder (Param _ _ _ _ _) (UgenAt _ _) = LT
+aFormOrder (Param _ _ _ _ _) (Ugen _) = LT
+aFormOrder (Param _ _ _ _ _) (AFact _ _) = LT
+aFormOrder (Param _ _ _ _ _) (Equals _ _) = LT
+aFormOrder (Prec _ _) (Length _ _ _) = GT
+aFormOrder (Prec _ _) (Param _ _ _ _ _) = GT
+aFormOrder (Prec _ _) (Prec _ _) = EQ
+aFormOrder (Prec _ _) (Non _) = LT
+aFormOrder (Prec _ _) (Pnon _) = LT
+aFormOrder (Prec _ _) (Uniq _) = LT
+aFormOrder (Prec _ _) (UniqAt _ _) = LT
+aFormOrder (Prec _ _) (UgenAt _ _) = LT
+aFormOrder (Prec _ _) (Ugen _) = LT
+aFormOrder (Prec _ _) (AFact _ _) = LT
+aFormOrder (Prec _ _) (Equals _ _) = LT
+aFormOrder (Non _) (Length _ _ _) = GT
+aFormOrder (Non _) (Param _ _ _ _ _) = GT
+aFormOrder (Non _) (Prec _ _) = GT
+aFormOrder (Non _) (Non _) = EQ
+aFormOrder (Non _) (Pnon _) = LT
+aFormOrder (Non _) (Uniq _) = LT
+aFormOrder (Non _) (UniqAt _ _) = LT
+aFormOrder (Non _) (UgenAt _ _) = LT
+aFormOrder (Non _) (Ugen _) = LT
+aFormOrder (Non _) (AFact _ _) = LT
+aFormOrder (Non _) (Equals _ _) = LT
+aFormOrder (Pnon _) (Length _ _ _) = GT
+aFormOrder (Pnon _) (Param _ _ _ _ _) = GT
+aFormOrder (Pnon _) (Prec _ _) = GT
+aFormOrder (Pnon _) (Non _) = GT
+aFormOrder (Pnon _) (Pnon _) = EQ
+aFormOrder (Pnon _) (Uniq _) = LT
+aFormOrder (Pnon _) (UniqAt _ _) = LT
+aFormOrder (Pnon _) (UgenAt _ _) = LT
+aFormOrder (Pnon _) (Ugen _) = LT
+aFormOrder (Pnon _) (AFact _ _) = LT
+aFormOrder (Pnon _) (Equals _ _) = LT
+aFormOrder (Uniq _) (Length _ _ _) = GT
+aFormOrder (Uniq _) (Param _ _ _ _ _) = GT
+aFormOrder (Uniq _) (Prec _ _) = GT
+aFormOrder (Uniq _) (Non _) = GT
+aFormOrder (Uniq _) (Pnon _) = GT
+aFormOrder (Uniq _) (Uniq _) = EQ
+aFormOrder (Uniq _) (UniqAt _ _) = LT
+aFormOrder (Uniq _) (UgenAt _ _) = LT
+aFormOrder (Uniq _) (Ugen _) = LT
+aFormOrder (Uniq _) (AFact _ _) = LT
+aFormOrder (Uniq _) (Equals _ _) = LT
+aFormOrder (UniqAt _ _) (Length _ _ _) = GT
+aFormOrder (UniqAt _ _) (Param _ _ _ _ _) = GT
+aFormOrder (UniqAt _ _) (Prec _ _) = GT
+aFormOrder (UniqAt _ _) (Non _) = GT
+aFormOrder (UniqAt _ _) (Pnon _) = GT
+aFormOrder (UniqAt _ _) (Uniq _) = GT
+aFormOrder (UniqAt _ _) (UniqAt _ _) = EQ
+aFormOrder (UniqAt _ _) (UgenAt _ _) = LT
+aFormOrder (UniqAt _ _) (Ugen _) = LT
+aFormOrder (UniqAt _ _) (AFact _ _) = LT
+aFormOrder (UniqAt _ _) (Equals _ _) = LT
+aFormOrder (UgenAt _ _) (Length _ _ _) = GT
+aFormOrder (UgenAt _ _) (Param _ _ _ _ _) = GT
+aFormOrder (UgenAt _ _) (Prec _ _) = GT
+aFormOrder (UgenAt _ _) (Non _) = GT
+aFormOrder (UgenAt _ _) (Pnon _) = GT
+aFormOrder (UgenAt _ _) (Uniq _) = GT
+aFormOrder (UgenAt _ _) (UniqAt _ _) = GT
+aFormOrder (UgenAt _ _) (UgenAt _ _) = EQ
+aFormOrder (UgenAt _ _) (Ugen _) = LT
+aFormOrder (UgenAt _ _) (AFact _ _) = LT
+aFormOrder (UgenAt _ _) (Equals _ _) = LT
+aFormOrder (Ugen _) (Length _ _ _) = GT
+aFormOrder (Ugen _) (Param _ _ _ _ _) = GT
+aFormOrder (Ugen _) (Prec _ _) = GT
+aFormOrder (Ugen _) (Non _) = GT
+aFormOrder (Ugen _) (Pnon _) = GT
+aFormOrder (Ugen _) (Uniq _) = GT
+aFormOrder (Ugen _) (UniqAt _ _) = GT
+aFormOrder (Ugen _) (UgenAt _ _) = GT
+aFormOrder (Ugen _) (Ugen _) = EQ
+aFormOrder (Ugen _) (AFact _ _) = LT
+aFormOrder (Ugen _) (Equals _ _) = LT
+aFormOrder (AFact _ _) (Length _ _ _) = GT
+aFormOrder (AFact _ _) (Param _ _ _ _ _) = GT
+aFormOrder (AFact _ _) (Prec _ _) = GT
+aFormOrder (AFact _ _) (Non _) = GT
+aFormOrder (AFact _ _) (Pnon _) = GT
+aFormOrder (AFact _ _) (Uniq _) = GT
+aFormOrder (AFact _ _) (UniqAt _ _) = GT
+aFormOrder (AFact _ _) (UgenAt _ _) = GT
+aFormOrder (AFact _ _) (Ugen _) = GT
+aFormOrder (AFact _ _) (AFact _ _) = EQ
+aFormOrder (AFact _ _) (Equals _ _) = LT
+aFormOrder (Equals _ _) (Length _ _ _) = GT
+aFormOrder (Equals _ _) (Param _ _ _ _ _) = GT
+aFormOrder (Equals _ _) (Prec _ _) = GT
+aFormOrder (Equals _ _) (Non _) = GT
+aFormOrder (Equals _ _) (Pnon _) = GT
+aFormOrder (Equals _ _) (Uniq _) = GT
+aFormOrder (Equals _ _) (UniqAt _ _) = GT
+aFormOrder (Equals _ _) (UgenAt _ _) = GT
+aFormOrder (Equals _ _) (Ugen _) = GT
+aFormOrder (Equals _ _) (AFact _ _) = GT
+aFormOrder (Equals _ _) (Equals _ _) = EQ
+
+aFreeVars :: Algebra t p g s e c => [t] -> AForm t -> [t]
+aFreeVars vars (Length _ z _) = addVars vars z
+aFreeVars vars (Param _ _ _ z t) = addVars (addVars vars z) t
+aFreeVars vars (Prec (x, _) (y, _)) = addVars (addVars vars x) y
+aFreeVars vars (Non t) = addVars vars t
+aFreeVars vars (Pnon t) = addVars vars t
+aFreeVars vars (Uniq t) = addVars vars t
+aFreeVars vars (UniqAt t (z, _)) = addVars (addVars vars t) z
+aFreeVars vars (UgenAt t (z, _)) = addVars (addVars vars t) z
+aFreeVars vars (Ugen t) = addVars vars t
+aFreeVars vars (AFact _ ft) = foldl addVars vars ft
+aFreeVars vars (Equals x y) = addVars (addVars vars x) y
+
+data Rule t
+  = Rule { rlname :: String,    -- Name of rule
+           rlgoal :: Goal t,    -- Sentence
+           rlcomment :: [SExpr ()] }
+    deriving Show
+
 -- Protocols
 
 data Prot t g
     = Prot { pname :: !String,  -- Name of the protocol
              alg :: !String,    -- Name of the algebra
-             pgen :: !g,        -- Initial variable generator
+             pgen :: !g,      -- Initial variable generator
              roles :: ![Role t], -- Non-listener roles of a protocol
              listenerRole :: Role t,
+             rules :: ![Rule t],  -- Protocol rules
              varsAllAtoms :: !Bool,   -- Are all role variables atoms?
              pcomment :: [SExpr ()] }  -- Comments from the input
     deriving Show
 
 -- Callers should ensure every role has a distinct name.
 mkProt :: Algebra t p g s e c => String -> String ->
-          g -> [Role t] -> Role t -> [SExpr ()] -> Prot t g
-mkProt name alg gen roles lrole comment =
+          g -> [Role t] -> Role t -> [Rule t] -> [SExpr ()] -> Prot t g
+mkProt name alg gen roles lrole rules comment =
     Prot { pname = name, alg = alg, pgen = gen, roles = roles,
-           listenerRole = lrole, pcomment = comment,
+           listenerRole = lrole, rules = rules, pcomment = comment,
            varsAllAtoms = all roleVarsAllAtoms roles }
     where
       roleVarsAllAtoms role = all isAtom (rvars role)

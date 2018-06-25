@@ -306,14 +306,14 @@ isExprVar t =
 -- Assumes isGroupVar t == True or isBasisVar t == True!
 getGroupVar :: Group -> Id
 getGroupVar x = head $ M.keys x
-                
+
 -- Create group var as a basis element if be is true
 groupVarG :: Bool -> Id -> Group
 groupVarG be x = M.singleton x (be, 1)
 
 groupVar :: Bool -> Id -> Term
 groupVar be x = G $ groupVarG be x
-                
+
 groupVarGroup :: Id -> Group
 groupVarGroup x = groupVarG False x
 
@@ -386,8 +386,8 @@ data Term
     | C !String
     | F !Symbol ![Term]
     | G !Group                  -- An exponent, an Abelian group
-    | D !Id                     -- Node variable
-    | P (Int, Int)              -- Node constant
+    | D !Id                     -- Strand variable
+    | Z Int                     -- Strand constant
       deriving Show
 
 subNums :: Term -> Set Term
@@ -443,7 +443,7 @@ equalTerm (F Bltk [t0, t1]) (F Bltk [t0', t1']) =
 equalTerm (F s u) (F s' u') =
     s == s' && equalTermLists u u'
 equalTerm (D x) (D y) = x == y
-equalTerm (P p) (P p') = p == p'
+equalTerm (Z p) (Z p') = p == p'
 equalTerm _ _ = False
 
 {-
@@ -515,7 +515,7 @@ compareTerm (F s u) (F s' u') =
       EQ -> compareTermLists u u'
       o -> o
 compareTerm (D x) (D y) = compare x y
-compareTerm (P p) (P p') = compare p p'
+compareTerm (Z p) (Z p') = compare p p'
 compareTerm (I _) (C _) = LT
 compareTerm (C _) (I _) = GT
 compareTerm (I _) (F _ _) = LT
@@ -524,28 +524,28 @@ compareTerm (I _) (G _) = LT
 compareTerm (G _) (I _) = GT
 compareTerm (I _) (D _) = LT
 compareTerm (D _) (I _) = GT
-compareTerm (I _) (P _) = LT
-compareTerm (P _) (I _) = GT
+compareTerm (I _) (Z _) = LT
+compareTerm (Z _) (I _) = GT
 compareTerm (C _) (F _ _) = LT
 compareTerm (F _ _) (C _) = GT
 compareTerm (C _) (G _) = LT
 compareTerm (G _) (C _) = GT
 compareTerm (C _) (D _) = LT
 compareTerm (D _) (C _) = GT
-compareTerm (C _) (P _) = LT
-compareTerm (P _) (C _) = GT
+compareTerm (C _) (Z _) = LT
+compareTerm (Z _) (C _) = GT
 compareTerm (F _ _) (G _) = LT
 compareTerm (G _) (F _ _) = GT
 compareTerm (F _ _) (D _) = LT
 compareTerm (D _) (F _ _) = GT
-compareTerm (F _ _) (P _) = LT
-compareTerm (P _) (F _ _) = GT
+compareTerm (F _ _) (Z _) = LT
+compareTerm (Z _) (F _ _) = GT
 compareTerm (G _) (D _) = LT
 compareTerm (D _) (G _) = GT
-compareTerm (G _) (P _) = LT
-compareTerm (P _) (G _) = GT
-compareTerm (D _) (P _) = LT
-compareTerm (P _) (D _) = GT
+compareTerm (G _) (Z _) = LT
+compareTerm (Z _) (G _) = GT
+compareTerm (D _) (Z _) = LT
+compareTerm (Z _) (D _) = GT
 
 compareTermLists :: [Term] -> [Term] -> Ordering
 compareTermLists [] [] = EQ
@@ -576,9 +576,9 @@ isVar (G t) = isGroupVar t
 isVar _ = False
 
 -- Note that isVar of (D _) is false.
-isNodeVar :: Term -> Bool
-isNodeVar (D _) = True
-isNodeVar _ = False
+isStrdVar :: Term -> Bool
+isStrdVar (D _) = True
+isStrdVar _ = False
 
 -- Extract the identifier from a variable
 varId :: Term -> Id
@@ -714,7 +714,7 @@ isAtom (F s _) =
     s == Text || s == Data || s == Name || s == Skey || s == Akey || s == Tag
 isAtom (G x) = isBasisVar x
 isAtom (D _) = False
-isAtom (P _) = False
+isAtom (Z _) = False
 
 -- Is the term numeric?
 isNum :: Term -> Bool
@@ -783,9 +783,9 @@ foldVars f acc (F Enc [t0, t1]) = -- Encryption
     foldVars f (foldVars f acc t0) t1
 foldVars f acc (F Hash [t])     = -- Hashing
     foldVars f acc t
-foldVars f acc t@(D _) = f acc t          -- Node variable
+foldVars f acc t@(D _) = f acc t          -- Strand variable
+foldVars _ acc (Z _) = acc                -- Strand constant
 foldVars _ acc (C _) = acc
-foldVars _ acc (P _) = acc
 foldVars _ _ t = error $ "Algebra.foldVars: Bad term " ++ show t
 
 -- Fold f through a term applying it to each term that is carried by the term.
@@ -1055,7 +1055,7 @@ consts (F Tag _) ts =
       loop acc ((F _ subts): ts) = loop acc (subts ++ ts)
       loop acc (_ : ts) = loop acc ts
 consts _ _ = []
-                 
+
 instance C.Term Term where
     derivable = derivable
     isNum = isNum
@@ -1065,7 +1065,7 @@ instance C.Term Term where
     subNums = subNums
     indicator = calcIndicator
     isAtom = isAtom
-    isNodeVar = isNodeVar
+    isStrdVar = isStrdVar
     termsWellFormed = termsWellFormed
     occursIn = occursIn
     foldVars = foldVars
@@ -1277,7 +1277,7 @@ clone gen t =
                   Nothing ->
                       let (gen', y) = cloneId gen x in
                       ((x, y) : alist, gen', D y)
-            P p -> (alist, gen, P p)
+            Z p -> (alist, gen, Z p)
       cloneTermList (alist, gen, u) t =
           let (alist', gen', t') = cloneTerm (alist, gen) t in
           (alist', gen', t' : u)
@@ -1347,7 +1347,18 @@ idSubst subst (G t) =
     G $ groupSubst subst t
 idSubst subst (D x) =
     M.findWithDefault (D x) x subst
-idSubst _ t@(P _) = t
+idSubst _ t@(Z _) = t
+
+-- Is every variable in a term a key in the map?
+idMapped :: IdMap -> Term -> Bool
+idMapped subst (I x) = M.member x subst
+idMapped _ (C _) = True
+idMapped subst (F _ u) =
+    all (idMapped subst) u
+idMapped subst (G t) =
+    all (\ x -> M.member x subst) (M.keys t)
+idMapped subst (D x) = M.member x subst
+idMapped _ (Z _) = True
 
 expSubst :: IdMap -> Term -> Group -> Term
 expSubst subst t0 t1 =
@@ -1477,7 +1488,7 @@ chaseExpFinalize t0 t1 =
     if M.null t1
        then t0
        else F Exp [t0, G t1]
-                
+
 chaseGroup :: IdMap -> Group -> Group
 chaseGroup s t =
     M.foldrWithKey f M.empty t
@@ -1492,8 +1503,7 @@ chaseGroupLookup s be x =
       Just (G t) -> chaseGroup s t
       Just w -> error ("Algebra.chaseGroupLookup: Bad substitution: " ++
                      show x ++ " -> " ++ show w)
-               
-                   
+
 -- Does x occur in t?
 occurs :: Id -> Term -> Bool
 occurs x (I y) = x == y
@@ -1501,7 +1511,7 @@ occurs _ (C _) = False
 occurs x (F _ u) = any (occurs x) u
 occurs x (G t) = elem x (M.keys t)
 occurs x (D y) = x == y
-occurs _ (P _) = False
+occurs _ (Z _) = False
 
 type GenSubst = (Gen, Subst)
 
@@ -1539,10 +1549,10 @@ unifyTerms (G t) (G t') s =
 unifyTerms (D x) (D y) (g, Subst s)
     | x == y = [(g, Subst s)]
     | otherwise = [(g, Subst $ M.insert x (D y) s)]
-unifyTerms (D x) (P p) (g, Subst s) =
-    [(g, Subst $ M.insert x (P p) s)]
+unifyTerms (D x) (Z p) (g, Subst s) =
+    [(g, Subst $ M.insert x (Z p) s)]
 unifyTerms t (D x) s = unifyTerms (D x) t s
-unifyTerms (P p) (P p') s
+unifyTerms (Z p) (Z p') s
     | p == p' = [s]
     | otherwise = []
 unifyTerms _ _ _ = []
@@ -1648,7 +1658,7 @@ substChase subst@(Subst ss) t =
           F s (map (substChase subst) u)
       G t -> G $ chaseGroup ss t
       t@(D _) -> t
-      t@(P _) -> t
+      t@(Z _) -> t
 
 destroyer :: Term -> Maybe Subst
 destroyer t@(G m) | isVar t =
@@ -1809,6 +1819,15 @@ emptyEnv = Env (S.empty, emptyIdMap)
 instantiate :: Env -> Term -> Term
 instantiate (Env (_, r)) t = idSubst r t
 
+-- Is every variable in t in the domain of r?
+matched :: Env -> Term -> Bool
+matched (Env (_, r)) t = idMapped r t
+
+-- Apply a substitution to the range of an environment
+substUpdate :: Env -> Subst -> Env
+substUpdate (Env (x, r)) s =
+  Env (x, M.map (substitute s) r)
+
 -- Matching
 
 type GenEnv = (Gen, Env)
@@ -1859,7 +1878,7 @@ match (D x) t (g, Env (v, r)) =
   case M.lookup x r of
     Nothing -> [(g, Env (v, M.insert x t r))]
     Just t' -> if t == t' then [(g, Env (v, r))] else []
-match (P p) (P p') r = if p == p' then [r] else []
+match (Z p) (Z p') r = if p == p' then [r] else []
 match _ _ _ = []
 
 -- On input t, outputs (b, e) such that if t is of sort base then
@@ -2366,14 +2385,21 @@ matchRenaming (gen, Env (v, e)) = True
       grp _ _ map = map
 -}
 
-nodeMatch ::  Term -> (Int, Int) -> GenEnv -> [GenEnv]
-nodeMatch t p env = match t (P p) env
+strdMatch ::  Term -> Int -> GenEnv -> [GenEnv]
+strdMatch t p env = match t (Z p) env
 
-nodeLookup :: Env -> Term -> Maybe (Int, Int)
-nodeLookup env t =
-  case instantiate env t of
-    P p -> Just p
-    _ -> Nothing
+strdLookup :: Env -> Term -> Maybe Int
+strdLookup env t =
+    case instantiate env t of
+     Z p -> Just p
+     _ -> Nothing
+
+strdUpdate :: Env -> (Int -> Int) -> Env
+strdUpdate (Env (x, r)) f =
+  Env (x, M.map h r)
+  where
+    h (Z z) = Z $ f z
+    h t = t
 
 instance C.Env Term Gen Subst Env where
    emptyEnv = emptyEnv
@@ -2382,8 +2408,11 @@ instance C.Env Term Gen Subst Env where
    match = match
    substitution = substitution
    reify = reify
-   nodeMatch = nodeMatch
-   nodeLookup = nodeLookup
+   substUpdate = substUpdate
+   matched = matched
+   strdMatch = strdMatch
+   strdLookup = strdLookup
+   strdUpdate = strdUpdate
 
 -- Term specific loading functions
 
@@ -2428,7 +2457,7 @@ mkVar pos sort x
   -- Legecy names
   | sort == "expr" = return $ groupVar False x
   | sort == "expn" = return $ groupVar True x
-  | sort == "node" = return $ D x
+  | sort == "strd" = return $ D x
   | otherwise = fail (shows pos "Sort " ++ sort ++ " not recognized")
 
 loadLookup :: Pos -> [Term] -> String -> Either String Term
@@ -2660,7 +2689,7 @@ displayVar ctx (F Tag [I x]) = displaySortId "tag" ctx x
 displayVar ctx t@(G x)
     | isBasisVar x = displaySortId "rndx" ctx (varId t)
     | isGroupVar x = displaySortId "expt" ctx (varId t)
-displayVar ctx (D x) = displaySortId "node" ctx x
+displayVar ctx (D x) = displaySortId "strd" ctx x
 displayVar _ _ =
     C.assertError "Algebra.displayVar: term not a variable with its sort"
 
@@ -2727,7 +2756,7 @@ displayTerm ctx (F Enc [t0, t1]) =
 displayTerm ctx (F Hash [t]) =
     L () (S () "hash" : displayList ctx t)
 displayTerm ctx (D x) = displayId ctx x
-displayTerm _ (P (z, i)) = L () [N () z, N () i]
+displayTerm _ (Z z) = N () z
 displayTerm _ t = error ("Algebra.displayTerm: Bad term " ++ show t)
 
 displayList :: Context -> Term -> [SExpr ()]

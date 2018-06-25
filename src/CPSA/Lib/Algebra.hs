@@ -34,8 +34,8 @@ class (Ord t, Show t) => Term t where
     isAtom :: t -> Bool       -- Is the sort of this term a base sort?
 
     -- Extension for security goals, a predicate that succeeds only
-    -- when applied to node variables.
-    isNodeVar :: t -> Bool
+    -- when applied to strand variables.
+    isStrdVar :: t -> Bool
 
     -- Does a variable occur in a term?
     occursIn :: t -> t -> Bool
@@ -198,12 +198,18 @@ class (Term t, Gen t g, Subst t g s, Ord e, Show e) => Env t g s e
     -- association list.  The first argument is a list of variables
     -- that make up the domain of the environment.
     reify :: [t] -> e -> [(t, t)]
-    -- Extensions for security goals: node match.  To succeed, the
-    -- term must be a variable of sort node.
-    nodeMatch :: t -> (Int, Int) -> (g, e) -> [(g, e)]
-    -- Node lookup.  If t is a node variable and is bound to a pair in
-    -- e, then return the pair, otherwise return nothing.
-    nodeLookup :: e -> t -> Maybe (Int, Int)
+    -- Is every variable in t in the domain of r?
+    matched :: e -> t -> Bool
+    -- Extensions for security goals: strand match.  To succeed, the
+    -- term must be a variable of sort strd.
+    strdMatch :: t -> Int -> (g, e) -> [(g, e)]
+    -- Strand lookup.  If t is a strand variable and is bound to an integer in
+    -- e, then return the integer, otherwise return nothing.
+    strdLookup :: e -> t -> Maybe Int
+    -- Strand update.  Update strands in an environment.
+    strdUpdate :: e -> (Int -> Int) -> e
+    -- Apply a substitution to the range of an environment
+    substUpdate :: e -> s -> e
 
 -- Display contexts--maps from variables to their printed representation.
 

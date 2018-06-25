@@ -2,7 +2,7 @@
   (comment
     "Version using variables of sort mesg, with ltk function emulated."))
 
-(comment "CPSA 3.5.0")
+(comment "CPSA 3.6.0")
 (comment "All input read from fnof_or.scm")
 
 (defprotocol or basic

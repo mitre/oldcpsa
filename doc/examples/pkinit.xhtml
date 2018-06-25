@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- CPSA 3.5.0 -->
+<!-- CPSA 3.6.0 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
  <title>Kerberos PKINIT</title>
@@ -11,7 +11,7 @@
 <body>
 
 <pre>(herald &quot;Kerberos PKINIT&quot;)
-(comment &quot;CPSA 3.5.0&quot;)
+(comment &quot;CPSA 3.6.0&quot;)
 (comment &quot;All input read from pkinit.scm&quot;)</pre>
 
 <p id="top">Trees: <a href="#t0">0</a> <a href="#t2">2</a> <a href="#t8">8</a> <a href="#t13">13</a> <a href="#t16">16</a> <a href="#t23">23</a>.</p>
@@ -89,13 +89,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
           (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p &quot;auth&quot; 1 z-0) (p &quot;auth&quot; &quot;as&quot; z-0 as)
+        (exists ((z-0 strd))
+          (and (p &quot;auth&quot; z-0 2) (p &quot;auth&quot; &quot;as&quot; z-0 as)
             (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c))))))
   (label 0)
   (unrealized (0 1))
@@ -168,7 +168,7 @@
   (parent 0)
   (unrealized)
   (shape)
-  (satisfies (no (c c) (as as) (k k) (z (0 1))))
+  (satisfies (no (c c) (as as) (k k) (z 0)))
   (maps
     ((0)
       ((c c) (as as) (k k) (t t) (n2 n2) (n1 n1) (tc tc) (tk tk)
@@ -272,13 +272,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
           (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p &quot;auth&quot; 1 z-0) (p &quot;auth&quot; &quot;as&quot; z-0 as)
+        (exists ((z-0 strd))
+          (and (p &quot;auth&quot; z-0 2) (p &quot;auth&quot; &quot;as&quot; z-0 as)
             (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c))))))
   (label 2)
   (unrealized (0 1))
@@ -735,13 +735,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
           (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p &quot;auth&quot; 1 z-0) (p &quot;auth&quot; &quot;as&quot; z-0 as)
+        (exists ((z-0 strd))
+          (and (p &quot;auth&quot; z-0 2) (p &quot;auth&quot; &quot;as&quot; z-0 as)
             (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c))))))
   (label 8)
   (unrealized (0 1))
@@ -1135,10 +1135,10 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
           (non (privk c))) (= c c-0))))
   (label 13)
@@ -1204,10 +1204,10 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
           (non (privk c))) (= c c-0))))
   (label 14)
@@ -1283,7 +1283,7 @@
   (parent 14)
   (unrealized)
   (shape)
-  (satisfies (no (c c) (c-0 c-0) (as as) (k k) (z (1 1)) (z-0 (0 1))))
+  (satisfies (no (c c) (c-0 c-0) (as as) (k k) (z 1) (z-0 0)))
   (maps
     ((0 1)
       ((c c) (c-0 c-0) (as as) (k k) (t t) (as-0 as) (n2 n2) (n1 n1)
@@ -1410,12 +1410,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p &quot;client&quot; 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p &quot;client&quot; z-1 2)))))
   (label 16)
   (unrealized (1 1))
   (preskeleton)
@@ -1479,12 +1479,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p &quot;client&quot; 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p &quot;client&quot; z-1 2)))))
   (label 17)
   (parent 16)
   (unrealized (1 1))
@@ -1970,12 +1970,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p &quot;client&quot; 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p &quot;client&quot; z-1 2)))))
   (label 23)
   (unrealized (1 1))
   (preskeleton)
@@ -2039,12 +2039,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p &quot;client&quot; 1 z) (p &quot;client&quot; &quot;c&quot; z c)
-          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; 1 z-0)
+        (and (p &quot;client&quot; z 2) (p &quot;client&quot; &quot;c&quot; z c)
+          (p &quot;client&quot; &quot;as&quot; z as) (p &quot;client&quot; &quot;k&quot; z k) (p &quot;auth&quot; z-0 2)
           (p &quot;auth&quot; &quot;k&quot; z-0 k) (p &quot;auth&quot; &quot;c&quot; z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p &quot;client&quot; 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p &quot;client&quot; z-1 2)))))
   (label 24)
   (parent 23)
   (unrealized (1 1))

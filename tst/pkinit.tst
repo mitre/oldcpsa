@@ -1,6 +1,6 @@
 (herald "Kerberos PKINIT")
 
-(comment "CPSA 3.5.0")
+(comment "CPSA 3.6.0")
 (comment "All input read from pkinit.scm")
 
 (defprotocol pkinit-flawed basic
@@ -26,13 +26,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
+        (and (p "client" z 2) (p "client" "c" z c)
           (p "client" "as" z as) (p "client" "k" z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p "auth" 1 z-0) (p "auth" "as" z-0 as)
+        (exists ((z-0 strd))
+          (and (p "auth" z-0 2) (p "auth" "as" z-0 as)
             (p "auth" "k" z-0 k) (p "auth" "c" z-0 c))))))
   (traces
     ((send (cat (enc tc n2 (privk c)) c t n1))
@@ -69,7 +69,7 @@
   (parent 0)
   (unrealized)
   (shape)
-  (satisfies (no (c c) (as as) (k k) (z (0 1))))
+  (satisfies (no (c c) (as as) (k k) (z 0)))
   (maps
     ((0)
       ((c c) (as as) (k k) (t t) (n2 n2) (n1 n1) (tc tc) (tk tk)
@@ -101,13 +101,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
+        (and (p "client" z 2) (p "client" "c" z c)
           (p "client" "as" z as) (p "client" "k" z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p "auth" 1 z-0) (p "auth" "as" z-0 as)
+        (exists ((z-0 strd))
+          (and (p "auth" z-0 2) (p "auth" "as" z-0 as)
             (p "auth" "k" z-0 k) (p "auth" "c" z-0 c))))))
   (traces
     ((send (cat (enc tc n2 (privk c)) c t n1))
@@ -283,13 +283,13 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2 n1)
   (goals
-    (forall ((c as name) (k skey) (z node))
+    (forall ((c as name) (k skey) (z strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
+        (and (p "client" z 2) (p "client" "c" z c)
           (p "client" "as" z as) (p "client" "k" z k) (non (privk as))
           (non (privk c)))
-        (exists ((z-0 node))
-          (and (p "auth" 1 z-0) (p "auth" "as" z-0 as)
+        (exists ((z-0 strd))
+          (and (p "auth" z-0 2) (p "auth" "as" z-0 as)
             (p "auth" "k" z-0 k) (p "auth" "c" z-0 c))))))
   (traces
     ((send (cat (enc tc n2 (privk c)) c t n1))
@@ -452,10 +452,10 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
           (non (privk c))) (= c c-0))))
   (traces
@@ -483,10 +483,10 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
           (non (privk c))) (= c c-0))))
   (traces
@@ -529,7 +529,7 @@
   (parent 14)
   (unrealized)
   (shape)
-  (satisfies (no (c c) (c-0 c-0) (as as) (k k) (z (1 1)) (z-0 (0 1))))
+  (satisfies (no (c c) (c-0 c-0) (as as) (k k) (z 1) (z-0 0)))
   (maps
     ((0 1)
       ((c c) (c-0 c-0) (as as) (k k) (t t) (as-0 as) (n2 n2) (n1 n1)
@@ -565,12 +565,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p "client" 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p "client" z-1 2)))))
   (traces
     ((recv (cat (enc tc n2 (privk c-0)) c-0 t n1))
       (send
@@ -596,12 +596,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p "client" 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p "client" z-1 2)))))
   (traces
     ((recv (cat (enc tc n2 (privk c-0)) c-0 t n1))
       (send
@@ -787,12 +787,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p "client" 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p "client" z-1 2)))))
   (traces
     ((recv (cat (enc tc n2 (privk c-0)) c-0 t n1))
       (send
@@ -823,12 +823,12 @@
   (non-orig (privk c) (privk as))
   (uniq-orig n2-0 n1-0 k ak)
   (goals
-    (forall ((c c-0 as name) (k skey) (z z-0 node))
+    (forall ((c c-0 as name) (k skey) (z z-0 strd))
       (implies
-        (and (p "client" 1 z) (p "client" "c" z c)
-          (p "client" "as" z as) (p "client" "k" z k) (p "auth" 1 z-0)
+        (and (p "client" z 2) (p "client" "c" z c)
+          (p "client" "as" z as) (p "client" "k" z k) (p "auth" z-0 2)
           (p "auth" "k" z-0 k) (p "auth" "c" z-0 c-0) (non (privk as))
-          (non (privk c))) (exists ((z-1 node)) (p "client" 1 z-1)))))
+          (non (privk c))) (exists ((z-1 strd)) (p "client" z-1 2)))))
   (traces
     ((recv (cat (enc tc n2 (privk c-0)) c-0 t n1))
       (send

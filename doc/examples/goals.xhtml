@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- CPSA 3.5.0 -->
+<!-- CPSA 3.6.0 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
  <title>goals</title>
@@ -11,10 +11,10 @@
 <body>
 
 <pre>(herald goals)
-(comment &quot;CPSA 3.5.0&quot;)
+(comment &quot;CPSA 3.6.0&quot;)
 (comment &quot;All input read from goals.scm&quot;)</pre>
 
-<p id="top">Trees: <a href="#t0">0</a> <a href="#t2">2</a> <a href="#t4">4</a> <a href="#t6">6</a> <a href="#t8">8</a> <a href="#t17">17</a> <a href="#t19">19</a> <a href="#t21">21</a> <a href="#t23">23</a> <a href="#t26">26</a> <a href="#t28">28</a> <a href="#t33">33</a> <a href="#t41">41</a> <a href="#t45">45</a> <a href="#t47">47</a> <a href="#t49">49</a> <a href="#t52">52</a> <a href="#t54">54</a> <a href="#t57">57</a> <a href="#t62">62</a> <a href="#t65">65</a>.</p>
+<p id="top">Trees: <a href="#t0">0</a> <a href="#t2">2</a> <a href="#t4">4</a> <a href="#t6">6</a> <a href="#t8">8</a> <a href="#t17">17</a> <a href="#t19">19</a> <a href="#t21">21</a> <a href="#t23">23</a> <a href="#t26">26</a> <a href="#t28">28</a> <a href="#t33">33</a> <a href="#t41">41</a>.</p>
 
 <p id="t0">Tree <a href="#top">0</a>.</p>
 
@@ -82,12 +82,12 @@
   (non-orig (privk b))
   (uniq-orig n1)
   (goals
-    (forall ((b name) (n1 text) (z0 node))
+    (forall ((b name) (n1 text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 2 z0) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;b&quot; z0 b)
+        (and (p &quot;init&quot; z0 3) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;b&quot; z0 b)
           (non (privk b)) (uniq n1))
-        (exists ((z1 node))
-          (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;b&quot; z1 b))))))
+        (exists ((z1 strd))
+          (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;b&quot; z1 b))))))
   (comment &quot;Initiator point of view&quot;
     &quot;Authentication goal: agreement on name b&quot;)
   (label 0)
@@ -225,12 +225,12 @@
   (non-orig (privk b))
   (uniq-orig n1)
   (goals
-    (forall ((b name) (n1 text) (z0 node))
+    (forall ((b name) (n1 text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 2 z0) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;b&quot; z0 b)
+        (and (p &quot;init&quot; z0 3) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;b&quot; z0 b)
           (non (privk b)) (uniq n1))
-        (exists ((z1 node))
-          (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;b&quot; z1 b) (prec z1 z0))))))
+        (exists ((z1 strd))
+          (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;b&quot; z1 b) (prec z1 1 z0 2))))))
   (comment &quot;Prec example&quot;)
   (label 2)
   (unrealized (0 1))
@@ -297,7 +297,7 @@
   (parent 2)
   (unrealized)
   (shape)
-  (satisfies (no (b b) (n1 n1) (z0 (0 2))))
+  (satisfies (no (b b) (n1 n1) (z0 0)))
   (maps ((0) ((b b) (n1 n1) (a a) (n2 n2))))
   (origs (n1 (0 0))))</pre>
 
@@ -367,12 +367,12 @@
   (non-orig (privk a))
   (uniq-orig n2)
   (goals
-    (forall ((a b name) (n2 text) (z0 node))
+    (forall ((a b name) (n2 text) (z0 strd))
       (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
+        (and (p &quot;resp&quot; z0 3) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
           (p &quot;resp&quot; &quot;b&quot; z0 b) (non (privk a)) (uniq n2))
-        (exists ((z1 node))
-          (and (p &quot;init&quot; 1 z1) (p &quot;init&quot; &quot;b&quot; z1 b))))))
+        (exists ((z1 strd))
+          (and (p &quot;init&quot; z1 2) (p &quot;init&quot; &quot;b&quot; z1 b))))))
   (comment &quot;Responder point of view&quot;
     &quot;Failed authentication goal: agreement on name b&quot;)
   (label 4)
@@ -442,7 +442,7 @@
   (parent 4)
   (unrealized)
   (shape)
-  (satisfies (no (a a) (b b) (n2 n2) (z0 (0 2))))
+  (satisfies (no (a a) (b b) (n2 n2) (z0 0)))
   (maps ((0) ((a a) (b b) (n2 n2) (n1 n1))))
   (origs (n2 (0 1))))</pre>
 
@@ -513,12 +513,12 @@
   (non-orig (privk a))
   (uniq-orig n2)
   (goals
-    (forall ((a b name) (n2 text) (z0 node))
+    (forall ((a b name) (n2 text) (z0 strd))
       (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
+        (and (p &quot;resp&quot; z0 3) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
           (p &quot;resp&quot; &quot;b&quot; z0 b) (non (privk a)) (uniq n2))
-        (exists ((z1 node))
-          (and (p &quot;init&quot; 1 z1) (p &quot;init&quot; &quot;b&quot; z1 b))))))
+        (exists ((z1 strd))
+          (and (p &quot;init&quot; z1 2) (p &quot;init&quot; &quot;b&quot; z1 b))))))
   (comment &quot;Responder point of view&quot;
     &quot;Authentication goal: agreement on name b&quot;)
   (label 6)
@@ -720,10 +720,10 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n1)
   (goals
-    (forall ((a b name) (n1 text) (z0 z1 node))
+    (forall ((a b name) (n1 text) (z0 z1 strd))
       (implies
-        (and (p &quot;init&quot; 2 z0) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;a&quot; z0 a)
-          (p &quot;init&quot; &quot;b&quot; z0 b) (p &quot;&quot; 0 z1) (p &quot;&quot; &quot;x&quot; z1 n1)
+        (and (p &quot;init&quot; z0 3) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;a&quot; z0 a)
+          (p &quot;init&quot; &quot;b&quot; z0 b) (p &quot;&quot; z1 1) (p &quot;&quot; &quot;x&quot; z1 n1)
           (non (privk a)) (non (privk b)) (uniq n1)) (false))))
   (comment &quot;Initiator point of view&quot;
     &quot;Secrecy goal: nonce n1 not revealed&quot;)
@@ -779,10 +779,10 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n1)
   (goals
-    (forall ((a b name) (n1 text) (z0 z1 node))
+    (forall ((a b name) (n1 text) (z0 z1 strd))
       (implies
-        (and (p &quot;init&quot; 2 z0) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;a&quot; z0 a)
-          (p &quot;init&quot; &quot;b&quot; z0 b) (p &quot;&quot; 0 z1) (p &quot;&quot; &quot;x&quot; z1 n1)
+        (and (p &quot;init&quot; z0 3) (p &quot;init&quot; &quot;n1&quot; z0 n1) (p &quot;init&quot; &quot;a&quot; z0 a)
+          (p &quot;init&quot; &quot;b&quot; z0 b) (p &quot;&quot; z1 1) (p &quot;&quot; &quot;x&quot; z1 n1)
           (non (privk a)) (non (privk b)) (uniq n1)) (false))))
   (comment &quot;Initiator point of view&quot;
     &quot;Secrecy goal: nonce n1 not revealed&quot;)
@@ -1397,12 +1397,12 @@
   (non-orig (privk a))
   (uniq-orig n)
   (goals
-    (forall ((a name) (n text) (z0 node))
+    (forall ((a name) (n text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 1 z0) (p &quot;init&quot; &quot;n&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
+        (and (p &quot;init&quot; z0 2) (p &quot;init&quot; &quot;n&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
           (non (privk a)) (uniq n))
-        (exists ((z1 node))
-          (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;a&quot; z1 a))))))
+        (exists ((z1 strd))
+          (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;a&quot; z1 a))))))
   (comment &quot;Unilateral authentication goal&quot;)
   (label 17)
   (unrealized (0 1))
@@ -1534,12 +1534,12 @@
   (non-orig (privk a))
   (uniq-orig n)
   (goals
-    (forall ((a name) (n text) (z0 node))
+    (forall ((a name) (n text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 1 z0) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;b&quot; z0 a)
+        (and (p &quot;init&quot; z0 2) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;b&quot; z0 a)
           (non (privk a)) (uniq n))
-        (exists ((z1 node))
-          (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;b&quot; z1 a))))))
+        (exists ((z1 strd))
+          (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;b&quot; z1 a))))))
   (comment &quot;Initiator authentication goal&quot;
     &quot;Same as unilateral goal under the predicate mapping:&quot;
     (p &quot;init&quot; &quot;n&quot;) &quot;-&gt;&quot; (p &quot;init&quot; &quot;n1&quot;) &quot;and&quot; (p &quot;init&quot; &quot;a&quot;) &quot;-&gt;&quot;
@@ -1677,12 +1677,12 @@
   (non-orig (privk a))
   (uniq-orig n)
   (goals
-    (forall ((a name) (n text) (z0 node))
+    (forall ((a name) (n text) (z0 strd))
       (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n) (p &quot;resp&quot; &quot;a&quot; z0 a)
+        (and (p &quot;resp&quot; z0 3) (p &quot;resp&quot; &quot;n2&quot; z0 n) (p &quot;resp&quot; &quot;a&quot; z0 a)
           (non (privk a)) (uniq n))
-        (exists ((z1 node))
-          (and (p &quot;init&quot; 2 z1) (p &quot;init&quot; &quot;a&quot; z1 a))))))
+        (exists ((z1 strd))
+          (and (p &quot;init&quot; z1 3) (p &quot;init&quot; &quot;a&quot; z1 a))))))
   (comment &quot;Responder authentication goal&quot;
     &quot;Same as unilateral goal under the predicate mapping:&quot; (p &quot;init&quot; 1)
     &quot;-&gt;&quot; (p &quot;resp&quot; 2) &quot;and&quot; (p &quot;init&quot; &quot;n&quot;) &quot;-&gt;&quot; (p &quot;resp&quot; &quot;n2&quot;) &quot;and&quot;
@@ -1829,17 +1829,17 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n)
   (goals
-    (forall ((a b name) (n text) (z0 node))
+    (forall ((a b name) (n text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 1 z0) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
+        (and (p &quot;init&quot; z0 2) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
           (p &quot;init&quot; &quot;b&quot; z0 b) (non (privk a)) (non (privk b)) (uniq n))
-        (exists ((z1 node)) (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;b&quot; z1 b)))))
-    (forall ((a b name) (n text) (z0 node))
+        (exists ((z1 strd)) (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;b&quot; z1 b)))))
+    (forall ((a b name) (n text) (z0 strd))
       (implies
-        (and (p &quot;init&quot; 1 z0) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
+        (and (p &quot;init&quot; z0 2) (p &quot;init&quot; &quot;n1&quot; z0 n) (p &quot;init&quot; &quot;a&quot; z0 a)
           (p &quot;init&quot; &quot;b&quot; z0 b) (non (privk a)) (non (privk b)) (uniq n))
-        (exists ((z1 node))
-          (and (p &quot;resp&quot; 1 z1) (p &quot;resp&quot; &quot;a&quot; z1 a))))))
+        (exists ((z1 strd))
+          (and (p &quot;resp&quot; z1 2) (p &quot;resp&quot; &quot;a&quot; z1 a))))))
   (comment &quot;Two initiator authentication goals&quot;)
   (label 23)
   (unrealized (0 1))
@@ -2032,18 +2032,15 @@
   (non-orig (privk b))
   (uniq-orig n1)
   (goals
-    (forall ((n1 n2 text) (b a name) (z z-0 node))
+    (forall ((n1 n2 text) (b a name) (z strd))
       (implies
-        (and (p &quot;init&quot; 0 z) (p &quot;init&quot; 2 z-0) (p &quot;init&quot; &quot;n1&quot; z-0 n1)
-          (p &quot;init&quot; &quot;n2&quot; z-0 n2) (p &quot;init&quot; &quot;a&quot; z-0 a)
-          (p &quot;init&quot; &quot;b&quot; z-0 b) (str-prec z z-0) (non (privk b))
-          (uniq-at n1 z))
-        (exists ((n2-0 text) (z-1 z-2 z-3 node))
-          (and (p &quot;init&quot; 1 z-1) (p &quot;resp&quot; 0 z-2) (p &quot;resp&quot; 1 z-3)
-            (p &quot;resp&quot; &quot;n2&quot; z-3 n2-0) (p &quot;resp&quot; &quot;n1&quot; z-3 n1)
-            (p &quot;resp&quot; &quot;b&quot; z-3 b) (p &quot;resp&quot; &quot;a&quot; z-3 a) (prec z z-2)
-            (prec z-3 z-1) (str-prec z z-1) (str-prec z-1 z-0)
-            (str-prec z-2 z-3))))))
+        (and (p &quot;init&quot; z 3) (p &quot;init&quot; &quot;n1&quot; z n1) (p &quot;init&quot; &quot;n2&quot; z n2)
+          (p &quot;init&quot; &quot;a&quot; z a) (p &quot;init&quot; &quot;b&quot; z b) (non (privk b))
+          (uniq-at n1 z 0))
+        (exists ((n2-0 text) (z-0 strd))
+          (and (p &quot;resp&quot; z-0 2) (p &quot;resp&quot; &quot;n2&quot; z-0 n2-0)
+            (p &quot;resp&quot; &quot;n1&quot; z-0 n1) (p &quot;resp&quot; &quot;b&quot; z-0 b)
+            (p &quot;resp&quot; &quot;a&quot; z-0 a) (prec z 0 z-0 0) (prec z-0 1 z 1))))))
   (comment &quot;Shape analysis sentence&quot;)
   (label 26)
   (unrealized (0 1))
@@ -2206,10 +2203,10 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n2)
   (goals
-    (forall ((a b name) (n2 text) (z0 z1 node))
+    (forall ((a b name) (n2 text) (z0 z1 strd))
       (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
-          (p &quot;resp&quot; &quot;b&quot; z0 b) (p &quot;&quot; 0 z1) (p &quot;&quot; &quot;x&quot; z1 n2)
+        (and (p &quot;resp&quot; z0 3) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
+          (p &quot;resp&quot; &quot;b&quot; z0 b) (p &quot;&quot; z1 1) (p &quot;&quot; &quot;x&quot; z1 n2)
           (non (privk a)) (non (privk b)) (uniq n2)) (false))))
   (comment &quot;Responder point of view&quot;
     &quot;Failed secrecy goal: nonce n2 not revealed&quot;)
@@ -2265,10 +2262,10 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n2)
   (goals
-    (forall ((a b name) (n2 text) (z0 z1 node))
+    (forall ((a b name) (n2 text) (z0 z1 strd))
       (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
-          (p &quot;resp&quot; &quot;b&quot; z0 b) (p &quot;&quot; 0 z1) (p &quot;&quot; &quot;x&quot; z1 n2)
+        (and (p &quot;resp&quot; z0 3) (p &quot;resp&quot; &quot;n2&quot; z0 n2) (p &quot;resp&quot; &quot;a&quot; z0 a)
+          (p &quot;resp&quot; &quot;b&quot; z0 b) (p &quot;&quot; z1 1) (p &quot;&quot; &quot;x&quot; z1 n2)
           (non (privk a)) (non (privk b)) (uniq n2)) (false))))
   (comment &quot;Responder point of view&quot;
     &quot;Failed secrecy goal: nonce n2 not revealed&quot;)
@@ -2422,7 +2419,7 @@
   (parent 30)
   (unrealized)
   (shape)
-  (satisfies (no (a a) (b b) (n2 n2) (z0 (1 2)) (z1 (0 0))))
+  (satisfies (no (a a) (b b) (n2 n2) (z0 1) (z1 0)))
   (maps ((0 1) ((a a) (b b) (n2 n2) (n1 n1))))
   (origs (n2 (1 1))))</pre>
 
@@ -2514,7 +2511,7 @@
   (parent 30)
   (unrealized)
   (shape)
-  (satisfies (no (a a) (b b) (n2 n2) (z0 (1 2)) (z1 (0 0))))
+  (satisfies (no (a a) (b b) (n2 n2) (z0 1) (z1 0)))
   (maps ((0 1) ((a a) (b b) (n2 n2) (n1 n1))))
   (origs (n2 (1 1))))</pre>
 
@@ -2634,15 +2631,14 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n1 n1-0)
   (subgoals
-    (forall ((n1 n1-0 n2 n2-0 text) (a b name) (z z-0 z-1 z-2 node))
+    (forall ((n1 n1-0 n2 n2-0 text) (a b name) (z z-0 strd))
       (implies
-        (and (p &quot;init&quot; 0 z) (p &quot;init&quot; 2 z-0) (p &quot;init&quot; 0 z-1)
-          (p &quot;init&quot; 2 z-2) (p &quot;init&quot; &quot;n1&quot; z-0 n1) (p &quot;init&quot; &quot;n2&quot; z-0 n2)
-          (p &quot;init&quot; &quot;a&quot; z-0 a) (p &quot;init&quot; &quot;b&quot; z-0 b)
-          (p &quot;init&quot; &quot;n1&quot; z-2 n1-0) (p &quot;init&quot; &quot;n2&quot; z-2 n2-0)
-          (p &quot;init&quot; &quot;a&quot; z-2 a) (p &quot;init&quot; &quot;b&quot; z-2 b) (str-prec z z-0)
-          (str-prec z-1 z-2) (non (privk a)) (non (privk b))
-          (uniq-at n1 z) (uniq-at n1-0 z-1)) (= z-1 z))))
+        (and (p &quot;init&quot; z 3) (p &quot;init&quot; z-0 3) (p &quot;init&quot; &quot;n1&quot; z n1)
+          (p &quot;init&quot; &quot;n2&quot; z n2) (p &quot;init&quot; &quot;a&quot; z a) (p &quot;init&quot; &quot;b&quot; z b)
+          (p &quot;init&quot; &quot;n1&quot; z-0 n1-0) (p &quot;init&quot; &quot;n2&quot; z-0 n2-0)
+          (p &quot;init&quot; &quot;a&quot; z-0 a) (p &quot;init&quot; &quot;b&quot; z-0 b) (non (privk a))
+          (non (privk b)) (uniq-at n1 z 0) (uniq-at n1-0 z-0 0))
+        (= z z-0))))
   (comment &quot;Double initiator point of view&quot;)
   (label 33)
   (unrealized (0 1) (1 1))
@@ -3142,8 +3138,8 @@
   (unrealized)
   (shape)
   (satisfies
-    (no (n1 n1) (n1-0 n1-0) (n2 n2-0) (n2-0 n2) (a a) (b b) (z (0 0))
-      (z-0 (0 2)) (z-1 (1 0)) (z-2 (1 2))))
+    (no (n1 n1) (n1-0 n1-0) (n2 n2-0) (n2-0 n2) (a a) (b b) (z 0)
+      (z-0 1)))
   (maps ((0 1) ((a a) (b b) (n1 n1) (n1-0 n1-0) (n2 n2-0) (n2-0 n2))))
   (origs (n1 (0 0)) (n1-0 (1 0))))</pre>
 
@@ -3231,9 +3227,9 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n2)
   (goals
-    (forall ((n2 text) (a b name) (z z-0 node))
+    (forall ((n2 text) (a b name) (z z-0 strd))
       (implies
-        (and (p &quot;resp&quot; 1 z) (p &quot;&quot; 0 z-0) (p &quot;resp&quot; &quot;n2&quot; z n2)
+        (and (p &quot;resp&quot; z 2) (p &quot;&quot; z-0 1) (p &quot;resp&quot; &quot;n2&quot; z n2)
           (p &quot;resp&quot; &quot;b&quot; z b) (p &quot;resp&quot; &quot;a&quot; z a) (p &quot;&quot; &quot;x&quot; z-0 n2)
           (non (privk a)) (non (privk b)) (uniq n2)) (false))))
   (comment &quot;Shows typeflaw in typeless NSL&quot;)
@@ -3288,9 +3284,9 @@
   (non-orig (privk a) (privk b))
   (uniq-orig n2)
   (goals
-    (forall ((n2 text) (a b name) (z z-0 node))
+    (forall ((n2 text) (a b name) (z z-0 strd))
       (implies
-        (and (p &quot;resp&quot; 1 z) (p &quot;&quot; 0 z-0) (p &quot;resp&quot; &quot;n2&quot; z n2)
+        (and (p &quot;resp&quot; z 2) (p &quot;&quot; z-0 1) (p &quot;resp&quot; &quot;n2&quot; z n2)
           (p &quot;resp&quot; &quot;b&quot; z b) (p &quot;resp&quot; &quot;a&quot; z a) (p &quot;&quot; &quot;x&quot; z-0 n2)
           (non (privk a)) (non (privk b)) (uniq n2)) (false))))
   (comment &quot;Shows typeflaw in typeless NSL&quot;)
@@ -3434,1549 +3430,9 @@
   (parent 42)
   (unrealized)
   (shape)
-  (satisfies (no (n2 n2) (a a) (b b) (z (1 1)) (z-0 (0 0))))
+  (satisfies (no (n2 n2) (a a) (b b) (z 1) (z-0 0)))
   (maps ((0 1) ((n2 n2) (a a) (b b) (n1 a-0))))
   (origs (n2 (1 1))))</pre>
-
-<p id="t45">Tree <a href="#top">45</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='129.840pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 129.840 79.920' font-size='12.000'>
-  <text
-   x='89.880' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k46&quot;, &quot;_self&quot;)'>46</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k45&quot;, &quot;_self&quot;)'>45</text>
-  </svg></div>
-
-<pre>(defprotocol ns basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b)))))
-  (comment &quot;Needham-Schroeder with no role origination assumptions&quot;))</pre>
-
-<p id="k45">Item <a href="#t45">45</a>, Child: <a href="#k46">46</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text x='39.960' y='39.960' style='text-anchor: middle;'>ns 45</text>
-  </svg></div>
-
-<pre>(defskeleton ns
-  (vars (n2 n1 text) (a b name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (non-orig (privk a))
-  (uniq-orig n2)
-  (subgoals
-    (forall ((n1 n2 text) (a b name) (z z-0 node))
-      (implies
-        (and (p &quot;init&quot; 0 z) (p &quot;init&quot; 2 z-0) (p &quot;init&quot; &quot;n1&quot; z-0 n1)
-          (p &quot;init&quot; &quot;n2&quot; z-0 n2) (p &quot;init&quot; &quot;a&quot; z-0 a)
-          (p &quot;init&quot; &quot;b&quot; z-0 b) (str-prec z z-0) (non (privk a))
-          (non (privk b)) (uniq-at n1 z))
-        (exists ((z-1 z-2 z-3 node))
-          (and (p &quot;init&quot; 1 z-1) (p &quot;resp&quot; 0 z-2) (p &quot;resp&quot; 1 z-3)
-            (p &quot;resp&quot; &quot;n2&quot; z-3 n2) (p &quot;resp&quot; &quot;n1&quot; z-3 n1)
-            (p &quot;resp&quot; &quot;b&quot; z-3 b) (p &quot;resp&quot; &quot;a&quot; z-3 a) (prec z z-2)
-            (prec z-3 z-1) (str-prec z z-1) (str-prec z-1 z-0)
-            (str-prec z-2 z-3))))))
-  (comment &quot;Responder point of view with SAS&quot;)
-  (label 45)
-  (unrealized (0 2))
-  (origs (n2 (0 1)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k46">Item <a href="#t45">46</a>, Parent: <a href="#k45">45</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 264.960 Q 92.940 264.960 45.960 264.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b-0))</title>
-   <circle cx='139.920' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 39.960 189.960 Q 86.940 189.960 133.920 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b-0))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns 46 (realized)</text></svg></div>
-
-<pre>(defskeleton ns
-  (vars (n2 n1 text) (a b b-0 name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b-0))
-  (precedes ((0 1) (1 1)) ((1 2) (0 2)))
-  (non-orig (privk a))
-  (uniq-orig n2)
-  (operation nonce-test (added-strand init 3) n2 (0 2)
-    (enc n1 n2 (pubk a)))
-  (label 46)
-  (parent 45)
-  (unrealized)
-  (shape)
-  (satisfies yes)
-  (maps ((0) ((a a) (n2 n2) (b b) (n1 n1))))
-  (origs (n2 (0 1))))</pre>
-
-<p id="t47">Tree <a href="#top">47</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='129.840pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 129.840 79.920' font-size='12.000'>
-  <text
-   x='89.880' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k48&quot;, &quot;_self&quot;)'>48</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k47&quot;, &quot;_self&quot;)'>47</text>
-  </svg></div>
-
-<pre>(defprotocol ns basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b)))))
-  (comment &quot;Needham-Schroeder with no role origination assumptions&quot;))</pre>
-
-<p id="k47">Item <a href="#t47">47</a>, Child: <a href="#k48">48</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text x='39.960' y='39.960' style='text-anchor: middle;'>ns 47</text>
-  </svg></div>
-
-<pre>(defskeleton ns
-  (vars (n2 n1 text) (a b name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (non-orig (privk a))
-  (uniq-orig n2)
-  (subgoals
-    (forall ((n1 n2 text) (a b name) (z z-0 node))
-      (implies
-        (and (p &quot;init&quot; 0 z) (p &quot;init&quot; 2 z-0) (p &quot;init&quot; &quot;n1&quot; z-0 n1)
-          (p &quot;init&quot; &quot;n2&quot; z-0 n2) (p &quot;init&quot; &quot;a&quot; z-0 a)
-          (p &quot;init&quot; &quot;b&quot; z-0 b) (str-prec z z-0) (non (privk a))
-          (non (privk b)) (uniq-at n1 z)) (false))))
-  (comment &quot;Responder point of view with false as the conclusion&quot;)
-  (label 47)
-  (unrealized (0 2))
-  (origs (n2 (0 1)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k48">Item <a href="#t47">48</a>, Parent: <a href="#k47">47</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 264.960 Q 92.940 264.960 45.960 264.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b-0))</title>
-   <circle cx='139.920' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 39.960 189.960 Q 86.940 189.960 133.920 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b-0))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns 48 (realized)</text></svg></div>
-
-<pre>(defskeleton ns
-  (vars (n2 n1 text) (a b b-0 name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b-0))
-  (precedes ((0 1) (1 1)) ((1 2) (0 2)))
-  (non-orig (privk a))
-  (uniq-orig n2)
-  (operation nonce-test (added-strand init 3) n2 (0 2)
-    (enc n1 n2 (pubk a)))
-  (label 48)
-  (parent 47)
-  (unrealized)
-  (shape)
-  (satisfies yes)
-  (maps ((0) ((a a) (n2 n2) (b b) (n1 n1))))
-  (origs (n2 (0 1))))</pre>
-
-<p id="t49">Tree <a href="#top">49</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.760pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.760 79.920' font-size='12.000'>
-  <text
-   x='139.800' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k51&quot;, &quot;_self&quot;)'>51</text>
-  <line
-   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='89.880' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k50&quot;, &quot;_self&quot;)'>50</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k49&quot;, &quot;_self&quot;)'>49</text>
-  </svg></div>
-
-<pre>(defprotocol ns basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b)))))
-  (comment &quot;Needham-Schroeder with no role origination assumptions&quot;))</pre>
-
-<p id="k49">Item <a href="#t49">49</a>, Child: <a href="#k50">50</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text x='39.960' y='39.960' style='text-anchor: middle;'>ns 49</text>
-  </svg></div>
-
-<pre>(defskeleton ns
-  (vars (n1 n2 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1)
-  (subgoals
-    (forall ((n1 n2 text) (a b name) (z z-0 node))
-      (implies
-        (and (p &quot;init&quot; 0 z) (p &quot;init&quot; 2 z-0) (p &quot;init&quot; &quot;n1&quot; z-0 n1)
-          (p &quot;init&quot; &quot;n2&quot; z-0 n2) (p &quot;init&quot; &quot;a&quot; z-0 a)
-          (p &quot;init&quot; &quot;b&quot; z-0 b) (str-prec z z-0) (non (privk a))
-          (non (privk b)) (uniq-at n1 z)) (false))))
-  (comment &quot;Initiator point of view with false as the conclusion&quot;)
-  (label 49)
-  (unrealized (0 1))
-  (origs (n1 (0 0)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k50">Item <a href="#t49">50</a>, Parent: <a href="#k49">49</a>, Child: <a href="#k51">51</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2-0 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2-0) (n1 n1) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text x='89.940' y='39.960' style='text-anchor: middle;'>ns 50</text>
-  </svg></div>
-
-<pre>(defskeleton ns
-  (vars (n1 n2 n2-0 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1)
-  (operation nonce-test (added-strand resp 2) n1 (0 1)
-    (enc n1 a (pubk b)))
-  (label 50)
-  (parent 49)
-  (unrealized (0 1))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k51">Item <a href="#t49">51</a>, Parent: <a href="#k50">50</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns 51 (realized)</text></svg></div>
-
-<pre>(defskeleton ns
-  (vars (n1 n2 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2) (n1 n1) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1)
-  (operation nonce-test (contracted (n2-0 n2)) n1 (0 1)
-    (enc n1 n2 (pubk a)) (enc n1 a (pubk b)))
-  (label 51)
-  (parent 50)
-  (unrealized)
-  (shape)
-  (satisfies (no (n1 n1) (n2 n2) (a a) (b b) (z (0 0)) (z-0 (0 2))))
-  (maps ((0) ((a a) (b b) (n1 n1) (n2 n2))))
-  (origs (n1 (0 0))))</pre>
-
-<p id="t52">Tree <a href="#top">52</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='129.840pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 129.840 79.920' font-size='12.000'>
-  <text
-   x='89.880' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k53&quot;, &quot;_self&quot;)'>53</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k52&quot;, &quot;_self&quot;)'>52</text>
-  </svg></div>
-
-<pre>(defprotocol ns basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b)))))
-  (comment &quot;Needham-Schroeder with no role origination assumptions&quot;))</pre>
-
-<p id="k52">Item <a href="#t52">52</a>, Child: <a href="#k53">53</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text x='39.960' y='39.960' style='text-anchor: middle;'>ns 52</text>
-  </svg></div>
-
-<pre>(defskeleton ns
-  (vars (n n1 text) (a b name))
-  (defstrand resp 3 (n2 n) (n1 n1) (b b) (a a))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n)
-  (goals
-    (forall ((a b name) (n text) (z0 node))
-      (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n) (p &quot;resp&quot; &quot;a&quot; z0 a)
-          (p &quot;resp&quot; &quot;b&quot; z0 b) (non (privk a)) (non (privk b)) (uniq n))
-        (exists ((z1 node)) (and (p &quot;init&quot; 2 z1) (p &quot;init&quot; &quot;a&quot; z1 a)))))
-    (forall ((a b name) (n text) (z0 node))
-      (implies
-        (and (p &quot;resp&quot; 2 z0) (p &quot;resp&quot; &quot;n2&quot; z0 n) (p &quot;resp&quot; &quot;a&quot; z0 a)
-          (p &quot;resp&quot; &quot;b&quot; z0 b) (non (privk a)) (non (privk b)) (uniq n))
-        (exists ((z1 node))
-          (and (p &quot;init&quot; 2 z1) (p &quot;init&quot; &quot;b&quot; z1 b))))))
-  (comment &quot;Two responder authentication goals&quot;)
-  (label 52)
-  (unrealized (0 2))
-  (origs (n (0 1)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k53">Item <a href="#t52">53</a>, Parent: <a href="#k52">52</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 264.960 Q 92.940 264.960 45.960 264.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n (pubk b-0))</title>
-   <circle cx='139.920' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 39.960 189.960 Q 86.940 189.960 133.920 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n) (a a) (b b-0))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns 53 (realized)</text></svg></div>
-
-<pre>(defskeleton ns
-  (vars (n n1 text) (a b b-0 name))
-  (defstrand resp 3 (n2 n) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n) (a a) (b b-0))
-  (precedes ((0 1) (1 1)) ((1 2) (0 2)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n)
-  (operation nonce-test (added-strand init 3) n (0 2)
-    (enc n1 n (pubk a)))
-  (label 53)
-  (parent 52)
-  (unrealized)
-  (shape)
-  (satisfies yes (no (a a) (b b) (n n) (z0 (0 2))))
-  (maps ((0) ((a a) (b b) (n n) (n1 n1))))
-  (origs (n (0 1))))</pre>
-
-<p id="t54">Tree <a href="#top">54</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.760pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.760 79.920' font-size='12.000'>
-  <text
-   x='139.800' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k56&quot;, &quot;_self&quot;)'>56</text>
-  <line
-   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='89.880' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k55&quot;, &quot;_self&quot;)'>55</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k54&quot;, &quot;_self&quot;)'>54</text>
-  </svg></div>
-
-<pre>(defprotocol ns-role-origs basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b))))
-    (non-orig (privk b))
-    (uniq-orig n1))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b))))
-    (non-orig (privk a))
-    (uniq-orig n2))
-  (comment
-    &quot;Needham-Schroeder with role assumptions that are too strong&quot;))</pre>
-
-<p id="k54">Item <a href="#t54">54</a>, Child: <a href="#k55">55</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='39.960' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 54</text></svg></div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n1 n2 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (non-orig (privk b))
-  (uniq-orig n1)
-  (label 54)
-  (unrealized (0 1))
-  (origs (n1 (0 0)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k55">Item <a href="#t54">55</a>, Parent: <a href="#k54">54</a>, Child: <a href="#k56">56</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2-0 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2-0) (n1 n1) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 55</text></svg></div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n1 n2 n2-0 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1 n2-0)
-  (operation nonce-test (added-strand resp 2) n1 (0 1)
-    (enc n1 a (pubk b)))
-  (label 55)
-  (parent 54)
-  (unrealized (0 1))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k56">Item <a href="#t54">56</a>, Parent: <a href="#k55">55</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 56 (realized)</text></svg>
- </div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n1 n2 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2) (n1 n1) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1 n2)
-  (operation nonce-test (contracted (n2-0 n2)) n1 (0 1)
-    (enc n1 n2 (pubk a)) (enc n1 a (pubk b)))
-  (label 56)
-  (parent 55)
-  (unrealized)
-  (shape)
-  (maps ((0) ((a a) (b b) (n1 n1) (n2 n2))))
-  (origs (n2 (1 1)) (n1 (0 0))))</pre>
-
-<p id="t57">Tree <a href="#top">57</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='279.600pt' height='154.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 279.600 154.920' font-size='12.000'>
-  <text
-   x='239.640' y='101.040'
-   style='font-style: italic; text-anchor: middle; fill: green;'
-   onclick='window.open(&quot;#k59&quot;, &quot;_self&quot;)'>59</text>
-  <line
-   x1='189.720' y1='114.960' x2='239.640' y2='114.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='189.720' y='101.040' style='text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k61&quot;, &quot;_self&quot;)'>61</text>
-  <line
-   x1='139.800' y1='114.960' x2='189.720' y2='114.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='139.800' y='101.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k60&quot;, &quot;_self&quot;)'>60</text>
-  <line
-   x1='89.880' y1='77.460' x2='139.800' y2='114.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='139.800' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k59&quot;, &quot;_self&quot;)'>59</text>
-  <line
-   x1='89.880' y1='77.460' x2='139.800' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='89.880' y='63.540' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k58&quot;, &quot;_self&quot;)'>58</text>
-  <line
-   x1='39.960' y1='77.460' x2='89.880' y2='77.460'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='63.540' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k57&quot;, &quot;_self&quot;)'>57</text>
-  </svg></div>
-
-<pre>(defprotocol ns-role-origs basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b))))
-    (non-orig (privk b))
-    (uniq-orig n1))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b))))
-    (non-orig (privk a))
-    (uniq-orig n2))
-  (comment
-    &quot;Needham-Schroeder with role assumptions that are too strong&quot;))</pre>
-
-<p id="k57">Item <a href="#t57">57</a>, Child: <a href="#k58">58</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='39.960' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 57</text></svg></div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n2 n1 text) (b a name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (non-orig (privk a))
-  (uniq-orig n2)
-  (label 57)
-  (unrealized (0 2))
-  (origs (n2 (0 1)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k58">Item <a href="#t57">58</a>, Parent: <a href="#k57">57</a>, Children: <a href="#k59">59</a> <a href="#k60">60</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 264.960 Q 92.940 264.960 45.960 264.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b-0))</title>
-   <circle cx='139.920' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 139.920 114.960 Q 92.940 114.960 45.960 114.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 39.960 189.960 Q 86.940 189.960 133.920 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b-0))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 58</text></svg></div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n2 n1 text) (b a b-0 name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b-0))
-  (precedes ((0 1) (1 1)) ((1 0) (0 0)) ((1 2) (0 2)))
-  (non-orig (privk a) (privk b-0))
-  (uniq-orig n2 n1)
-  (operation nonce-test (added-strand init 3) n2 (0 2)
-    (enc n1 n2 (pubk a)))
-  (label 58)
-  (parent 57)
-  (unrealized (0 0) (0 2))
-  (comment &quot;2 in cohort - 2 not yet seen&quot;))</pre>
-
-<p id="k59">Item <a href="#t57">59</a>, Parent: <a href="#k58">58</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 264.960 Q 92.940 264.960 45.960 264.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='139.920' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 139.920 114.960 Q 92.940 114.960 45.960 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 39.960 189.960 Q 86.940 189.960 133.920 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 59 (realized)</text></svg>
- </div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n2 n1 text) (a b name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (precedes ((0 1) (1 1)) ((1 0) (0 0)) ((1 2) (0 2)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n2 n1)
-  (operation nonce-test (contracted (b-0 b)) n1 (0 0)
-    (enc n1 a (pubk b)))
-  (label 59)
-  (parent 58)
-  (unrealized)
-  (shape)
-  (maps ((0) ((b b) (a a) (n2 n2) (n1 n1))))
-  (origs (n1 (1 0)) (n2 (0 1))))</pre>
-
-<p id="k60">Item <a href="#t57">60</a>, Parent: <a href="#k58">58</a>, Child: <a href="#k61">61</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='279.840pt' height='379.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 279.840 379.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='339.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='189.960' x2='39.960' y2='339.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2-0 (pubk a))</title>
-   <circle cx='239.880' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
-  <path
-   d='M 139.920 339.960 Q 92.940 339.960 45.960 339.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b-0))</title>
-   <circle cx='139.920' cy='339.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 139.920 114.960 Q 186.900 114.960 233.880 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b-0))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='339.960' r='6.000'/></g>
-  <path
-   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>((n2 n2-0) (n1 n1) (b b-0) (a a))</title>
-   <text x='239.880' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b-0))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='139.920' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 60</text></svg></div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n2 n1 n2-0 text) (b a b-0 name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b-0))
-  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b-0) (a a))
-  (precedes ((0 1) (1 1)) ((1 0) (2 0)) ((1 2) (0 2)) ((2 1) (0 0)))
-  (non-orig (privk a) (privk b-0))
-  (uniq-orig n2 n1 n2-0)
-  (operation nonce-test (added-strand resp 2) n1 (0 0)
-    (enc n1 a (pubk b-0)))
-  (label 60)
-  (parent 58)
-  (unrealized (0 0) (0 2))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k61">Item <a href="#t57">61</a>, Parent: <a href="#k60">60</a>, Seen Child: <a href="#k59">59</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='279.840pt' height='379.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 279.840 379.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='239.880' y1='114.960' x2='239.880' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='339.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='189.960' x2='39.960' y2='339.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 239.880 189.960 Q 142.920 152.460 45.960 189.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2-0 (pubk a))</title>
-   <circle cx='239.880' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='239.880' cy='114.960' r='6.000'/></g>
-  <path
-   d='M 139.920 339.960 Q 92.940 339.960 45.960 339.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='139.920' cy='339.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='139.920' cy='264.960' r='6.000'/></g>
-  <path
-   d='M 139.920 114.960 Q 186.900 114.960 233.880 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='339.960' r='6.000'/></g>
-  <path
-   d='M 39.960 264.960 Q 86.940 264.960 133.920 264.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>((n2 n2-0) (n1 n1) (b b) (a a))</title>
-   <text x='239.880' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <text
-   x='139.920' y='39.960'
-   style='text-anchor: middle;'>ns-role-origs 61 (realized)</text></svg>
- </div>
-
-<pre>(defskeleton ns-role-origs
-  (vars (n2 n1 n2-0 text) (a b name))
-  (defstrand resp 3 (n2 n2) (n1 n1) (b b) (a a))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b) (a a))
-  (precedes ((0 1) (1 1)) ((1 0) (2 0)) ((1 2) (0 2)) ((2 1) (0 0)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n2 n1 n2-0)
-  (operation nonce-test (contracted (b-0 b)) n1 (0 0)
-    (enc n1 n2-0 (pubk a)) (enc n1 a (pubk b)))
-  (label 61)
-  (parent 60)
-  (seen 59)
-  (unrealized)
-  (comment &quot;1 in cohort - 0 not yet seen&quot;))</pre>
-
-<p id="t62">Tree <a href="#top">62</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.760pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.760 79.920' font-size='12.000'>
-  <text
-   x='139.800' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k64&quot;, &quot;_self&quot;)'>64</text>
-  <line
-   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='89.880' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k63&quot;, &quot;_self&quot;)'>63</text>
-  <line
-   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <text
-   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
-   onclick='window.open(&quot;#k62&quot;, &quot;_self&quot;)'>62</text>
-  </svg></div>
-
-<pre>(defprotocol ns2 basic
-  (defrole init
-    (vars (a b name) (n1 n2 n3 text))
-    (trace (send (enc n1 n3 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b))))
-    (note doubled nonce in the first message))
-  (note that this protocol is derived from Needham-Schroeder))</pre>
-
-<p id="k62">Item <a href="#t62">62</a>, Child: <a href="#k63">63</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 n3 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n1 n1) (n2 n2) (n3 n3) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text x='39.960' y='39.960' style='text-anchor: middle;'>ns2 62</text>
-  </svg></div>
-
-<pre>(defskeleton ns2
-  (vars (n1 n2 n3 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (n3 n3) (a a) (b b))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1)
-  (label 62)
-  (unrealized (0 1))
-  (origs (n1 (0 0)))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k63">Item <a href="#t62">63</a>, Parent: <a href="#k62">62</a>, Child: <a href="#k64">64</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n3 n2-0 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n3 n3 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n3 n2 (pubk a))</title>
-   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n3 n3 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2-0) (n1 n3) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n3) (n2 n2) (n3 n3) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text x='89.940' y='39.960' style='text-anchor: middle;'>ns2 63</text>
-  </svg></div>
-
-<pre>(defskeleton ns2
-  (vars (n2 n3 n2-0 text) (a b name))
-  (defstrand init 3 (n1 n3) (n2 n2) (n3 n3) (a a) (b b))
-  (defstrand resp 2 (n2 n2-0) (n1 n3) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n3)
-  (operation nonce-test (added-strand resp 2) n3 (0 1)
-    (enc n3 n3 a (pubk b)))
-  (label 63)
-  (parent 62)
-  (unrealized (0 1))
-  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
-
-<p id="k64">Item <a href="#t62">64</a>, Parent: <a href="#k63">63</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n3 n2 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n3 n3 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n3 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n3 n3 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n3) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n3) (n2 n2) (n3 n3) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns2 64 (realized)</text></svg></div>
-
-<pre>(defskeleton ns2
-  (vars (n3 n2 text) (a b name))
-  (defstrand init 3 (n1 n3) (n2 n2) (n3 n3) (a a) (b b))
-  (defstrand resp 2 (n2 n2) (n1 n3) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n3)
-  (operation nonce-test (contracted (n2-0 n2)) n3 (0 1)
-    (enc n3 n2 (pubk a)) (enc n3 n3 a (pubk b)))
-  (label 64)
-  (parent 63)
-  (unrealized)
-  (shape)
-  (maps ((0) ((a a) (b b) (n1 n3) (n2 n2) (n3 n3))))
-  (origs (n3 (0 0))))</pre>
-
-<p id="t65">Tree <a href="#top">65</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='79.920pt' height='79.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 79.920 79.920' font-size='12.000'>
-  <text
-   x='39.960' y='26.040'
-   style='font-weight: bold; text-anchor: middle; fill: blue;'
-   onclick='window.open(&quot;#k65&quot;, &quot;_self&quot;)'>65</text>
-  </svg></div>
-
-<pre>(defprotocol ns basic
-  (defrole init
-    (vars (a b name) (n1 n2 text))
-    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
-      (send (enc n2 (pubk b)))))
-  (defrole resp
-    (vars (b a name) (n2 n1 text))
-    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
-      (recv (enc n2 (pubk b)))))
-  (comment &quot;Needham-Schroeder with no role origination assumptions&quot;))</pre>
-
-<p id="k65">Item <a href="#t65">65</a>.</p>
-
-<div>
- <svg
-  class='diagram' width='179.880pt' height='304.920pt'
-  xmlns='http://www.w3.org/2000/svg' version='1.1'
-  viewBox='0 0 179.880 304.920' font-size='12.000'>
-  <defs>
-   <marker
-    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
-    refY='5'>
-    <path
-     d='M 0 0 5 5 0 10'
-     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
-   </defs>
-  <line
-   x1='139.920' y1='114.960' x2='139.920' y2='189.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <line
-   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
-   style='stroke-width: 0.960; stroke: gray;'/>
-  <path
-   d='M 139.920 189.960 Q 92.940 189.960 45.960 189.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle cx='139.920' cy='189.960' r='6.000'/></g>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle style='fill: blue;' cx='139.920' cy='114.960' r='6.000'/></g>
-  <g><title>(enc n2 (pubk b))</title>
-   <circle cx='39.960' cy='264.960' r='6.000'/></g>
-  <g><title>(enc n1 n2 (pubk a))</title>
-   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
-  <path
-   d='M 39.960 114.960 Q 86.940 114.960 133.920 114.960'
-   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
-  <g><title>(enc n1 a (pubk b))</title>
-   <circle cx='39.960' cy='114.960' r='6.000'/></g>
-  <g><title>((n2 n2) (n1 n1) (b b) (a a))</title>
-   <text x='139.920' y='77.460' style='text-anchor: middle;'>resp</text>
-   </g>
-  <g><title>((n1 n1) (n2 n2) (a a) (b b))</title>
-   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
-   </g>
-  <text
-   x='89.940' y='39.960'
-   style='text-anchor: middle;'>ns 65 (realized)</text></svg></div>
-
-<pre>(defskeleton ns
-  (vars (n1 n2 text) (a b name))
-  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
-  (defstrand resp 2 (n2 n2) (n1 n1) (b b) (a a))
-  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
-  (non-orig (privk a) (privk b))
-  (uniq-orig n1)
-  (label 65)
-  (unrealized)
-  (shape)
-  (maps ((0 1) ((n1 n1) (n2 n2) (a a) (b b))))
-  (origs (n1 (0 0))))</pre>
 
 </body>
 </html>

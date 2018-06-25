@@ -402,7 +402,7 @@ nsdecls decls =
   where
     nsdeclsloop s [] = s
     nsdeclsloop s ((tag, ds) : rest) = nsdeclsloop (S.insert (tag, length ds) s) rest
-                                                  
+
 avoidTerms :: Algebra t p g s e c => Declarations t l -> Set t
 avoidTerms decls =
   S.unions [ns, as, uos, ugs]

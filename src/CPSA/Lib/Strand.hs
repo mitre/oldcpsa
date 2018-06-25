@@ -1,4 +1,4 @@
--- Instance and preskeleton data structures and support functions.
+-- on data structures and support functions.
 
 -- Copyright (c) 2009 The MITRE Corporation
 --
@@ -8,7 +8,8 @@
 
 module CPSA.Lib.Strand (Instance, mkInstance, bldInstance, mkListener,
     role, env, trace, height, listenerTerm, Sid, Node, mkPreskel,
-    firstSkeleton, Pair, Preskel, gen, protocol, kgoals, insts, orderings, leadsto,
+    firstSkeleton, Pair, Preskel, gen, protocol, kgoals, insts,
+    orderings, leadsto, kfacts,
     pov, korig, kcomment, nstrands, kvars, kpriority, kpriorities,
     strandids, kterms, avoid, preskelWellFormed, verbosePreskelWellFormed,
     Strand, inst, nodes, Vertex, preds, event, kabsent,
@@ -17,7 +18,8 @@ module CPSA.Lib.Strand (Instance, mkInstance, bldInstance, mkListener,
     Cause (..), Direction (..), Method (..), Operation (..),
     operation, SkelDeclInst, SkelDeclInstList, SkelDeclaration,
     SkelDeclList, SkelDeclarations, priority,
-    prob, homomorphism, toSkeleton, generalize, collapse, decls, sat) where
+    prob, homomorphism, toSkeleton, generalize, collapse, decls, sat,
+    FTerm (..), Fact (..), simplify, rewrite) where
 
 import Control.Monad
 -- import System.IO.Error (ioeGetErrorString)
@@ -32,7 +34,6 @@ import CPSA.Lib.AlgebraLibrary
 import CPSA.Lib.Declaration
 import CPSA.Lib.State
 import CPSA.Lib.Protocol
-import CPSA.Lib.Goal
 
 -- Debugging support (Uncomment below)
 --import CPSA.Lib.Debug
@@ -359,6 +360,7 @@ data Preskel t g s e = Preskel
       cInfo :: ConstInfo t,
       decls :: SkelDeclarations t,
       extraDecls :: SkelDeclarations t,
+      kfacts :: ![Fact t],
       kcomment :: [SExpr ()],   -- Comments from the input
       pov :: Maybe (Preskel t g s e), -- Point of view, the
                                           -- original problem statement.
@@ -424,14 +426,14 @@ data Operation t s
 -- must be consumed by firstSkeleton.
 mkPreskel :: Algebra t p g s e c => g -> Prot t g -> [Goal t] ->
              [Instance t e] -> [Pair] -> [Pair] -> SkelDeclList t ->
-             [SExpr ()] -> [(Node,Int)] -> Maybe (Preskel t g s e) ->
-             [Sid] -> Preskel t g s e
-mkPreskel gen protocol gs insts orderings leadsto dlist comment priorities
+             [Fact t] -> [SExpr ()] -> [(Node,Int)] ->
+             Maybe (Preskel t g s e) -> [Sid] -> Preskel t g s e
+mkPreskel gen protocol gs insts orderings leadsto dlist facts comment priorities
    maybePov maybeProb =
     k { kcomment = comment }
     where
       k = newPreskel gen shared insts orderings leadsto' decls'
-          New prob kpriority maybePov
+          facts New prob kpriority maybePov
       shared = Shared { prot = protocol, goals = gs }
       decls' = foldl addInstOrigs decls (zip (nats (length insts)) insts)
       decls = mkDecls dlist'
@@ -510,13 +512,15 @@ firstSkeleton k =
 -- within this module.
 newPreskel :: Algebra t p g s e c => g -> Shared t g ->
              [Instance t e] -> [Pair] -> [Pair] -> SkelDeclarations t ->
-             Operation t s -> [Sid] -> [(Node,Int)] ->
+             [Fact t] -> Operation t s -> [Sid] -> [(Node,Int)] ->
              Maybe (Preskel t g s e) -> Preskel t g s e
-newPreskel gen shared insts orderings leadsto decls oper prob kpriority pov =
+newPreskel gen shared insts orderings leadsto decls
+           facts oper prob kpriority pov =
     let orderings' = L.nub orderings
         g = graph trace height insts orderings'
         strands = gstrands g
         decls' = declsNub decls
+        facts' = L.nub facts
         edges = gedges g
         tc = filter pairWellOrdered (graphClose $ graphEdges strands)
         k = Preskel { gen = gen,
@@ -528,6 +532,7 @@ newPreskel gen shared insts orderings leadsto decls oper prob kpriority pov =
                       edges = edges,
                       decls = decls',
                       extraDecls = mkDecls [],
+                      kfacts = facts',
                       cInfo = declsOrig strands decls',
                       kcomment = [],
                       tc = map graphPair tc,
@@ -656,8 +661,8 @@ tracePattern :: Trace t -> Int
 tracePattern [] = 1
 tracePattern (In _:r) = traceBase*(tracePattern r)
 tracePattern (Out _:r) = traceBase*(tracePattern r) + 1
-tracePattern (Sync _:r) = traceBase*(tracePattern r) + 2                         
-                          
+tracePattern (Sync _:r) = traceBase*(tracePattern r) + 2
+
 -- Isomorphism Check
 
 -- Are two skeletons equivalent?  Two skeletons are equivalent if they
@@ -685,11 +690,13 @@ data Gist t g = Gist
       gleadsto :: [Pair],
       gpatterns :: [Int],
       gdecls :: SkelDeclarations t,
+      gfacts :: [Fact t],
       nvars :: !Int,           -- Number of variables
       ntraces :: !Int,         -- Number of traces
       norderings :: !Int,      -- Number of orderings
       nleadsto :: !Int,        -- Number of leadsto pairs
-      nsndecls :: [Int] }      -- Counts of decls
+      nsndecls :: [Int],       -- Counts of decls
+      nfacts :: !Int }         -- Number of facts
     deriving Show
 
 gist :: Algebra t p g s e c => Preskel t g s e -> Gist t g
@@ -699,20 +706,22 @@ gist k =
            gorderings = gorderings,
            gleadsto = gleadsto,
            gdecls = gdecls,
+           gfacts = gfacts,
            gpatterns = patterns,
            nvars = length (kvars k),
            ntraces = length gtraces,
            norderings = length gorderings,
            nleadsto = length gleadsto,
-           nsndecls = nsds gdecls }
+           nsndecls = nsds gdecls,
+           nfacts = length gfacts }
     where
       gtraces = map (\i -> (height i, trace i)) (insts k)
       gorderings = orderings k
       gleadsto = leadsto k
       gdecls = decls k
+      gfacts = kfacts k
       patterns = L.sort (map (tracePattern . trace) (insts k))
       nsds decls = [length (dknon decls), length (dkpnon decls), length (dkunique decls)]
-
 
 -- Test to see if two preskeletons are isomorphic
 
@@ -721,6 +730,7 @@ gist k =
 -- 2. The same number of strands
 -- 3. The same number of node orderings
 -- 4. The same number of terms in knon and kunique
+-- 5. The same number of facts
 
 -- Next compute the plausible permutations and substitutions.
 
@@ -741,6 +751,7 @@ isomorphic g g' =
     gpatterns g == gpatterns g' &&
     nleadsto g == nleadsto g' &&
     nsndecls g == nsndecls g' &&
+    nfacts g == nfacts g' &&
     any (tryPerm g g') (permutations g g')
 
 probIsomorphic :: Algebra t p g s e c => Preskel t g s e -> Preskel t g s e -> Bool
@@ -751,7 +762,7 @@ probIsomorphic k k' =
       g' = gist k'
       pr = prob k
       pr' = prob k'
-        
+
 -- Extend a permutation while extending a substitution
 -- Extend by matching later strands first
 permutations :: Algebra t p g s e c => Gist t g ->
@@ -823,6 +834,7 @@ tryPerm :: Algebra t p g s e c => Gist t g ->
 tryPerm g g' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv (invperm perm) &&
+    checkFacts g g' fenv perm &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g)
 
@@ -831,6 +843,7 @@ tryPermProb :: Algebra t p g s e c => Gist t g ->
 tryPermProb g g' prob prob' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv perm &&
+    checkFacts g g' fenv perm &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g) &&
     all (\n -> perm !! (prob !! n) == prob' !! n) [0..((length prob)-1)]
@@ -849,6 +862,13 @@ permutePair perm (n, n') = (permuteNode perm n, permuteNode perm n')
 
 permuteNode :: [Sid] -> Node -> Node
 permuteNode perm (strand, pos) = (perm !! strand, pos)
+
+checkFacts :: Algebra t p g s e c => Gist t g ->
+              Gist t g -> (g, e) -> [Sid] -> Bool
+checkFacts g g' (_, e) perm =
+  all f (gfacts g)
+  where
+    f fact = elem (instUpdateFact e (perm !!) fact) (gfacts g')
 
 -- Preskeleton Reduction System (PRS)
 
@@ -874,9 +894,11 @@ ksubst (k0, k, n, phi, hsubst) (gen, subst) =
   do
       (gen', insts') <- foldMapM (substInst subst) gen (insts k)
       let decls' = declsMapTerms (substitute subst) (decls k)
+      let facts' = map (substFact subst) (kfacts k)
       let operation' = substOper subst (operation k)
       let k' = newPreskel gen' (shared k) insts'
-               (orderings k) (leadsto k) decls' operation' (prob k) (kpriority k) (pov k)
+               (orderings k) (leadsto k) decls' facts' operation'
+               (prob k) (kpriority k) (pov k)
       k' <- wellFormedPreskel k'
       return (k0, k', n, phi, compose subst hsubst)
 
@@ -936,6 +958,7 @@ compress validate (k0, k, n, phi, hsubst) s s' =
               orderings'
               (permuteOrderings perm (leadsto k))
               (declsMapStrands perm (decls k))
+              (map (updateFact $ updateStrand s s') (kfacts k))
               (operation k)
               (updateProb perm (prob k))
               (updatePriority perm (kpriority k))
@@ -1020,6 +1043,7 @@ purge (k0, k, n, phi, hsubst) s s' =
               leadsto'
               (declsMapStrands perm
                       (declsFilterValid (iterms insts') (strandNotInSkel s)  (decls k)))
+              (map (updateFact $ updateStrand s s') (kfacts k))
               (operation k)
               (updateProb perm (prob k))
               (updatePriority perm (kpriority k))
@@ -1244,6 +1268,7 @@ reduce (k0, k, n, phi, hsubst) =
                   o
                   (leadsto k)
                   (decls k)
+                  (kfacts k)
                   (operation k)
                   (prob k)
                   (kpriority k)
@@ -1338,7 +1363,8 @@ aug (k0, k, n, phi, hsubst) inst isState =
       let leadsto' = if isState then pair : leadsto k else leadsto k
       let decls' = inheritRdecls s inst (decls k)
       let k' = newPreskel (gen k) (shared k) insts'
-           orderings' leadsto' decls' (operation k) (prob k) (kpriority k) (pov k)
+               orderings' leadsto' decls' (kfacts k) (operation k)
+               (prob k) (kpriority k) (pov k)
       k' <- wellFormedPreskel k'
       return (k0, k', n, phi, hsubst)
 
@@ -1414,7 +1440,7 @@ addListener k n cause t =
       ans prs
     where
       k' = newPreskel gen' (shared k) insts' orderings' (leadsto k) (decls k)
-           (AddedListener t cause) (prob k) (kpriority k) (pov k)
+           (kfacts k) (AddedListener t cause) (prob k) (kpriority k) (pov k)
       (gen', inst) = mkListener (protocol k) (gen k) t
       insts' = insts k ++ [inst]
       pair = ((length (insts k), 1), n)
@@ -1430,7 +1456,7 @@ addBaseListener k n cause t =
       ans prs
     where
       k' = newPreskel gen'' (shared k) insts' orderings' (leadsto k) decls'
-           (AddedListener t' cause) (prob k) (kpriority k) (pov k)
+           (kfacts k) (AddedListener t' cause) (prob k) (kpriority k) (pov k)
       (gen', t') = basePrecursor (gen k) t
       (gen'', inst) = mkListener (protocol k) gen' t'
       insts' = insts k ++ [inst]
@@ -1453,8 +1479,8 @@ addAbsence k n cause x t =
       ans prs
     where                       -- New cause should be added!
       k' = newPreskel (gen k) (shared k) (insts k) (orderings k)
-        (leadsto k) decls' (AddedAbsence x t cause) (prob k)
-        (kpriority k) (pov k)
+           (leadsto k) decls' (kfacts k) (AddedAbsence x t cause)
+           (prob k) (kpriority k) (pov k)
       decls' = addDeclInst "absent" [x, t] [] (decls k)
 
 -- Numeric contraction
@@ -1564,8 +1590,9 @@ deleteNode k n
           let i = inst (strand n)
           (gen', i') <- bldInstance (role i) (take p (trace i)) (gen k)
           let k' = deleteNodeRest k gen' (s, p) (replaceNth i' s (insts k))
-                   (shortenOrderings (s, p) (tc k)) (shortenOrderings (s, p) (leadsto k))
-                   (prob k)
+                   (shortenOrderings (s, p) (tc k))
+                   (shortenOrderings (s, p) (leadsto k))
+                   (prob k) (kfacts k)
           return (k', mapping)
     where
       p = pos n
@@ -1607,6 +1634,7 @@ deleteStrand k gen s n =
     (deleteOrderings s (tc k))
     (deleteOrderings s (leadsto k)) -- is this the right thing?
     decls'
+    facts'
     (Generalized (Deleted n))
     (updatePerm s s (prob k)) -- s shouldn't appear in prob, but we need to update
                               -- in case any strands in prob are > s.
@@ -1619,6 +1647,9 @@ deleteStrand k gen s n =
     decls0 = declsFilterValid (iterms (insts k)) (strandNotInSkel s) (decls k)
     decls' = declsFilterValid terms (const True)
              (declsMapStrands mapping decls0)
+    facts' = cleansFacts terms (map
+                                (updateFact (updateStrand s s))
+                                (deleteFacts s $ kfacts k))
     terms = iterms insts'
 
 nodeInSkel :: Preskel t g s e -> Node -> Bool
@@ -1628,14 +1659,24 @@ nodeInSkel k (s, i) =
 
 deleteNodeRest :: Algebra t p g s e c => Preskel t g s e ->
                   g -> Node -> [Instance t e] -> [Pair] -> [Pair] ->
-                  [Sid] -> Preskel t g s e
-deleteNodeRest k gen n insts' orderings leadsto prob =
-    newPreskel gen (shared k) insts' orderings leadsto decls'
+                  [Sid] -> [Fact t] -> Preskel t g s e
+deleteNodeRest k gen n insts' orderings leadsto prob facts =
+    newPreskel gen (shared k) insts' orderings leadsto decls' facts'
                    (Generalized (Deleted n)) prob (kpriority k) (pov k)
     where
       -- Drop nons that aren't mentioned anywhere
       decls' = declsFilterValid terms (nodeInSkel k) (decls k)
+      facts' = cleansFacts terms facts
       terms = iterms insts'
+
+deleteFacts :: Sid -> [Fact t] -> [Fact t]
+deleteFacts s facts =
+  filter f facts
+  where
+    f (Fact _ ft) =
+      all g ft
+    g (FSid s') = s /= s'
+    g (FTerm _) = True
 
 -- Node ordering weakening
 
@@ -1665,7 +1706,7 @@ weaken k p orderings =
     addIdentity k'
     where
       k' = newPreskel (gen k) (shared k) (insts k)
-           orderings (leadsto k) (decls k)
+           orderings (leadsto k) (decls k) (kfacts k)
            (Generalized (Weakened p)) (prob k) (kpriority k) (pov k)
 
 -- Origination assumption forgetting
@@ -1821,6 +1862,7 @@ probMapPOVps k (t, loc) =
                 | otherwise = (prob k !! s, t, p)
 
 -- Change the given locations and create the resulting preskeleton
+-- JDR: Something about facts is needed here.
 changeLocations :: Algebra t p g s e c => Preskel t g s e ->
                    Preskel t g s e -> g -> t ->
                    ([Location t p g s e c], [PovLocation t p g s e c]) ->
@@ -1831,8 +1873,9 @@ changeLocations k pk gen t (rlocs, povlocs) pove =
       ks = f (splitDecls k pk gen' insts' t povlocs pove)
       locs = rlocs ++ concatMap (\(_,x,_)->x) povlocs
       f (gen'', newdecl) =
-        newPreskel gen'' (shared k) insts' (orderings k) (leadsto k)
-        newdecl (Generalized (Separated t)) (prob k) (kpriority k) (pov k)
+        newPreskel gen'' (shared k) insts' (orderings k) (leadsto k) newdecl
+        (kfacts k)              -- This is wrong.  Facts need to be cleansed!
+        (Generalized (Separated t)) (prob k) (kpriority k) (pov k)
       (gen', insts') = changeStrands locs t gen (strands k)
 
 -- For variable separation
@@ -1982,7 +2025,7 @@ nsdecls decls =
 -}
 
 -- Exported
--- JDR: duplicate code with mkPreskel
+-- JDR: something about facts is needed here I think
 forgetSomeTerm :: Algebra t p g s e c => Preskel t g s e ->
                   [Candidate t p g s e c]
 forgetSomeTerm k =
@@ -2149,7 +2192,7 @@ skeletonize prune prs =
 
 enforceAbsence :: Algebra t p g s e c => PRS t p g s e c -> [PRS t p g s e c]
 enforceAbsence prs@(_, k, _, _, _) =
-  [prs'| s <- absenceSubst (gen k) (kabsent k), prs' <- ksubst prs s]
+  [prs' | s <- absenceSubst (gen k) (kabsent k), prs' <- ksubst prs s]
 
 skeletonize2 :: Algebra t p g s e c => Bool -> Int -> PRS t p g s e c ->
                [PRS t p g s e c]
@@ -2210,22 +2253,23 @@ rectify prs =
 rectifyIndicatorConstraints :: Algebra t p g s e c => PRS t p g s e c -> [PRS t p g s e c]
 rectifyIndicatorConstraints prs
   | indicatorConstraintsCheck (skel prs) = [prs]
-  | otherwise = [prs'|ge <- gefix,
-                      prs' <- recurse1 (ind0Problems (skel prs)) prs ge]
+  | otherwise = [prs' | ge <- gefix,
+                        prs' <- recurse1 (ind0Problems (skel prs)) prs ge]
   where
     -- Rectify ind-zero constraints until none are left, then rectify
     -- ind-zero-in constraints.
     recurse1 [] prs ge = recurse2 (ind0_inProblems (skel prs)) prs ge
     recurse1 (t:ts) prs ge =
-      [prs'|(g,e) <- zeroIndicator t ge (filter (/= t) $ resExps (skel prs)),
-            sprs <- ksubst prs (g, substitution e),
-            prs' <- recurse1 (map (substitute (substitution e)) ts) sprs (g,e)]
+      [prs' | (g,e) <- zeroIndicator t ge (filter (/= t) $ resExps (skel prs)),
+              sprs <- ksubst prs (g, substitution e),
+              prs' <- recurse1 (map (substitute (substitution e)) ts) sprs (g,e)]
 
     -- Rectify ind-zero-in constraints until none are left
     recurse2 [] prs _ = [prs]
-    recurse2 (tv:tvs) prs ge = [prs'|(g,e) <- zeroIndicatorIn (tv !! 1) (tv !! 0) ge,
-            sprs <- ksubst prs (g,substitution e),
-            prs' <- recurse2 (map (\tv -> map (substitute (substitution e)) tv) tvs) sprs (g,e)]
+    recurse2 (tv:tvs) prs ge =
+      [prs' | (g,e) <- zeroIndicatorIn (tv !! 1) (tv !! 0) ge,
+              sprs <- ksubst prs (g,substitution e),
+              prs' <- recurse2 (map (\tv -> map (substitute (substitution e)) tv) tvs) sprs (g,e)]
 
     -- Include restricted variables
     gefix = matchMany (resExps (skel prs)) (resExps (skel prs)) (gen (skel prs), emptyEnv)
@@ -2324,6 +2368,7 @@ enrich prune (k0, k, n, phi, hsubst) =
                   o
                   (leadsto k)
                   (decls k)
+                  (kfacts k)
                   (operation k)
                   (prob k)
                   (kpriority k)
@@ -2443,22 +2488,126 @@ type SkelDeclaration t = Declaration t (Int, Int)
 type SkelDeclList t = DeclList t (Int, Int)
 type SkelDeclarations t = Declarations t (Int, Int)
 
+-- Facts
+
+data FTerm t
+  = FSid Sid
+  | FTerm t
+  deriving (Eq, Show)
+
+data Fact t
+  = Fact String [FTerm t]
+  deriving (Eq, Show)
+
+substFTerm :: Algebra t p g s e c => s -> FTerm t -> FTerm t
+substFTerm s (FTerm t) = FTerm $ substitute s t
+substFTerm _ t = t
+
+substFact :: Algebra t p g s e c => s -> Fact t -> Fact t
+substFact s (Fact name fs) = Fact name $ map (substFTerm s) fs
+
+{-
+instFTerm :: Algebra t p g s e c => e -> FTerm t -> FTerm t
+instFTerm s (FTerm t) = FTerm $ instantiate s t
+instFTerm _ t = t
+
+instFact :: Algebra t p g s e c => e -> Fact t -> Fact t
+instFact s (Fact name fs) = Fact name $ map (instFTerm s) fs
+-}
+
+updateFTerm :: (Sid -> Sid) -> FTerm t -> FTerm t
+updateFTerm f (FSid s) = FSid $ f s
+updateFTerm _ t = t
+
+updateFact :: (Sid -> Sid) -> Fact t -> Fact t
+updateFact f (Fact name fs) = Fact name $ map (updateFTerm f) fs
+
+instUpdateFTerm :: Algebra t p g s e c => e ->
+                   (Sid -> Sid) -> FTerm t -> FTerm t
+instUpdateFTerm _ f (FSid s) = FSid $ f s
+instUpdateFTerm e _ (FTerm t) = FTerm $ instantiate e t
+
+instUpdateFact :: Algebra t p g s e c => e ->
+                  (Sid -> Sid) -> Fact t -> Fact t
+instUpdateFact e f (Fact name fs) = Fact name $ map (instUpdateFTerm e f) fs
+
+-- Is all of the fact's variables in a list of variables?
+
+factVarsElem :: Algebra t p g s e c => [t] -> Fact t -> Bool
+factVarsElem vs (Fact _ ts) =
+  all f ts
+  where
+    f (FSid _) = True
+    f (FTerm t) = all (\v -> elem v vs) (varsInTerms [t])
+
+cleansFacts :: Algebra t p g s e c => [t] -> [Fact t] -> [Fact t]
+cleansFacts vs facts =
+  L.filter (factVarsElem vs) facts
+
+{-
+instvars :: Algebra t p g s e c => [Instance t e] -> [t]
+instvars insts =
+    S.elems $ foldl addIvars S.empty insts
+-}
+
+{-- For debugging
+factVars :: Fact -> [Term] -> [Term]
+factVars (Fact _ ts) vs =
+  foldr f vs ts
+  where
+    f (FSid _) vs = vs
+    f (FTerm t) vs = addVars vs t
+
+chkFVars :: Preskel -> Preskel
+chkFVars k =
+  foldl f k (foldr factVars [] (kfacts k))
+  where
+    f k v
+      | elem v (kvars k) = k
+      | otherwise = error ("Bad var in fact " ++ show v)
+--}
+
+{-
+chkFacts :: Preskel -> Bool
+chkFacts k =
+  all checkFact (kfacts k)
+  where
+    checkFact (Fact _ ft) =
+      all checkFTerm ft
+    checkFTerm (FSid s) =
+      s < nstrands k
+    checkFTerm (FNode (s, _)) =
+      s < nstrands k
+    checkFTerm (FTerm _) = True
+
+-- Use this to find bad fact updates.
+chkFacts :: Preskel -> Bool
+chkFacts k =
+  all checkFact (kfacts k)
+  where
+    checkFact (Fact _ ft) =
+      all checkFTerm ft
+    checkFTerm (FSid s) | s >= nstrands k = error "Bad strand in fact"
+    checkFTerm (FNode (s, _)) | s >= nstrands k = error "Bad node in fact"
+    checkFTerm _ = True
+
+-}
 -- Security goals: satisfaction of atomic formulas
 
 type Sem t g s e = Preskel t g s e -> (g, e) -> [(g, e)]
 
 satisfy :: Algebra t p g s e c => AForm t -> Sem t g s e
 satisfy (Equals t t') = geq t t'
+satisfy (AFact name fs) = gafact name fs
 satisfy (Non t) = gnon t
 satisfy (Pnon t) = gpnon t
 satisfy (Uniq t) = guniq t
 satisfy (UniqAt t n) = guniqAt t n
 satisfy (UgenAt t n) = gugenAt t n
 satisfy (Ugen t) = gugen t
-satisfy (StrPrec n n') = gstrPrec n n'
 satisfy (Prec n n') = gprec n n'
-satisfy (RolePred r i n) = grole r i n
-satisfy (ParamPred r v n t) = gparam r v n t
+satisfy (Length r n i) = glength r n i
+satisfy (Param r v f n t) = gparam r v f n t
 
 -- Equality assumes there has been a static role specific check to
 -- eliminate error cases.
@@ -2469,6 +2618,29 @@ geq t t' _ (g, e)
   where
     ti = instantiate e t
     ti' = instantiate e t'
+
+-- Facts
+gafact :: Algebra t p g s e c => String -> [t] -> Sem t g s e
+gafact name fs k e =
+  do
+    Fact name' ts <- kfacts k
+    case name == name' of
+      True -> fmatchList fs ts e
+      False -> []
+
+fmatchList :: Algebra t p g s e c => [t] -> [FTerm t] -> (g, e) -> [(g, e)]
+fmatchList [] [] e = [e]
+fmatchList (f : fs) (t : ts) e =
+  do
+    e <- fmatch f t e
+    fmatchList fs ts e
+fmatchList _ _ _ = []
+
+fmatch :: Algebra t p g s e c => t -> FTerm t -> (g, e) -> [(g, e)]
+fmatch z (FSid s) e =
+  strdMatch z s e
+fmatch t (FTerm t') e =
+  match t t' e
 
 -- Non-origination
 gnon :: Algebra t p g s e c => t -> Sem t g s e
@@ -2492,23 +2664,28 @@ guniq t k e =
     match t t' e
 
 -- Unique origination at a node
-guniqAt :: Algebra t p g s e c => t -> t -> Sem t g s e
-guniqAt t n k e =
+guniqAt :: Algebra t p g s e c => t -> NodeTerm t -> Sem t g s e
+guniqAt t (z, i) k e =
   do
-    (t', l) <- dkuniqFull $ decls k
-    e <- match t t' e
-    nodeMatch n l e
+    (t', (s, j)) <- dkuniqFull $ decls k
+    case i == j of
+      True ->
+        do
+          e <- match t t' e
+          strdMatch z s e
+      _ -> []
 
 -- Unique generation at a node
-gugenAt :: Algebra t p g s e c => t -> t -> Sem t g s e
-gugenAt t n k e =
+gugenAt :: Algebra t p g s e c => t -> NodeTerm t -> Sem t g s e
+gugenAt t (z, i) k e =
   do
     (t', l) <- dkugenFull $ decls k
     case l of
-      Nothing -> []
-      Just n' -> do
-        e <- match t t' e
-        nodeMatch n n' e
+      Just (s, j) | i == j ->
+        do
+          e <- match t t' e
+          strdMatch z s e
+      _ -> []
 
 -- Unique generation
 gugen :: Algebra t p g s e c => t -> Sem t g s e
@@ -2526,54 +2703,53 @@ strandPrec (s, i) (s', i')
   | s == s' && i < i' = True
   | otherwise = False
 
--- Within strand node precedes
-gstrPrec :: Algebra t p g s e c => t -> t -> Sem t g s e
-gstrPrec n n' k (g, e) =
-  case (nodeLookup e n, nodeLookup e n') of
-    (Just p, Just p')
-      | inSkel k p && inSkel k p' && strandPrec p p' -> [(g, e)]
-    (Just _, Just _) -> []
-    (_, Just _) ->
-      error ("Strand.gstrPrec: node " ++ show n ++ " unbound")
-    _ ->
-      error ("Strand.gstrPrec: node " ++ show n' ++ " unbound")
+nodeLookup :: Algebra t p g s e c => e -> NodeTerm t -> Maybe Node
+nodeLookup e (z, i) =
+  do
+    s <- strdLookup e z
+    return (s, i)
+
+nodeMatch :: Algebra t p g s e c => NodeTerm t -> Node -> (g, e) -> [(g, e)]
+nodeMatch (z, i) (s, j) e
+  | i == j = strdMatch z s e
+  | otherwise = []
 
 -- Node precedes
 -- This should look at the transitive closure of the ordering graph.
-gprec :: Algebra t p g s e c => t -> t -> Sem t g s e
+gprec :: Algebra t p g s e c => NodeTerm t -> NodeTerm t -> Sem t g s e
 gprec n n' k (g, e) =
   case (nodeLookup e n, nodeLookup e n') of
     (Just p, Just p')
       | inSkel k p && inSkel k p' &&
         (strandPrec p p' || elem (p, p') (tc k)) -> [(g, e)]
-    (Just _, Just _) -> []
-    (_, Just _) ->
-      error ("Strand.gstrPrec: node " ++ show n ++ " unbound")
     _ ->
-      error ("Strand.gstrPrec: node " ++ show n' ++ " unbound")
+      do
+        (p, p') <- tc k
+        (g, e) <- nodeMatch n p (g, e)
+        nodeMatch n' p' (g, e)
 
--- Role predicate
--- r and i determine the predicate, which has arity one.
-grole :: Algebra t p g s e c => Role t -> Int -> t -> Sem t g s e
-grole r i n k (g, e) =
-  case nodeLookup e n of
+-- Length predicate
+-- r and h determine the predicate, which has arity one.
+glength :: Algebra t p g s e c => Role t -> t -> Int -> Sem t g s e
+glength r z h k (g, e) =
+  case strdLookup e z of
     Nothing ->
       do
-        (z, inst) <- zip [0..] $ insts k
+        (s, inst) <- zip [0..] $ insts k
         case () of
-          _ | i >= height inst -> []
-            | rname (role inst) == rname r -> nodeMatch n (z, i) (g, e)
+          _ | h > height inst -> []
+            | rname (role inst) == rname r -> strdMatch z s (g, e)
             | otherwise ->      -- See if z could have been an instance of r
-              case bldInstance r (take (i + 1) $ trace inst) g of
+              case bldInstance r (take h $ trace inst) g of
                 [] -> []
-                _ -> nodeMatch n (z, i) (g, e)
-    Just (z, j) | z < nstrands k && i == j ->
-      let inst = insts k !! z in
+                _ -> strdMatch z s (g, e)
+    Just s | s < nstrands k ->
+      let inst = insts k !! s in
       case () of
-        _ | i >= height inst -> []
+        _ | h > height inst -> []
           | rname (role inst) == rname r -> [(g, e)]
           | otherwise ->
-            case bldInstance r (take (i + 1) $ trace inst) g of
+            case bldInstance r (take h $ trace inst) g of
               [] -> []
               _ -> [(g, e)]
     _ -> []
@@ -2582,20 +2758,33 @@ grole r i n k (g, e) =
 
 -- r and t determine the predicate, which has arity two.  t must be
 -- a variable declared in role r.
-gparam :: Algebra t p g s e c => Role t -> t -> t -> t -> Sem t g s e
-gparam r t n t' k (g, e) =
-  case nodeLookup e n of
-    Just (z, i) | z < nstrands k  ->
-      let inst = insts k !! z in
+gparam :: Algebra t p g s e c => Role t -> t -> Int -> t -> t -> Sem t g s e
+gparam r t h z t' k (g, e) =
+  case strdLookup e z of
+    Nothing ->
+      do
+        (s, inst) <- zip [0..] $ insts k
+        case () of
+          _ | h > height inst -> []
+            | rname (role inst) == rname r ->
+              do
+                ge <- strdMatch z s (g, e)
+                match t' (instantiate (env inst) t) ge
+            | otherwise ->      -- See if z could have been an instance of r
+                do
+                  (g, inst) <- bldInstance r (take h $ trace inst) g
+                  ge <- strdMatch z s (g, e)
+                  match t' (instantiate (env inst) t) ge
+    Just s | s < nstrands k  ->
+      let inst = insts k !! s in
       case () of
-        _ | i >= height inst -> []
+        _ | h > height inst -> []
           | rname (role inst) == rname r ->
             match t' (instantiate (env inst) t) (g, e)
           | otherwise ->
               do
-                (g, inst) <- bldInstance r (take (i + 1) $ trace inst) g
+                (g, inst) <- bldInstance r (take h $ trace inst) g
                 match t' (instantiate (env inst) t) (g, e)
-    Nothing -> error ("Strand.gparam: node " ++ show n ++ " unbound")
     _ -> []
 
 -- Conjunction
@@ -2624,3 +2813,400 @@ goalSat k g =
 sat :: Algebra t p g s e c => Preskel t g s e -> [(Goal t, [e])]
 sat k =
   map (goalSat k) (kgoals k)
+
+-- Rules
+
+-- Try simplifying k if possible
+simplify :: Algebra t p g s e c => Preskel t g s e -> [Preskel t g s e]
+simplify k =
+  case rewrite k of
+    Nothing -> [k]
+    Just ks -> ks
+
+{-
+-- Try all rules associated with the protocol of k.  Return nothing if
+-- no rule applies, otherwise return the replacements.
+rewrite :: Algebra t p g s e c => Preskel t g s e -> Maybe [Preskel t g s e]
+rewrite _ = Nothing
+-}
+
+-- Try all rules associated with the protocol of k.  Return nothing if
+-- no rule applies, otherwise return the replacements.
+rewrite :: Algebra t p g s e c => Preskel t g s e -> Maybe [Preskel t g s e]
+rewrite k =
+  loop prules
+  where
+    prules = rules $ protocol k
+    loop [] = Nothing           -- No rules apply
+    loop (r : rs) =
+      let vas = tryRule k r in
+        if null vas then
+          loop rs               -- Rule does not apply
+        else
+          Just $ doRewrites prules k r vas
+
+-- Returns the environments that show satifaction of the antecedent
+-- but fail to be extendable to show satifaction of one of the
+-- conclusions.
+tryRule :: Algebra t p g s e c => Preskel t g s e -> Rule t -> [(g, e)]
+tryRule k r =
+  [(g, e) | (g, e) <- conjoin (antec $ rlgoal r) k (gen k, emptyEnv),
+            conclusion (g, e) ]
+  where
+    conclusion e = all (disjunct e) $ concl $ rlgoal r
+    disjunct e a = null $ conjoin a k e
+
+-- Repeatedly applies rules until no rule applies.
+doRewrites :: Algebra t p g s e c => [Rule t] -> Preskel t g s e ->
+              Rule t -> [(g, e)] -> [Preskel t g s e]
+doRewrites rules k r vas =
+  concatMap f (doRewrite k r vas)
+  where
+    f k = loop rules
+      where
+        loop [] = [k]           -- No rules apply
+        loop (r : rs) =
+          let vas = tryRule k r in
+            if null vas then
+              loop rs           -- Rule does not apply
+            else
+              doRewrites rules k r vas
+
+-- Apply rewrite rule at all assignments
+doRewrite :: Algebra t p g s e c => Preskel t g s e ->
+             Rule t -> [(g, e)] -> [Preskel t g s e]
+doRewrite k r vas =
+  concatMap (doRewriteOne k r) vas
+
+-- Apply rewrite rule at one assignment
+doRewriteOne :: Algebra t p g s e c => Preskel t g s e ->
+                Rule t -> (g, e) -> [Preskel t g s e]
+doRewriteOne k r e =
+  do
+    cl <- concl $ rlgoal r
+    (k, _) <- doConj (rlname r) cl k e
+    k <- wellFormedPreskel k
+    k <- toSkeleton True k
+    return $ f k                -- Add comment about rule application
+  where f k = k { kcomment =
+                  L () [S () "rule", S () (rlname r)] :
+                  kcomment k }
+
+type Rewrite t g s e =
+  Preskel t g s e -> (g, e) -> [(Preskel t g s e, (g, e))]
+
+doConj :: Algebra t p g s e c => String -> [AForm t] -> Rewrite t g s e
+doConj _ [] k e = [(k, e)]
+doConj rule (f : fs) k e =
+  do
+    (k, e) <- rwt rule f k e
+    doConj rule fs k e
+
+rwt :: Algebra t p g s e c => String -> AForm t -> Rewrite t g s e
+rwt _ (Length r z h) = rlength r z h
+rwt rule (Param r v i z t) = rparam rule r v i z t
+rwt rule (Prec n n') = rprec rule n n'
+rwt rule (Non t) = rlnon rule t
+rwt rule (Pnon t) = rlpnon rule t
+rwt rule (Uniq t) = rluniq rule t
+rwt rule (UniqAt t n) = runiqAt rule t n
+rwt rule (UgenAt t n) = rugenAt rule t n
+rwt rule (Ugen t) = rlugen rule t
+rwt rule (AFact name fs) = rafact rule name fs
+rwt rule (Equals t t') = req rule t t'
+
+rlength :: Algebra t p g s e c => Role t -> t -> Int -> Rewrite t g s e
+rlength r z h k (g, e)
+  | length (rtrace r) < h = []
+  | otherwise =
+    case strdLookup e z of
+      Just s ->                 -- Try to displace
+        rDisplace e k' ns s
+        where
+          k' = addStrand g k r h
+          ns = nstrands k
+      Nothing ->                -- Try to augment
+        do                      -- and displace everywhere
+          let ns = nstrands k
+          (g, e) <- strdMatch z ns (g, e)
+          let k' = addStrand g k r h
+          let f s' = rDisplace e k' ns s'
+          (k', (gen k', e)) : concatMap f (nats ns)
+
+-- Just add a strand cloned from a role.
+-- The length must be greater than one.
+addStrand :: Algebra t p g s e c => g -> Preskel t g s e ->
+             Role t -> Int -> Preskel t g s e
+addStrand g k r h =
+  newPreskel g' (shared k) insts'
+  (orderings k) (leadsto k) decls' (kfacts k) (operation k)
+  (prob k) (kpriority k) (pov k)
+  where
+    (g', inst) = mkInstance g r emptyEnv h -- Create instance
+    insts' = (insts k) ++ [inst]
+    decls' = inheritRdecls s inst (decls k)
+    s = length (insts k)
+
+rDisplace :: Algebra t p g s e c => e -> Preskel t g s e ->
+             Sid -> Sid -> [(Preskel t g s e, (g, e))]
+rDisplace e k s s' | s == s' = [(k, (gen k, e))]
+rDisplace e k s s' =
+  do
+    (s, s', subst) <- unifyStrands k s s'
+    k <- rSubst k subst
+    k <- rCompress k s s'
+    return (k, (gen k, strdUpdate
+                       (substUpdate e (snd subst))
+                       (updateStrand s s')))
+
+rSubst :: Algebra t p g s e c => Preskel t g s e ->
+          (g, s) -> [Preskel t g s e]
+rSubst k (gen, subst) =
+    do
+      (gen', insts') <- foldMapM (substInst subst) gen (insts k)
+      let decls' = declsMapTerms (substitute subst) (decls k)
+      let facts' = map (substFact subst) (kfacts k)
+      let operation' = substOper subst (operation k)
+      return $
+        newPreskel gen' (shared k) insts'
+        (orderings k) (leadsto k) decls' facts' operation'
+        (prob k) (kpriority k) (pov k)
+
+rCompress :: Algebra t p g s e c => Preskel t g s e ->
+             Sid -> Sid -> [Preskel t g s e]
+rCompress k s s' =
+    do
+      let perm = updatePerm s s' (strandids k)
+      orderings' <- normalizeOrderings True
+                    (permuteOrderings perm (orderings k))
+      return $
+        newPreskel
+        (gen k)
+        (shared k)
+        (deleteNth s (insts k))
+        orderings'
+        (permuteOrderings perm (leadsto k))
+        (declsMapStrands perm (decls k))
+        (map (updateFact $ updateStrand s s') (kfacts k))
+        (operation k)
+        (updateProb perm (prob k))
+        (updatePriority perm (kpriority k))
+        (pov k)
+
+rparam :: Algebra t p g s e c => String -> Role t ->
+          t -> Int -> t -> t -> Rewrite t g s e
+rparam name r v h z t k (g, e) =
+  case strdLookup e z of
+    Just s
+      | height inst < h -> []
+      | rname (role inst) == rname r ->
+        rParam k (g, e) t t'
+      | otherwise ->
+        do
+          (k, (g, e)) <- rDisplace e k' ns s
+          rParam k (g, e) t t'
+      where
+        inst = strandInst k s
+        t' = instantiate (env inst) v
+        k' = addStrand g k r h
+        ns = nstrands k
+    Nothing ->
+      error ("In rule " ++ name ++ ", parameter predicate for " ++
+             rname r ++ " did not get a strand")
+
+rParam :: Algebra t p g s e c => Preskel t g s e ->
+          (g, e) -> t -> t -> [(Preskel t g s e, (g, e))]
+rParam k (g, e) t t' =
+  case matched e t of
+    False ->
+      do
+        (g, e) <- match t t' (g, e)
+        return (k, (g, e))
+    True ->
+      rUnify k (g, e) (instantiate e t) t'
+
+rUnify :: Algebra t p g s e c => Preskel t g s e ->
+          (g, e) -> t -> t -> [(Preskel t g s e, (g , e))]
+rUnify k (g, e) t t' =
+  do
+    subst <- unify t t' (g, emptySubst)
+    k <- rSubst k subst
+    return (k, (gen k, substUpdate e (snd subst)))
+
+rprec :: Algebra t p g s e c => String -> NodeTerm t ->
+         NodeTerm t -> Rewrite t g s e
+rprec name (z, i) (z', i') k (g, e) =
+  case (strdLookup e z, strdLookup e z') of
+    (Just s, Just s')
+      | elem ((s, i), (s', i')) tc -> [(k, (g, e))]
+      | badIndex k s i || badIndex k s' i' -> []
+      | otherwise ->
+        do                      -- Add one ordering
+          orderings' <- normalizeOrderings True
+                        (((s, i), (s', i')) : orderings k)
+          let k' = newPreskel g (shared k) (insts k) orderings'
+                   (leadsto k) (decls k) (kfacts k) (operation k)
+                   (prob k) (kpriority k) (pov k)
+          return (k', (gen k, e))
+    _ ->
+      error ("In rule " ++ name ++ ", precidence did not get a strand")
+  where
+    tc = map graphPair $ graphClose $ graphEdges $ strands k
+
+badIndex :: Algebra t p g s e c => Preskel t g s e -> Sid -> Int -> Bool
+badIndex k s i =
+  i >= height (strandInst k s)
+
+withNewDecl :: Algebra t p g s e c => Preskel t g s e ->
+               SkelDeclarations t -> Preskel t g s e
+withNewDecl k d =
+  newPreskel (gen k) (shared k) (insts k) (orderings k)
+  (leadsto k) d (kfacts k) (operation k)
+  (prob k) (kpriority k) (pov k)
+
+rlnon :: Algebra t p g s e c => String -> t -> Rewrite t g s e
+rlnon name t k (g, e) =
+  case matched e t of
+    True
+      | elem t' (knon k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        [(k', (g, e))]
+        where
+          k' = withNewDecl k (addDeclInst "non-orig" [t'] [] (decls k))
+    False ->
+      error ("In rule " ++ name ++ ", non did not get a term")
+  where
+    t' = instantiate e t
+
+rlpnon :: Algebra t p g s e c => String -> t -> Rewrite t g s e
+rlpnon name t k (g, e) =
+  case matched e t of
+    True
+      | elem t' (kpnon k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        [(k', (g, e))]
+        where
+          k' = withNewDecl k (addDeclInst "pen-non-orig" [t'] [] (decls k))
+    False ->
+      error ("In rule " ++ name ++ ", pnon did not get a term")
+  where
+    t' = instantiate e t
+
+rluniq :: Algebra t p g s e c => String -> t -> Rewrite t g s e
+rluniq name t k (g, e) =
+  case matched e t of
+    True
+      | elem t' (dkunique $ decls k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        case originationNodes (strands k) t' of
+          (_, []) -> []
+          (_, n : _) ->
+            [(k', (g, e))]
+            where
+              k' = withNewDecl k (addDeclInst "uniq-orig" [t'] [n] (decls k))
+    False ->
+      error ("In rule " ++ name ++ ", uniq did not get a term")
+  where
+    t' = instantiate e t
+
+runiqAt :: Algebra t p g s e c => String -> t ->
+           NodeTerm t -> Rewrite t g s e
+runiqAt name t (z, i) k (g, e) =
+  case (matched e t, strdLookup e z) of
+    (True, Just s)
+      | elem (t', (s, i)) (dkuniqFull $ decls k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        [(k', (g, e))]
+        where
+          k' = withNewDecl k (addDeclInst "uniq-orig" [t'] [(s, i)] (decls k))
+    (False, _) ->
+      error ("In rule " ++ name ++ ", uniq-at did not get a term")
+    (_, Nothing) ->
+      error ("In rule " ++ name ++ ", uniq-at did not get a strand")
+  where
+    t' = instantiate e t
+
+rugenAt :: Algebra t p g s e c => String -> t ->
+           NodeTerm t -> Rewrite t g s e
+rugenAt name t (z, i) k (g, e) =
+  case (matched e t, strdLookup e z) of
+    (True, Just s)
+      | elem (t', (s, i)) (dkuniqFull $ decls k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        [(k', (g, e))]
+        where
+          k' = withNewDecl k (addDeclInst "uniq-gen" [t'] [(s, i)] (decls k))
+    (False, _) ->
+      error ("In rule " ++ name ++ ", ugen-at did not get a term")
+    (_, Nothing) ->
+      error ("In rule " ++ name ++ ", ugen-at did not get a strand")
+  where
+    t' = instantiate e t
+
+rlugen :: Algebra t p g s e c => String -> t -> Rewrite t g s e
+rlugen name t k (g, e) =
+  case matched e t of
+    True
+      | elem t' (dkuniqgen $ decls k) -> [(k, (g, e))]
+      | not $ isAtom t' -> []
+      | otherwise ->
+        case originationNodes (strands k) t' of
+          (_, []) -> []
+          (_, n : _) ->
+            [(k', (g, e))]
+            where
+              k' = withNewDecl k (addDeclInst "uniq-gen" [t'] [n] (decls k))
+    False ->
+      error ("In rule " ++ name ++ ", ugen did not get a term")
+  where
+    t' = instantiate e t
+
+rafact :: Algebra t p g s e c => String -> String -> [t] -> Rewrite t g s e
+rafact rule name fts k (g, e)
+  | elem fact (kfacts k) = [(k, (g, e))]
+  | otherwise = [(k', (gen k', e))]
+  where
+    fts' = map (rFactLookup rule e) fts
+    fact = Fact name fts'
+    k' = newPreskel
+         g (shared k) (insts k) (orderings k) (leadsto k)
+         (decls k) (fact : kfacts k)
+         (operation k) (prob k) (kpriority k) (pov k)
+
+rFactLookup :: Algebra t p g s e c => String -> e -> t -> FTerm t
+rFactLookup name e t
+  | isStrdVar t =
+    case strdLookup e t of
+      Just s -> FSid s
+      Nothing ->
+        error ("In rule " ++ name ++ ": fact did not get a strand")
+  | matched e t = FTerm $ instantiate e t
+  | otherwise =
+      error ("In rule " ++ name ++ ": fact did not get a term")
+
+req :: Algebra t p g s e c => String -> t -> t -> Rewrite t g s e
+req name x y k (g, e)
+  | isStrdVar x =
+    case (strdLookup e x, strdLookup e y) of
+      (Just s, Just t)
+        | s == t -> [(k, (g, e))]
+        | otherwise ->
+          rDisplace e (k {gen = g})  s t
+      _ ->
+        error ("In rule " ++ name ++ ", = did not get a strand")
+  | otherwise =
+    case (matched e x, matched e y) of
+      (True, True)
+        | u == v -> [(k, (g, e))]
+        | otherwise ->
+          rUnify k (g, e) u v
+      _ ->
+        error ("In rule " ++ name ++ ", = did not get a term")
+    where
+      u = instantiate e x
+      v = instantiate e y

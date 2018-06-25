@@ -28,8 +28,88 @@ displayProt :: Algebra t p g s e c => Prot t g -> SExpr ()
 displayProt p =
     L () (S () "defprotocol" : S () (pname p) : S () (alg p) : rs)
     where
-      rs = foldl f (pcomment p) (reverse (roles p))
+      rs = foldl f (map displayRule (rules p) ++ pcomment p)
+                   (reverse (roles p))
       f rs r = displayRole r : rs
+
+displayRule :: Algebra t p g s e c => Rule t -> SExpr ()
+displayRule r =
+  L () (S () "defrule" :
+        S () (rlname r) :
+        displayGoal (rlgoal r) :
+        rlcomment r)
+
+displayGoal :: Algebra t p g s e c => Goal t -> SExpr ()
+displayGoal g =
+  L () [S () "forall",
+        L () (displayVars ctx vars),
+        displayImpl ctx g]
+  where
+    ctx = varsContext vars
+    vars = uvars g
+
+displayImpl :: Algebra t p g s e c => c -> Goal t -> SExpr ()
+displayImpl ctx g =
+  L () [S () "implies",
+        displayConj ctx (antec g),
+        displayDisj ctx (zip (evars g) (concl g)) ]
+
+displayDisj :: Algebra t p g s e c => c -> [([t], [AForm t])] -> SExpr ()
+displayDisj _ [] = L () [S () "false"]
+displayDisj ctx [conj] = displayExistential ctx conj
+displayDisj ctx disj =
+  L () (S () "or" : map (displayExistential ctx) disj)
+
+displayExistential :: Algebra t p g s e c => c -> ([t], [AForm t]) -> SExpr ()
+displayExistential ctx ([], conj) =
+  displayConj ctx conj
+displayExistential ctx (evars, conj) =
+  L () [S () "exists",
+        L () (displayVars ctx' evars),
+        displayConj ctx' conj]
+  where
+    ctx' = addToContext ctx evars
+
+displayConj :: Algebra t p g s e c => c -> [AForm t] -> SExpr ()
+displayConj _ [] = error "DisplayConj: empty conjunct"
+displayConj ctx [form] = displayForm ctx form
+displayConj ctx forms = L () (S () "and" : map (displayForm ctx) forms)
+
+displayForm :: Algebra t p g s e c => c -> AForm t -> SExpr ()
+displayForm ctx (Length r s l) =
+  L () [S () "p", Q () (rname r), displayTerm ctx  s, N () l]
+displayForm ctx (Param r p _ s t) =
+  L () [S () "p", Q () (rname r), displayParam r p,
+        displayTerm ctx s, displayTerm ctx t]
+displayForm ctx (Prec (x, i) (y, j)) =
+  L () [S () "prec", displayTerm ctx x, N () i,
+        displayTerm ctx y, N () j]
+displayForm ctx (Non t) =
+  L () [S () "non", displayTerm ctx t]
+displayForm ctx (Pnon t) =
+  L () [S () "pnon", displayTerm ctx t]
+displayForm ctx (Uniq t) =
+  L () [S () "uniq", displayTerm ctx t]
+displayForm ctx (UniqAt t (s, i)) =
+  L () [S () "uniq-at", displayTerm ctx t,
+        displayTerm ctx s, N () i]
+displayForm ctx (UgenAt t (s, i)) =
+  L () [S () "ugen-at", displayTerm ctx t,
+        displayTerm ctx s, N () i]
+displayForm ctx (Ugen t) =
+  L () [S () "ugen", displayTerm ctx t]
+displayForm ctx (AFact name fs) =
+  L () (S () "fact" : S () name : map (displayTerm ctx) fs)
+displayForm ctx (Equals t1 t2) =
+  L () [S () "=", displayTerm ctx t1, displayTerm ctx t2]
+
+displayParam :: Algebra t p g s e c => Role t -> t -> SExpr ()
+displayParam r t =
+  case displayTerm (varsContext (rvars r)) t of
+    S () var -> Q () var
+    _ -> error "displayParam: bad parameter"
+
+-- Display of Roles
 
 displayRole :: Algebra t p g s e c => Role t -> SExpr ()
 displayRole r =
@@ -135,9 +215,10 @@ displayRest k ctx rest =
      (displayOptional "leadsto" (displayOrdering (leadsto k))
       (displayOptional "priority" (displayPriorities (kpriorities k))
        (displaySkelDeclarations ctx (decls k)
-        (kcomment k ++
-         (displayOperation k ctx
-          (displayOptional "traces" traces rest))))))
+        (displayOptional "facts" (map (displayFact ctx) (kfacts k))
+         (kcomment k ++
+          (displayOperation k ctx
+           (displayOptional "traces" traces rest)))))))
   where
     traces = map (L () . displayTrace ctx . trace) (insts k)
 
@@ -302,6 +383,14 @@ displaySkelDeclLocItem dinst rest =
     where
       ns = dlocs dinst
 
+displayFact :: Algebra t p g s e c => c -> Fact t -> SExpr ()
+displayFact ctx (Fact name fs) =
+  L () (S () name : map (displayFterm ctx) fs)
+
+displayFterm :: Algebra t p g s e c => c -> FTerm t -> SExpr ()
+displayFterm _ (FSid s) = N () s
+displayFterm ctx (FTerm t) = displayTerm ctx t
+
 displayInst :: Algebra t p g s e c => c ->
                Instance t e -> SExpr ()
 displayInst ctx s =
@@ -396,7 +485,7 @@ displayOperation k ctx rest =
           [S () "weakened", L () [displayNode n0, displayNode n1] ]
       displayMethod ctx (Separated t) =
           [S () "separated", displayOpTerm ctx t]
-      displayMethod ctx (Forgot decls) = 
+      displayMethod ctx (Forgot decls) =
           [S () "forgot", L () (displaySkelDeclarations ctx decls [])]
 
 -- Terms in the operation field may contain variables not in the skeleton

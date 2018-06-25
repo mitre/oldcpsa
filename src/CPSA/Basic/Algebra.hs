@@ -127,8 +127,8 @@ data Term
     = I !Id
     | C !String                 -- Tag constants
     | F !Symbol ![Term]
-    | D !Id                     -- Node variable
-    | P (Int, Int)              -- Node constant
+    | D !Id                     -- Strand variable
+    | Z Int                     -- Strand constant
       deriving (Show, Eq, Ord)
 
 -- In this algebra (F Invk [F Invk [t]]) == t is an axiom
@@ -148,9 +148,9 @@ isVar (F s [I _]) =
 isVar _ = False
 
 -- Note that isVar of (D _) is false.
-isNodeVar :: Term -> Bool
-isNodeVar (D _) = True
-isNodeVar _ = False
+isStrdVar :: Term -> Bool
+isStrdVar (D _) = True
+isStrdVar _ = False
 
 subNums :: Term -> Set Term
 subNums _ = S.empty
@@ -290,7 +290,7 @@ isAtom (C _) = True
 isAtom (F s _) =
     s == Text || s == Data || s == Name || s == Skey || s == Akey || s == Tag
 isAtom (D _) = False
-isAtom (P _) = False
+isAtom (Z _) = False
 
 -- Is the term numeric?
 isNum :: Term -> Bool
@@ -334,8 +334,8 @@ foldVars f acc (F Enc [t0, t1]) =         -- Encryption
     foldVars f (foldVars f acc t0) t1
 foldVars f acc (F Hash [t]) =             -- Hashing
     foldVars f acc t
-foldVars f acc t@(D _) = f acc t          -- Node variable
-foldVars _ acc (P _) = acc                -- Node constant
+foldVars f acc t@(D _) = f acc t          -- Strand variable
+foldVars _ acc (Z _) = acc                -- Strand constant
 foldVars _ _ t = C.assertError $ "Algebra.foldVars: Bad term " ++ show t
 
 -- Fold f through a term applying it to each term that is carried by the term.
@@ -420,8 +420,8 @@ inv (F Akey [t]) = F Akey [F Invk [t]]
 inv t@(F _ _) = t
 inv (I _) = error "Algebra.inv: Cannot invert a variable of sort mesg"
 inv (C _) = error "Algebra.inv: Cannot invert a tag constant"
-inv (D _) = error "Algebra.inv: Cannot invert a variable of sort node"
-inv (P _) = error "Algebra.inv: Cannot invert a node constant"
+inv (D _) = error "Algebra.inv: Cannot invert a variable of sort strd"
+inv (Z _) = error "Algebra.inv: Cannot invert a strand constant"
 
 -- Extracts every encryption that is carried by a term along with its
 -- encryption key.  Note that a hash is treated as a kind of
@@ -486,7 +486,7 @@ instance C.Term Term where
     isAcquiredVar = isAcquiredVar
     isObtainedVar = isObtainedVar
     isAtom = isAtom
-    isNodeVar = isNodeVar
+    isStrdVar = isStrdVar
     termsWellFormed = termsWellFormed
     occursIn = occursIn
     foldVars = foldVars
@@ -610,7 +610,7 @@ clone gen t =
                   Nothing ->
                       let (gen', y) = cloneId gen x in
                       ((x, y) : alist, gen', D y)
-            P p -> (alist, gen, P p)
+            Z p -> (alist, gen, Z p)
       cloneTermList (alist, gen, u) t =
           let (alist', gen', t') = cloneTerm (alist, gen) t in
           (alist', gen', t' : u)
@@ -653,7 +653,16 @@ idSubst subst (F s u) =
     F s (map (idSubst subst) u)
 idSubst subst (D x) =
     M.findWithDefault (D x) x subst
-idSubst _ t@(P _) = t
+idSubst _ t@(Z _) = t
+
+-- Is every variable in a term a key in the map?
+idMapped :: IdMap -> Term -> Bool
+idMapped subst (I x) = M.member x subst
+idMapped _ (C _) = True
+idMapped subst (F _ u) =
+    all (idMapped subst) u
+idMapped subst (D x) = M.member x subst
+idMapped _ (Z _) = True
 
 -- Unification and substitution
 
@@ -720,7 +729,7 @@ occurs x (I y) = x == y
 occurs _ (C _) = False
 occurs x (F _ u) = any (occurs x) u
 occurs x (D y) = x == y
-occurs _ (P _) = False
+occurs _ (Z _) = False
 
 unifyChase :: Term -> Term -> Subst -> Maybe Subst
 unifyChase t t' s = unifyTerms (chase s t) (chase s t') s
@@ -750,10 +759,10 @@ unifyTerms (F sym u) (F sym' u') s
 unifyTerms (D x) (D y) (Subst s)
     | x == y = Just (Subst s)
     | otherwise = Just (Subst $ M.insert x (D y) s)
-unifyTerms (D x) (P p) (Subst s) =
-    Just (Subst $ M.insert x (P p) s)
+unifyTerms (D x) (Z p) (Subst s) =
+    Just (Subst $ M.insert x (Z p) s)
 unifyTerms t (D x) s = unifyTerms (D x) t s
-unifyTerms (P p) (P p') s
+unifyTerms (Z p) (Z p') s
     | p == p' = Just s
     | otherwise = Nothing
 unifyTerms _ _ _ = Nothing
@@ -793,7 +802,7 @@ substChase subst t =
       F s u ->
           F s (map (substChase subst) u)
       t@(D _) -> t
-      t@(P _) -> t
+      t@(Z _) -> t
 
 destroyer :: Term -> Maybe Subst
 destroyer _ = Nothing
@@ -826,6 +835,15 @@ emptyEnv = Env emptyIdMap
 instantiate :: Env -> Term -> Term
 instantiate (Env r) t = idSubst r t
 
+-- Is every variable in t in the domain of r?
+matched :: Env -> Term -> Bool
+matched (Env r) t = idMapped r t
+
+-- Apply a substitution to the range of an environment
+substUpdate :: Env -> Subst -> Env
+substUpdate (Env r) s =
+  Env $ M.map (substitute s) r
+
 -- Matching
 
 -- The matcher has the property that when pattern P and term T match
@@ -844,7 +862,7 @@ match (D x) t (Env r) =
     case M.lookup x r of
       Nothing -> Just $ Env $ M.insert x t r
       Just t' -> if t == t' then Just $ Env r else Nothing
-match (P p) (P p') r = if p == p' then Just r else Nothing
+match (Z p) (Z p') r = if p == p' then Just r else Nothing
 match _ _ _ = Nothing
 
 matchLists :: [Term] -> [Term] -> Env -> Maybe Env
@@ -887,14 +905,21 @@ reify domain (Env env) =
           | x == y = (D x, t)
       loop (_ : domain) pair = loop domain pair
 
-nodeMatch ::  Term -> (Int, Int) -> Env -> Maybe Env
-nodeMatch t p env = match t (P p) env
+strdMatch ::  Term -> Int -> Env -> Maybe Env
+strdMatch t p env = match t (Z p) env
 
-nodeLookup :: Env -> Term -> Maybe (Int, Int)
-nodeLookup env t =
+strdLookup :: Env -> Term -> Maybe Int
+strdLookup env t =
   case instantiate env t of
-    P p -> Just p
+    Z p -> Just p
     _ -> Nothing
+
+strdUpdate :: Env -> (Int -> Int) -> Env
+strdUpdate (Env e) f =
+  Env $ M.map h e
+  where
+    h (Z z) = Z $ f z
+    h t = t
 
 instance C.Env Term Gen Subst Env where
    emptyEnv = emptyEnv
@@ -903,9 +928,12 @@ instance C.Env Term Gen Subst Env where
        maybe [] (\e -> [(g, e)]) $ match t t' e
    substitution = substitution
    reify = reify
-   nodeMatch t t' (g, e) =
-       maybe [] (\e -> [(g, e)]) $ nodeMatch t t' e
-   nodeLookup = nodeLookup
+   substUpdate = substUpdate
+   matched = matched
+   strdMatch t t' (g, e) =
+       maybe [] (\e -> [(g, e)]) $ strdMatch t t' e
+   strdLookup = strdLookup
+   strdUpdate = strdUpdate
 
 -- Term specific loading functions
 
@@ -943,7 +971,7 @@ loadVar (gen, vars) (S pos name, S pos' sort) =
             "skey" -> return $ F Skey [I x]
             "akey" -> return $ F Akey [I x]
             "tag" -> return $ F Tag [I x]
-            "node" -> return (D x)
+            "strd" -> return (D x)
             _ -> fail (shows pos' "Sort " ++ sort ++ " not recognized")
 loadVar _ (x,_) = fail (shows (annotation x) "Malformed vars declaration")
 
@@ -1116,7 +1144,7 @@ displayVar ctx (F Name [I x]) = displaySortId "name" ctx x
 displayVar ctx (F Skey [I x]) = displaySortId "skey" ctx x
 displayVar ctx (F Akey [I x]) = displaySortId "akey" ctx x
 displayVar ctx (F Tag [I x]) = displaySortId "tag" ctx x
-displayVar ctx (D x) = displaySortId "node" ctx x
+displayVar ctx (D x) = displaySortId "strd" ctx x
 displayVar _ _ =
     C.assertError "Algebra.displayVar: term not a variable with its sort"
 
@@ -1159,7 +1187,7 @@ displayTerm ctx (F Enc [t0, t1]) =
 displayTerm ctx (F Hash [t]) =
     L () (S () "hash" : displayList ctx t)
 displayTerm ctx (D x) = displayId ctx x
-displayTerm _ (P (z, i)) = L () [N () z, N () i]
+displayTerm _ (Z z) = N () z
 displayTerm _ t = C.assertError ("Algebra.displayTerm: Bad term " ++ show t)
 
 displayList :: Context -> Term -> [SExpr ()]

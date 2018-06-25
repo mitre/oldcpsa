@@ -1,6 +1,6 @@
 (herald "Static DH key exchange" (algebra diffie-hellman))
 
-(comment "CPSA 3.5.0")
+(comment "CPSA 3.6.0")
 (comment "All input read from staticdh.scm")
 
 (defprotocol staticdh1 diffie-hellman

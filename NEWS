@@ -1,5 +1,12 @@
 CPSA NEWS
 
+  June, 2018:
+
+* Release 3.6.0 adds rules and facts.  Rules are associated with
+  protocols, and facts are associated with skeletons.  A rule is a
+  geometric formula that is used as a rewrite rule, and a fact is a
+  named relation between values.
+
   April, 2018:
 
 * The release of CPSA version 3.5.0 contains one user visiable change.

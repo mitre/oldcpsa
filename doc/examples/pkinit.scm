@@ -31,11 +31,7 @@
 ;;; which has no extension for which the conclusion is also
 ;;; satisfied. The shapes for the other analyses contain the
 ;;; annotation (satisfies yes) indicating that the goal is satisfied
-;;; in the shape (and hence in any realized skeleton). 
-
-
-
-
+;;; in the shape (and hence in any realized skeleton).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                       ;;
@@ -43,9 +39,8 @@
 ;;                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;; This is the flawed version of the Kerberos public key initial
-;; round. 
+;; round.
 (defprotocol pkinit-flawed basic
   (defrole client
     (vars (c t as name) (n2 n1 text) (tc tk tgt data) (k ak skey))
@@ -61,7 +56,6 @@
         (cat (enc (enc k n2 (privk as)) (pubk c)) c tgt
           (enc ak n1 tk t k))))
     (uniq-orig k ak)))
-
 
 ;; This is the fix the authors proposed to the standards group. It
 ;; adds the value c in a new field inside the server's signature.
@@ -100,9 +94,8 @@
                        (privk as)) (pubk c)) c tgt (enc ak n1 tk t k))))
     (uniq-orig k ak)))
 
-
 ;;;;;;;;;;;;;;;;;;;;;
-;;                 ;; 
+;;                 ;;
 ;; Goal Statements ;;
 ;;                 ;;
 ;;;;;;;;;;;;;;;;;;;;;
@@ -110,16 +103,16 @@
 ;; This is the goal that the authors discovered was not met by the
 ;; original, flawed version, but which was met by both fixes.
 (defgoal pkinit-flawed
-  (forall ((c as name) (k skey) (z node))
+  (forall ((c as name) (k skey) (z strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
                 (non (privk as))
                 (non (privk c)))
-           (exists ((z-0 node))
-                   (and (p "auth" 1 z-0)
+           (exists ((z-0 strd))
+                   (and (p "auth" z-0 2)
                         (p "auth" "as" z-0 as)
                         (p "auth" "k" z-0 k)
                         (p "auth" "c" z-0 c))))))
@@ -128,84 +121,83 @@
 ;; must repeat it once for every protocol against which we would like
 ;; to evaluate the goal.
 (defgoal pkinit-fix1
-  (forall ((c as name) (k skey) (z node))
+  (forall ((c as name) (k skey) (z strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
                 (non (privk as))
                 (non (privk c)))
-           (exists ((z-0 node))
-                   (and (p "auth" 1 z-0)
+           (exists ((z-0 strd))
+                   (and (p "auth" z-0 2)
                         (p "auth" "as" z-0 as)
                         (p "auth" "k" z-0 k)
                         (p "auth" "c" z-0 c))))))
 
 ;; Repeated once more.
 (defgoal pkinit-fix2
-  (forall ((c as name) (k skey) (z node))
+  (forall ((c as name) (k skey) (z strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
                 (non (privk as))
                 (non (privk c)))
-           (exists ((z-0 node))
-                   (and (p "auth" 1 z-0)
+           (exists ((z-0 strd))
+                   (and (p "auth" z-0 2)
                         (p "auth" "as" z-0 as)
                         (p "auth" "k" z-0 k)
                         (p "auth" "c" z-0 c))))))
 
-
 ;;;;;;;;
 
 (defgoal pkinit-flawed
-  (forall ((c c-0 as name) (k skey) (z z-0 node))
+  (forall ((c c-0 as name) (k skey) (z z-0 strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
-                (p "auth" 1 z-0)
+                (p "auth" z-0 2)
                 (p "auth" "k" z-0 k)
                 (p "auth" "c" z-0 c-0)
                 (non (privk as))
                 (non (privk c)))
-           ;(exists ((z-1 node))
+           ;(exists ((z-1 strd))
            ;        (p "client" 1 z-1))
            (= c c-0)
            )))
 
 (defgoal pkinit-fix1
-  (forall ((c c-0 as name) (k skey) (z z-0 node))
+  (forall ((c c-0 as name) (k skey) (z z-0 strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
-                (p "auth" 1 z-0)
+                (p "auth" z-0 2)
                 (p "auth" "k" z-0 k)
                 (p "auth" "c" z-0 c-0)
                 (non (privk as))
                 (non (privk c)))
-           (exists ((z-1 node))
-                   (p "client" 1 z-1))
+           (exists ((z-1 strd))
+                   (p "client" z-1 2))
            ;(= c c-0)
            )))
 
 (defgoal pkinit-fix2
-  (forall ((c c-0 as name) (k skey) (z z-0 node))
+  (forall ((c c-0 as name) (k skey) (z z-0 strd))
           (implies
-           (and (p "client" 1 z)
+           (and (p "client" z 2)
                 (p "client" "c" z c)
                 (p "client" "as" z as)
                 (p "client" "k" z k)
-                (p "auth" 1 z-0)
+                (p "auth" z-0 2)
                 (p "auth" "k" z-0 k)
                 (p "auth" "c" z-0 c-0)
                 (non (privk as))
                 (non (privk c)))
-           (exists ((z-1 node))
-                   (p "client" 1 z-1)))))
+           (exists ((z-1 strd))
+                   (p "client" z-1 2)))))

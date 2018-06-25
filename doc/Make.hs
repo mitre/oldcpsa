@@ -191,8 +191,8 @@ params root =
 cpsaparametersRule :: Rule
 cpsaparametersRule =
     Rule { prog = "cpsaparameters",
-    	   inputExt = sourceBasicExt,
-	   outputExt = paramsRoot ++ cpsaExt }
+           inputExt = sourceBasicExt,
+           outputExt = paramsRoot ++ cpsaExt }
 
 -- Clean generated files
 
