@@ -922,7 +922,7 @@ loadImplication :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
 loadImplication md _ prot g vars (L pos [S _ "implies", a, c]) =
   do
     antec <- loadCheckedConj md pos prot vars vars a
-    (g, vc) <- loadConclusion md pos prot g vars c
+    (g, vc) <- loadConclusion pos prot g vars c
     let (evars, concl) = unzip vc
     let goal =
           Goal { uvars = vars,
@@ -935,35 +935,35 @@ loadImplication _ pos _ _ _ _ = fail (shows pos "Malformed goal implication")
 -- The conclusion must be a disjunction.  Each disjunct may introduce
 -- existentially quantified variables.
 
-loadConclusion :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
+loadConclusion :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
                   g -> [t] -> SExpr Pos -> m (g, [([t], Conj t)])
-loadConclusion _ _ _ g _ (L _ [S _ "false"]) = return (g, [])
-loadConclusion md _ prot g vars (L pos (S _ "or" : xs)) =
-  loadDisjuncts md pos prot g vars xs []
-loadConclusion md pos prot g vars x =
+loadConclusion _ _ g _ (L _ [S _ "false"]) = return (g, [])
+loadConclusion _ prot g vars (L pos (S _ "or" : xs)) =
+  loadDisjuncts pos prot g vars xs []
+loadConclusion pos prot g vars x =
   do
-    (g, a) <- loadExistential md pos prot g vars x
+    (g, a) <- loadExistential pos prot g vars x
     return (g, [a])
 
-loadDisjuncts :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+loadDisjuncts :: (Algebra t p g s e c, Monad m) => Pos ->
                  Prot t g -> g -> [t] -> [SExpr Pos] ->
                  [([t], Conj t)] -> m (g, [([t], Conj t)])
-loadDisjuncts _ _ _ g _ [] rest = return (g, reverse rest)
-loadDisjuncts md pos prot g vars (x : xs) rest =
+loadDisjuncts _ _ g _ [] rest = return (g, reverse rest)
+loadDisjuncts pos prot g vars (x : xs) rest =
   do
-    (g, a) <- loadExistential md pos prot g vars x
-    loadDisjuncts md pos prot g vars xs (a : rest)
+    (g, a) <- loadExistential pos prot g vars x
+    loadDisjuncts pos prot g vars xs (a : rest)
 
-loadExistential :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
+loadExistential :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
                    g -> [t] -> SExpr Pos -> m (g, ([t], Conj t))
-loadExistential md _ prot g vars (L pos [S _ "exists", L _ vs, x]) =
+loadExistential _ prot g vars (L pos [S _ "exists", L _ vs, x]) =
   do
     (g, evars) <- loadVars g vs
-    as <- loadCheckedConj md pos prot (evars ++ vars) evars x
+    as <- loadCheckedConj RoleSpec pos prot (evars ++ vars) evars x
     return (g, (evars, as))
-loadExistential md pos prot g vars x =
+loadExistential pos prot g vars x =
   do
-    as <- loadCheckedConj md pos prot vars [] x
+    as <- loadCheckedConj RoleSpec pos prot vars [] x
     return (g, ([], as))
 
 -- Load a conjunction and check the result as determined by the mode
@@ -1090,7 +1090,7 @@ loadPrimary _ p kvars (L pos [S _ "p", Q _ name, Q var x, y, z]) =
           Nothing ->
             fail (shows pos ("parameter " ++ x ++ " not in role " ++ name))
 loadPrimary _ _ _ (L pos (S _ "p" : Q _ name : _)) =
-  fail (shows pos ("Malformed role specific formula for role " ++ name))
+  fail (shows pos ("Malformed protocol specific formula for role " ++ name))
 loadPrimary _ _ _ (L pos (S _ pred : _)) =
   fail (shows pos ("Malformed formula for predicate " ++ pred))
 loadPrimary pos _ _ _ = fail (shows pos "Bad formula")

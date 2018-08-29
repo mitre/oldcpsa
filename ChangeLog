@@ -1,3 +1,32 @@
+2018-08-29  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.1
+
+2018-08-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Strand.hs (doRewrites): Added a limit on the number of
+	rules that can be applied after solving an authentication test.
+
+2018-08-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (cleansPreskel): Cleansed facts from a
+	skeleton purged of a strand.  This changes fixes a nasty display
+	bug that occurred when a variable in a fact did not occur in any
+	strand.
+
+2018-08-06  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (loadConclusion):  Removed mode flag as
+	this routine should always be using mode RoleSpec.  This resolves
+	a bug in which CPSA could not load a Shape Analysis Sentence as
+	rule because equality was before the protocol specific formulas.
+
+	* src/CPSA/Lib/Strand.hs (newPreskel):  Changed newPreskel so that
+	it removed duplicates in the leadsto field when creating a new
+	preskeleton.  This resolved a bug in which CPSA produced to shapes
+	that appeared to be isomorphic, but instead, one shape had
+	duplicates in its leadsto field.
+
 2018-06-25  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.0

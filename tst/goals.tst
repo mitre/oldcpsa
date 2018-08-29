@@ -1,6 +1,6 @@
 (herald goals)
 
-(comment "CPSA 3.6.0")
+(comment "CPSA 3.6.1")
 (comment "All input read from goals.scm")
 
 (defprotocol ns basic
@@ -108,7 +108,7 @@
   (parent 2)
   (unrealized)
   (shape)
-  (satisfies (no (b b) (n1 n1) (z0 0)))
+  (satisfies yes)
   (maps ((0) ((b b) (n1 n1) (a a) (n2 n2))))
   (origs (n1 (0 0))))
 

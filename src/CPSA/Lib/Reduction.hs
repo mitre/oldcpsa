@@ -39,7 +39,7 @@ zz x = z x x
 
 -- Set when debugging an exception so that buffered results get out.
 useFlush :: Bool
-useFlush = True                -- False
+useFlush = False                -- True
 
 -- Parameter driven S-expression printer
 wrt :: Options -> Handle -> SExpr a -> IO ()

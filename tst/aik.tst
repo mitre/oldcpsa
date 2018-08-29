@@ -1,6 +1,6 @@
 (herald "Anonymous identity protocol from TCG")
 
-(comment "CPSA 3.6.0")
+(comment "CPSA 3.6.1")
 (comment "All input read from aik.scm")
 
 (defprotocol aikprot basic

@@ -1,6 +1,6 @@
 (herald "Axiom 2 Protocol" (bound 20))
 
-(comment "CPSA 3.6.0")
+(comment "CPSA 3.6.1")
 (comment "All input read from axiom2.scm")
 (comment "Strand count bounded at 20")
 

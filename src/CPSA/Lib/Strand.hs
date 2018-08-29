@@ -517,6 +517,7 @@ newPreskel :: Algebra t p g s e c => g -> Shared t g ->
 newPreskel gen shared insts orderings leadsto decls
            facts oper prob kpriority pov =
     let orderings' = L.nub orderings
+        leadsto' = L.nub leadsto
         g = graph trace height insts orderings'
         strands = gstrands g
         decls' = declsNub decls
@@ -528,7 +529,7 @@ newPreskel gen shared insts orderings leadsto decls
                       insts = insts,
                       strands = strands,
                       orderings = orderings',
-                      leadsto = leadsto,
+                      leadsto = leadsto',
                       edges = edges,
                       decls = decls',
                       extraDecls = mkDecls [],
@@ -835,6 +836,7 @@ tryPerm g g' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv (invperm perm) &&
     checkFacts g g' fenv perm &&
+    checkFacts g' g fenv (invperm perm) &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g)
 
@@ -844,6 +846,7 @@ tryPermProb g g' prob prob' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv perm &&
     checkFacts g g' fenv perm &&
+    checkFacts g' g fenv (invperm perm) &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g) &&
     all (\n -> perm !! (prob !! n) == prob' !! n) [0..((length prob)-1)]
@@ -1048,7 +1051,7 @@ purge (k0, k, n, phi, hsubst) s s' =
               (updateProb perm (prob k))
               (updatePriority perm (kpriority k))
               (pov k)
-      k'' <- wellFormedPreskel $ k'
+      k'' <- wellFormedPreskel $ cleansPreskel k'
       return (k0, k'', permuteNode perm n, map (perm !!) phi, hsubst)
 
 -- Forward orderings from strand s
@@ -1062,6 +1065,22 @@ forward s orderings =
                        s3 == s0 && i0 >= i3]
           | s1 == s = []        -- Dump edges to strand s
           | otherwise = [p]     -- Pass thru other edges
+
+-- Cleans facts in a skeleton
+cleansPreskel :: Algebra t p g s e c => Preskel t g s e ->  Preskel t g s e
+cleansPreskel k =
+  newPreskel
+  (gen k)
+  (shared k)
+  (insts k)
+  (orderings k)
+  (leadsto k)
+  (decls k)
+  (cleansFacts (kvars k) (kfacts k))
+  (operation k)
+  (prob k)
+  (kpriority k)
+  (pov k)
 
 matchTraces :: Algebra t p g s e c => Trace t ->
                Trace t -> (g, e) -> [(g, e)]
@@ -1531,6 +1550,8 @@ validateEnv :: Algebra t p g s e c => Preskel t g s e ->
                Preskel t g s e -> [Sid] -> e -> Bool
 validateEnv k k' mapping env =
   validateDeclEnv k k' mapping env &&
+  all (flip elem (kfacts k'))
+  (map (instUpdateFact env (mapping !!)) (kfacts k)) &&
   all (flip elem (tc k')) (permuteOrderings mapping (orderings k))
 
 -- Given a realized skeleton k, generate candidates for minimization.
@@ -2551,20 +2572,30 @@ instvars insts =
 -}
 
 {-- For debugging
-factVars :: Fact -> [Term] -> [Term]
+factVars :: Algebra t p g s e c => Fact t -> [t] -> [t]
 factVars (Fact _ ts) vs =
   foldr f vs ts
   where
     f (FSid _) vs = vs
     f (FTerm t) vs = addVars vs t
 
-chkFVars :: Preskel -> Preskel
+chkFVars :: Algebra t p g s e c => Preskel t g s e -> Preskel t g s e
 chkFVars k =
   foldl f k (foldr factVars [] (kfacts k))
   where
     f k v
       | elem v (kvars k) = k
       | otherwise = error ("Bad var in fact " ++ show v)
+        -- ++ "\n\n" ++ show k)
+
+chkFVarsS :: Algebra t p g s e c => String -> Preskel t g s e -> Preskel t g s e
+chkFVarsS s k =
+  foldl f k (foldr factVars [] (kfacts k))
+  where
+    f k v
+      | elem v (kvars k) = k
+      | otherwise = error (s ++ ": Bad var in fact " ++ show v)
+        -- ++ "\n\n" ++ show k)
 --}
 
 {-
@@ -2613,6 +2644,12 @@ satisfy (Param r v f n t) = gparam r v f n t
 -- eliminate error cases.
 geq :: Algebra t p g s e c => t -> t -> Sem t g s e
 geq t t' _ (g, e)
+  -- Ensure all variables in t and t' are in the domain of e.
+  -- This always happens for goals because they must be role specific
+  -- but it is not always true for rules.
+  | not (matched e t) || not (matched e t') =
+      error ("In a rule equality check, " ++
+             "cannot find a binding for some variable")
   | ti == ti' = [(g, e)]
   | otherwise = []
   where
@@ -2721,12 +2758,14 @@ gprec n n' k (g, e) =
   case (nodeLookup e n, nodeLookup e n') of
     (Just p, Just p')
       | inSkel k p && inSkel k p' &&
-        (strandPrec p p' || elem (p, p') (tc k)) -> [(g, e)]
+        (strandPrec p p' || elem (p, p') tc) -> [(g, e)]
     _ ->
       do
-        (p, p') <- tc k
+        (p, p') <- tc
         (g, e) <- nodeMatch n p (g, e)
         nodeMatch n' p' (g, e)
+  where
+    tc = map graphPair $ graphClose $ graphEdges $ strands k
 
 -- Length predicate
 -- r and h determine the predicate, which has arity one.
@@ -2843,7 +2882,7 @@ rewrite k =
         if null vas then
           loop rs               -- Rule does not apply
         else
-          Just $ doRewrites prules k r vas
+          Just $ doRewrites 0 prules k r vas
 
 -- Returns the environments that show satifaction of the antecedent
 -- but fail to be extendable to show satifaction of one of the
@@ -2856,10 +2895,17 @@ tryRule k r =
     conclusion e = all (disjunct e) $ concl $ rlgoal r
     disjunct e a = null $ conjoin a k e
 
+ruleLimit :: Int
+ruleLimit = 500
+
 -- Repeatedly applies rules until no rule applies.
-doRewrites :: Algebra t p g s e c => [Rule t] -> Preskel t g s e ->
+doRewrites :: Algebra t p g s e c => Int -> [Rule t] -> Preskel t g s e ->
               Rule t -> [(g, e)] -> [Preskel t g s e]
-doRewrites rules k r vas =
+doRewrites lim _ _ _ _
+  | lim >= ruleLimit =
+    error ("Aborting after applying " ++ show ruleLimit ++
+           " rules and more are applicable")
+doRewrites lim rules k r vas =
   concatMap f (doRewrite k r vas)
   where
     f k = loop rules
@@ -2870,7 +2916,7 @@ doRewrites rules k r vas =
             if null vas then
               loop rs           -- Rule does not apply
             else
-              doRewrites rules k r vas
+              doRewrites (lim + 1) rules k r vas
 
 -- Apply rewrite rule at all assignments
 doRewrite :: Algebra t p g s e c => Preskel t g s e ->
@@ -3049,7 +3095,7 @@ rprec name (z, i) (z', i') k (g, e) =
                    (prob k) (kpriority k) (pov k)
           return (k', (gen k, e))
     _ ->
-      error ("In rule " ++ name ++ ", precidence did not get a strand")
+      error ("In rule " ++ name ++ ", precedence did not get a strand")
   where
     tc = map graphPair $ graphClose $ graphEdges $ strands k
 

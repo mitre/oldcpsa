@@ -1,5 +1,10 @@
 CPSA NEWS
 
+  August, 2018:
+
+* Release 3.6.1 is a bug fix release.  It includes updates to the CPSA
+  manual.  There are no user visible changes.
+
   June, 2018:
 
 * Release 3.6.0 adds rules and facts.  Rules are associated with

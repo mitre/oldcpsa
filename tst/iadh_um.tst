@@ -1,7 +1,7 @@
 (herald "IADH: unified model (UM)" (bound 20) (limit 2000)
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.0")
+(comment "CPSA 3.6.1")
 (comment "All input read from iadh_um.scm")
 (comment "Strand count bounded at 20")
 
