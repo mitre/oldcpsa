@@ -1,7 +1,7 @@
 (herald "Blanchet's Simple Example Protocol"
   (comment "There is a flaw in this protocol by design"))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from blanchet.scm")
 
 (defprotocol blanchet basic
@@ -55,6 +55,7 @@
   (label 2)
   (parent 0)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton blanchet
@@ -176,6 +177,7 @@
   (label 8)
   (parent 6)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton blanchet
@@ -214,6 +216,7 @@
   (label 10)
   (parent 9)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -241,6 +244,7 @@
   (label 11)
   (unrealized (0 0) (1 0))
   (preskeleton)
+  (origs (d (0 1)))
   (comment "Not a skeleton"))
 
 (defskeleton blanchet
@@ -331,6 +335,7 @@
   (label 16)
   (parent 14)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton blanchet-corrected
@@ -409,6 +414,7 @@
   (label 20)
   (parent 18)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton blanchet-corrected
@@ -447,6 +453,7 @@
   (label 22)
   (parent 21)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -517,6 +524,7 @@
   (label 25)
   (unrealized (0 0) (1 0))
   (preskeleton)
+  (origs (d (0 1)))
   (comment "Not a skeleton"))
 
 (defskeleton blanchet-corrected
@@ -568,6 +576,7 @@
   (label 28)
   (parent 27)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

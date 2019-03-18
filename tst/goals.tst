@@ -1,6 +1,6 @@
 (herald goals)
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from goals.scm")
 
 (defprotocol ns basic
@@ -260,6 +260,7 @@
   (label 8)
   (unrealized (0 0) (1 1))
   (preskeleton)
+  (origs (n1 (1 0)))
   (comment "Not a skeleton"))
 
 (defskeleton ns
@@ -427,6 +428,7 @@
   (label 16)
   (parent 14)
   (unrealized (0 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -754,6 +756,7 @@
   (label 28)
   (unrealized (0 0) (1 2))
   (preskeleton)
+  (origs (n2 (1 1)))
   (comment "Not a skeleton"))
 
 (defskeleton ns
@@ -1037,6 +1040,184 @@
 
 (comment "Nothing left to do")
 
+(defprotocol ns basic
+  (defrole init
+    (vars (a b name) (n1 n2 text))
+    (trace (send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b)))))
+  (defrole resp
+    (vars (b a name) (n2 n1 text))
+    (trace (recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))
+      (recv (enc n2 (pubk b)))))
+  (comment "Needham-Schroeder with no role origination assumptions"))
+
+(defskeleton ns
+  (vars (n1 n1-0 n2 n2-0 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1 n1-0)
+  (subgoals
+    (forall ((z z-0 strd))
+      (implies (and (p "init" z 3) (p "init" z-0 3)) (= z z-0))))
+  (comment "Double initiator point of view 2")
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((send (enc n1-0 a (pubk b))) (recv (enc n1-0 n2-0 (pubk a)))
+      (send (enc n2-0 (pubk b)))))
+  (label 41)
+  (unrealized (0 1) (1 1))
+  (origs (n1 (0 0)) (n1-0 (1 0)))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n2 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1)
+  (operation collapsed 1 0)
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b)))))
+  (label 42)
+  (parent 41)
+  (unrealized (0 1))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n1-0 n2 n2-0 n2-1 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
+  (defstrand resp 2 (n2 n2-1) (n1 n1-0) (b b) (a a))
+  (precedes ((1 0) (2 0)) ((2 1) (1 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1 n1-0)
+  (operation nonce-test (added-strand resp 2) n1-0 (1 1)
+    (enc n1-0 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((send (enc n1-0 a (pubk b))) (recv (enc n1-0 n2-0 (pubk a)))
+      (send (enc n2-0 (pubk b))))
+    ((recv (enc n1-0 a (pubk b))) (send (enc n1-0 n2-1 (pubk a)))))
+  (label 43)
+  (parent 41)
+  (unrealized (0 1) (1 1))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n2 n2-0 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b) (a a))
+  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1)
+  (operation nonce-test (added-strand resp 2) n1 (0 1)
+    (enc n1 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((recv (enc n1 a (pubk b))) (send (enc n1 n2-0 (pubk a)))))
+  (label 44)
+  (parent 42)
+  (unrealized (0 1))
+  (origs (n1 (0 0)))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n1-0 n2 n2-0 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
+  (defstrand resp 2 (n2 n2-0) (n1 n1-0) (b b) (a a))
+  (precedes ((1 0) (2 0)) ((2 1) (1 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1 n1-0)
+  (operation nonce-test (contracted (n2-1 n2-0)) n1-0 (1 1)
+    (enc n1-0 n2-0 (pubk a)) (enc n1-0 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((send (enc n1-0 a (pubk b))) (recv (enc n1-0 n2-0 (pubk a)))
+      (send (enc n2-0 (pubk b))))
+    ((recv (enc n1-0 a (pubk b))) (send (enc n1-0 n2-0 (pubk a)))))
+  (label 45)
+  (parent 43)
+  (unrealized (0 1))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n2 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand resp 2 (n2 n2) (n1 n1) (b b) (a a))
+  (precedes ((0 0) (1 0)) ((1 1) (0 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1)
+  (operation nonce-test (contracted (n2-0 n2)) n1 (0 1)
+    (enc n1 n2 (pubk a)) (enc n1 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((recv (enc n1 a (pubk b))) (send (enc n1 n2 (pubk a)))))
+  (label 46)
+  (parent 44)
+  (unrealized)
+  (shape)
+  (satisfies yes)
+  (maps ((0 0) ((a a) (b b) (n1 n1) (n1-0 n1) (n2 n2) (n2-0 n2))))
+  (origs (n1 (0 0))))
+
+(defskeleton ns
+  (vars (n1 n1-0 n2 n2-0 n2-1 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2) (a a) (b b))
+  (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
+  (defstrand resp 2 (n2 n2-0) (n1 n1-0) (b b) (a a))
+  (defstrand resp 2 (n2 n2-1) (n1 n1) (b b) (a a))
+  (precedes ((0 0) (3 0)) ((1 0) (2 0)) ((2 1) (1 1)) ((3 1) (0 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1 n1-0)
+  (operation nonce-test (added-strand resp 2) n1 (0 1)
+    (enc n1 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((send (enc n1-0 a (pubk b))) (recv (enc n1-0 n2-0 (pubk a)))
+      (send (enc n2-0 (pubk b))))
+    ((recv (enc n1-0 a (pubk b))) (send (enc n1-0 n2-0 (pubk a))))
+    ((recv (enc n1 a (pubk b))) (send (enc n1 n2-1 (pubk a)))))
+  (label 47)
+  (parent 45)
+  (unrealized (0 1))
+  (comment "1 in cohort - 1 not yet seen"))
+
+(defskeleton ns
+  (vars (n1 n1-0 n2 n2-0 text) (a b name))
+  (defstrand init 3 (n1 n1) (n2 n2-0) (a a) (b b))
+  (defstrand init 3 (n1 n1-0) (n2 n2) (a a) (b b))
+  (defstrand resp 2 (n2 n2) (n1 n1-0) (b b) (a a))
+  (defstrand resp 2 (n2 n2-0) (n1 n1) (b b) (a a))
+  (precedes ((0 0) (3 0)) ((1 0) (2 0)) ((2 1) (1 1)) ((3 1) (0 1)))
+  (non-orig (privk a) (privk b))
+  (uniq-orig n1 n1-0)
+  (operation nonce-test (contracted (n2-1 n2-0)) n1 (0 1)
+    (enc n1 n2-0 (pubk a)) (enc n1 a (pubk b)))
+  (traces
+    ((send (enc n1 a (pubk b))) (recv (enc n1 n2-0 (pubk a)))
+      (send (enc n2-0 (pubk b))))
+    ((send (enc n1-0 a (pubk b))) (recv (enc n1-0 n2 (pubk a)))
+      (send (enc n2 (pubk b))))
+    ((recv (enc n1-0 a (pubk b))) (send (enc n1-0 n2 (pubk a))))
+    ((recv (enc n1 a (pubk b))) (send (enc n1 n2-0 (pubk a)))))
+  (label 48)
+  (parent 47)
+  (unrealized)
+  (shape)
+  (satisfies (no (z 0) (z-0 1)))
+  (maps ((0 1) ((a a) (b b) (n1 n1) (n1-0 n1-0) (n2 n2-0) (n2-0 n2))))
+  (origs (n1 (0 0)) (n1-0 (1 0))))
+
+(comment "Nothing left to do")
+
 (defprotocol nsl-typeless basic
   (defrole init
     (vars (a b name) (n1 text) (n2 mesg))
@@ -1063,9 +1244,10 @@
   (comment "Shows typeflaw in typeless NSL")
   (traces ((recv n2))
     ((recv (enc a n1 (pubk b))) (send (enc n1 n2 b (pubk a)))))
-  (label 41)
+  (label 49)
   (unrealized (0 0))
   (preskeleton)
+  (origs (n2 (1 1)))
   (comment "Not a skeleton"))
 
 (defskeleton nsl-typeless
@@ -1084,8 +1266,8 @@
   (comment "Shows typeflaw in typeless NSL")
   (traces ((recv n2))
     ((recv (enc a n1 (pubk b))) (send (enc n1 n2 b (pubk a)))))
-  (label 42)
-  (parent 41)
+  (label 50)
+  (parent 49)
   (unrealized (0 0))
   (origs (n2 (1 1)))
   (comment "2 in cohort - 2 not yet seen"))
@@ -1104,9 +1286,10 @@
     ((recv (enc a n1 (pubk b))) (send (enc n1 n2 b (pubk a))))
     ((send (enc a n1 (pubk b))) (recv (enc n1 n2 b (pubk a)))
       (send (enc n2 (pubk b)))))
-  (label 43)
-  (parent 42)
+  (label 51)
+  (parent 50)
   (unrealized (0 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton nsl-typeless
@@ -1123,8 +1306,8 @@
     ((recv (enc a a-0 (pubk b))) (send (enc a-0 n2 b (pubk a))))
     ((recv (enc a-0 n2 b (pubk a)))
       (send (enc (cat n2 b) n2-0 a (pubk a-0)))))
-  (label 44)
-  (parent 42)
+  (label 52)
+  (parent 50)
   (unrealized)
   (shape)
   (satisfies (no (n2 n2) (a a) (b b) (z 1) (z-0 0)))

@@ -214,7 +214,7 @@ options =
       Option ['b'] ["bound"]    (ReqArg Bound "INT")
       ("strand count bound (default " ++ show defaultStrandBound ++ ")"),
       Option ['d'] ["depth"]    (ReqArg Depth "INT")
-      ("tree depth bound (default " ++ show defaultDepthBound ++ ")"),
+      ("tree depth bound (default unbounded)"),
       Option ['m'] ["margin"]   (ReqArg Margin "INT")
       ("set output margin (default " ++ show (optMargin defaultOptions) ++ ")"),
       Option ['e'] ["expand"]   (NoArg Expand)

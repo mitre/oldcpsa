@@ -1,6 +1,6 @@
 (herald "Static DH key exchange" (algebra diffie-hellman))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from staticdh.scm")
 
 (defprotocol staticdh1 diffie-hellman
@@ -569,6 +569,7 @@
   (label 18)
   (parent 9)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton staticdh1
@@ -600,6 +601,7 @@
   (label 19)
   (parent 9)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

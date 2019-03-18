@@ -1,7 +1,7 @@
 (herald "Otway-Rees Protocol"
   (comment "Standard version using variables of sort mesg"))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from or.scm")
 
 (defprotocol or basic

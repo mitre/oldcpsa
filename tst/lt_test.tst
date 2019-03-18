@@ -2,7 +2,7 @@
   (comment "First and third skeletons should have a shape,"
     "second and fourth should be dead."))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from lt_test.scm")
 
 (defprotocol lttest basic
@@ -55,6 +55,7 @@
   (traces ((send (cat n1 (enc n1 n2 k))) (recv n2)))
   (label 2)
   (unrealized (0 1))
+  (dead)
   (origs (n1 (0 0)) (n2 (0 0)))
   (comment "empty cohort"))
 
@@ -114,6 +115,7 @@
   (traces ((send n) (send (cat n1 (enc n1 n2 k))) (recv n2)))
   (label 5)
   (unrealized (0 2))
+  (dead)
   (origs (n1 (0 1)) (n2 (0 1)))
   (comment "empty cohort"))
 

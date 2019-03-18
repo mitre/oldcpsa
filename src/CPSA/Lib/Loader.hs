@@ -311,7 +311,8 @@ loadRoleTermPairPlusMaybeOneLoc height vars stag (L _ [x1, x2, x3]) =
        t2 <- loadTerm vars False x2
        p <- loadIntMax height x3
        return (declInstAux [t1,t2] [p] stag)
-loadRoleTermPairPlusMaybeOneLoc _ _ _ _ = fail ("Malformed pair of terms")
+loadRoleTermPairPlusMaybeOneLoc _ _ _ x = fail
+                        (shows (annotation x) "Malformed pair of terms")
 
 loadSkelTermPair :: (Algebra t p g s e c, Monad m) => [t] -> String ->
                                    SExpr Pos -> m (SkelDeclInst t)
@@ -320,7 +321,8 @@ loadSkelTermPair vars stag (L _ [x1, x2]) =
        t1 <- loadTerm vars False x1
        t2 <- loadTerm vars False x2
        return (declInstAux [t1,t2] [] stag)
-loadSkelTermPair _ _ _ = fail ("Malformed pair of terms")
+loadSkelTermPair _ _ x = fail
+                        (shows (annotation x) "Malformed pair of terms")
 
 loadRolePriority :: Monad m => Int -> SExpr Pos -> m (Int, Int)
 loadRolePriority n (L _ [N _ i, N _ p])
@@ -344,7 +346,7 @@ mkListenerRole pos g =
     (g, xs) <- loadVars g [L pos [S pos "x", S pos "mesg"]]
     case xs of
       [x] -> return (g, mkRole "" [x] [In x, Out x] [] [] [] False)
-      _ -> fail "Loader.mkListenerRole: Expection one variable"
+      _ -> fail (shows pos "Loader.mkListenerRole: Expecting one term")
 
 -- Protocol Rules
 
@@ -355,8 +357,11 @@ loadRules prot g (L pos (S _ "defrule" : x) : xs) =
       (g, r) <- loadRule prot g pos x
       (g, rs, comment) <- loadRules prot g xs
       return (g, r : rs, comment)
+loadRules _ _ (L pos (S _ "defrole" : S _ name : _) : _) =
+    fail (shows pos ("defrole " ++ name ++ " misplaced"))
 loadRules _ g xs =
     do
+      badKey ["defrole", "defrule"] xs
       comment <- alist [] xs    -- Ensure remaining is an alist
       return (g, [], comment)
 
@@ -412,6 +417,14 @@ hasKey key alist =
       f (L _ (S _ head : _)) = head == key
       f _ = False
 
+-- Complain if alist has a bad key
+badKey :: Monad m => [String] -> [SExpr Pos] -> m ()
+badKey keys (L _ (S pos key : _) : xs)
+    | elem key keys =
+      fail (shows pos (key ++ " declaration too late in enclosing form"))
+    | otherwise = badKey keys xs
+badKey _ _ = return ()
+ 
 loadTrace :: (Algebra t p g s e c, Monad m) => [t] ->
              [SExpr Pos] -> m [Event t]
 loadTrace vars xs = mapM (loadEvt vars) xs
@@ -565,6 +578,7 @@ loadInsts top p kvars gen insts (L pos (S _ "deflistener" : x) : xs) =
           fail (shows pos "Malformed deflistener")
 loadInsts top p kvars gen insts xs =
     do
+      badKey ["defstrand", "deflistener"] xs
       _ <- alist [] xs          -- Check syntax of xs
       others <- loadGenSkelDecls heights kvars (assocDecls xs)
       predefs <- loadAllPredefSkelDecls heights kvars xs
@@ -1069,6 +1083,11 @@ loadPrimary _ _ kvars (L pos [S _ "prec", w, x, y, z]) =
     t <- loadNodeTerm kvars w x
     t' <- loadNodeTerm kvars y z
     return (pos, Prec t t')
+loadPrimary _ _ kvars (L pos [S _ "leads-to", w, x, y, z]) =
+  do
+    t <- loadNodeTerm kvars w x
+    t' <- loadNodeTerm kvars y z
+    return (pos, LeadsTo t t')
 loadPrimary _ p kvars (L pos [S _ "p", Q _ name, x, N _ h]) =
   do
     r <- lookupRole pos p name
@@ -1150,6 +1169,9 @@ roleSpecific unbound (pos, Param _ _ _ z t)
 roleSpecific unbound (pos, Prec (z, _) (z', _))
   | L.notElem z unbound && L.notElem z' unbound = return unbound
   | otherwise = fail (shows pos "Unbound variable in prec")
+roleSpecific unbound (pos, LeadsTo (z, _) (z', _))
+  | L.notElem z unbound && L.notElem z' unbound = return unbound
+  | otherwise = fail (shows pos "Unbound variable in leadsto")
 roleSpecific unbound (pos, Non t)
   | allBound unbound t = return unbound
   | otherwise = fail (shows pos "Unbound variable in non")

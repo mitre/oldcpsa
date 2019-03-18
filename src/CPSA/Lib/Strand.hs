@@ -2637,6 +2637,7 @@ satisfy (UniqAt t n) = guniqAt t n
 satisfy (UgenAt t n) = gugenAt t n
 satisfy (Ugen t) = gugen t
 satisfy (Prec n n') = gprec n n'
+satisfy (LeadsTo n n') = gleadsTo n n'
 satisfy (Length r n i) = glength r n i
 satisfy (Param r v f n t) = gparam r v f n t
 
@@ -2766,6 +2767,18 @@ gprec n n' k (g, e) =
         nodeMatch n' p' (g, e)
   where
     tc = map graphPair $ graphClose $ graphEdges $ strands k
+
+-- Node leads to
+gleadsTo :: Algebra t p g s e c => NodeTerm t -> NodeTerm t -> Sem t g s e
+gleadsTo n n' k (g, e) =
+  case (nodeLookup e n, nodeLookup e n') of
+    (Just p, Just p')
+      | inSkel k p && inSkel k p' && elem (p, p') (leadsto k) -> [(g, e)]
+    _ ->
+      do
+        (p, p') <- leadsto k
+        (g, e) <- nodeMatch n p (g, e)
+        nodeMatch n' p' (g, e)
 
 -- Length predicate
 -- r and h determine the predicate, which has arity one.
@@ -2952,6 +2965,7 @@ rwt :: Algebra t p g s e c => String -> AForm t -> Rewrite t g s e
 rwt _ (Length r z h) = rlength r z h
 rwt rule (Param r v i z t) = rparam rule r v i z t
 rwt rule (Prec n n') = rprec rule n n'
+rwt rule (LeadsTo n n') = rleadsTo rule n n'
 rwt rule (Non t) = rlnon rule t
 rwt rule (Pnon t) = rlpnon rule t
 rwt rule (Uniq t) = rluniq rule t
@@ -3102,6 +3116,23 @@ rprec name (z, i) (z', i') k (g, e) =
 badIndex :: Algebra t p g s e c => Preskel t g s e -> Sid -> Int -> Bool
 badIndex k s i =
   i >= height (strandInst k s)
+
+rleadsTo :: Algebra t p g s e c => String -> NodeTerm t ->
+            NodeTerm t -> Rewrite t g s e
+rleadsTo name (z, i) (z', i') k (g, e) =
+  case (strdLookup e z, strdLookup e z') of
+    (Just s, Just s')
+      | elem ((s, i), (s', i')) (leadsto k) -> [(k, (g, e))]
+      | badIndex k s i || badIndex k s' i' -> []
+      | otherwise ->
+        do                      -- Add one ordering
+          let leadsto' = ((s, i), (s', i')) : leadsto k
+          let k' = newPreskel g (shared k) (insts k) (orderings k)
+                   leadsto' (decls k) (kfacts k) (operation k)
+                   (prob k) (kpriority k) (pov k)
+          return (k', (gen k, e))
+    _ ->
+      error ("In rule " ++ name ++ ", leads to did not get a strand")
 
 withNewDecl :: Algebra t p g s e c => Preskel t g s e ->
                SkelDeclarations t -> Preskel t g s e

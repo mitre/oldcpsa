@@ -1,7 +1,7 @@
 (herald "Diffie-Hellman enhanced Needham-Schroeder-Lowe Protocol"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from dhnsl_use.scm")
 
 (defprotocol dhnsl diffie-hellman
@@ -156,6 +156,7 @@
   (label 5)
   (parent 2)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -181,6 +182,7 @@
   (label 6)
   (parent 2)
   (unrealized (0 1) (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -224,6 +226,7 @@
   (label 8)
   (parent 2)
   (unrealized (0 1) (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -297,6 +300,7 @@
   (label 11)
   (parent 4)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -322,6 +326,7 @@
   (label 12)
   (parent 4)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -352,6 +357,7 @@
   (label 13)
   (parent 4)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -405,6 +411,7 @@
   (label 15)
   (parent 4)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -430,6 +437,7 @@
   (label 16)
   (parent 7)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -576,6 +584,7 @@
   (label 21)
   (parent 18)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -636,6 +645,7 @@
   (label 23)
   (parent 18)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -696,6 +706,7 @@
   (label 25)
   (parent 18)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -724,6 +735,7 @@
   (label 26)
   (parent 19)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -751,6 +763,7 @@
   (label 27)
   (parent 19)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -782,6 +795,7 @@
   (label 28)
   (parent 19)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -809,6 +823,7 @@
   (label 29)
   (parent 19)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -839,6 +854,7 @@
   (label 30)
   (parent 19)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -868,6 +884,7 @@
   (label 31)
   (parent 22)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -902,6 +919,7 @@
   (label 32)
   (parent 24)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -1103,6 +1121,7 @@
   (label 39)
   (parent 35)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1151,6 +1170,7 @@
   (label 41)
   (parent 35)
   (unrealized (0 2) (0 4) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1176,6 +1196,7 @@
   (label 42)
   (parent 35)
   (unrealized (0 2) (0 4) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1273,6 +1294,7 @@
   (label 45)
   (parent 40)
   (unrealized (0 4) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1311,6 +1333,7 @@
   (label 46)
   (parent 43)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1387,6 +1410,7 @@
   (label 48)
   (parent 43)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1458,6 +1482,7 @@
   (label 50)
   (parent 43)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1497,6 +1522,7 @@
   (label 51)
   (parent 43)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1527,6 +1553,7 @@
   (label 52)
   (parent 44)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1556,6 +1583,7 @@
   (label 53)
   (parent 44)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1589,6 +1617,7 @@
   (label 54)
   (parent 44)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1618,6 +1647,7 @@
   (label 55)
   (parent 44)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1650,6 +1680,7 @@
   (label 56)
   (parent 44)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1686,6 +1717,7 @@
   (label 57)
   (parent 47)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -1727,6 +1759,7 @@
   (label 58)
   (parent 49)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -1883,6 +1916,7 @@
   (label 64)
   (parent 61)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -1908,6 +1942,7 @@
   (label 65)
   (parent 61)
   (unrealized (0 1) (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -1951,6 +1986,7 @@
   (label 67)
   (parent 61)
   (unrealized (0 1) (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2024,6 +2060,7 @@
   (label 70)
   (parent 63)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2049,6 +2086,7 @@
   (label 71)
   (parent 63)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2079,6 +2117,7 @@
   (label 72)
   (parent 63)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2132,6 +2171,7 @@
   (label 74)
   (parent 63)
   (unrealized (0 1) (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2157,6 +2197,7 @@
   (label 75)
   (parent 66)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2303,6 +2344,7 @@
   (label 80)
   (parent 77)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2363,6 +2405,7 @@
   (label 82)
   (parent 77)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2423,6 +2466,7 @@
   (label 84)
   (parent 77)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2451,6 +2495,7 @@
   (label 85)
   (parent 78)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2478,6 +2523,7 @@
   (label 86)
   (parent 78)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2509,6 +2555,7 @@
   (label 87)
   (parent 78)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2536,6 +2583,7 @@
   (label 88)
   (parent 78)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2566,6 +2614,7 @@
   (label 89)
   (parent 78)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2595,6 +2644,7 @@
   (label 90)
   (parent 81)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2629,6 +2679,7 @@
   (label 91)
   (parent 83)
   (unrealized (1 2) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -2830,6 +2881,7 @@
   (label 98)
   (parent 94)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2878,6 +2930,7 @@
   (label 100)
   (parent 94)
   (unrealized (0 2) (0 4) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -2903,6 +2956,7 @@
   (label 101)
   (parent 94)
   (unrealized (0 2) (0 4) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3038,6 +3092,7 @@
   (label 105)
   (parent 102)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3113,6 +3168,7 @@
   (label 107)
   (parent 102)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3147,6 +3203,7 @@
   (label 108)
   (parent 102)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3183,6 +3240,7 @@
   (label 109)
   (parent 102)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3222,6 +3280,7 @@
   (label 110)
   (parent 102)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3252,6 +3311,7 @@
   (label 111)
   (parent 103)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3281,6 +3341,7 @@
   (label 112)
   (parent 103)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3314,6 +3375,7 @@
   (label 113)
   (parent 103)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3343,6 +3405,7 @@
   (label 114)
   (parent 103)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3375,6 +3438,7 @@
   (label 115)
   (parent 103)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3506,6 +3570,7 @@
   (label 119)
   (parent 106)
   (unrealized (2 1) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3622,6 +3687,7 @@
   (label 122)
   (parent 120)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3702,6 +3768,7 @@
   (label 124)
   (parent 120)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3739,6 +3806,7 @@
   (label 125)
   (parent 120)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3778,6 +3846,7 @@
   (label 126)
   (parent 120)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3819,6 +3888,7 @@
   (label 127)
   (parent 120)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3851,6 +3921,7 @@
   (label 128)
   (parent 121)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3882,6 +3953,7 @@
   (label 129)
   (parent 121)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3917,6 +3989,7 @@
   (label 130)
   (parent 121)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3948,6 +4021,7 @@
   (label 131)
   (parent 121)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -3982,6 +4056,7 @@
   (label 132)
   (parent 121)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhns
@@ -4020,6 +4095,7 @@
   (label 133)
   (parent 123)
   (unrealized (3 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

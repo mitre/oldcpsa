@@ -1,6 +1,6 @@
 (herald "Station-to-station protocol" (algebra diffie-hellman))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from station.scm")
 
 (defprotocol station-to-station diffie-hellman
@@ -217,6 +217,7 @@
   (label 5)
   (parent 4)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -253,6 +254,7 @@
   (label 6)
   (parent 4)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -289,6 +291,7 @@
   (label 7)
   (parent 4)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -328,6 +331,7 @@
   (label 8)
   (parent 4)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -372,6 +376,7 @@
   (label 9)
   (parent 4)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -599,6 +604,7 @@
   (label 15)
   (parent 14)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -636,6 +642,7 @@
   (label 16)
   (parent 14)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -676,6 +683,7 @@
   (label 17)
   (parent 14)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -713,6 +721,7 @@
   (label 18)
   (parent 14)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton station-to-station
@@ -757,6 +766,7 @@
   (label 19)
   (parent 14)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

@@ -1,5 +1,5 @@
 Name:			cpsa
-Version:		3.6.1
+Version:		3.6.2
 Maintainer:		mliskov@mitre.org
 Cabal-Version:		>= 1.6
 License:		BSD3
@@ -77,6 +77,12 @@ Extra-Source-Files:
   Makefile ChangeLog README.txt NEWS ghci cpsatst setup.bat
   src/cpsa.el src/cpsaops.scm src/cpsa.pl src/pp.pl
   src/sexpr.pl src/ghcmemlimit src/cpsajson.py src/split.py
+  src/ocaml/Makefile src/ocaml/README src/ocaml/cpsa.d.itarget
+  src/ocaml/cpsa.itarget src/ocaml/cpsa.mllib src/ocaml/cpsa.mltop
+  src/ocaml/cpsa.odocl src/ocaml/expand.ml src/ocaml/main.ml
+  src/ocaml/main.mli src/ocaml/pp.ml src/ocaml/reader.ml
+  src/ocaml/reader.mli src/ocaml/scanner.mll src/ocaml/sexpr.ml
+  src/ocaml/sexpr.mli src/ocaml/sexpr_type.ml
   tst/checktst tst/updatetst tst/graphtst
   tst/Makefile tst/Make.hs tst/README
   tst/axiom2.scm tst/axiom2.tst tst/blanchet.scm tst/blanchet.tst

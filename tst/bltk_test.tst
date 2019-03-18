@@ -1,6 +1,6 @@
 (herald "bltk Test File" (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from bltk_test.scm")
 
 (defprotocol test diffie-hellman
@@ -40,6 +40,7 @@
   (label 1)
   (unrealized (1 0))
   (preskeleton)
+  (origs (n (0 0)))
   (comment "Not a skeleton"))
 
 (defskeleton test
@@ -54,6 +55,7 @@
   (label 2)
   (parent 1)
   (unrealized (1 0))
+  (dead)
   (origs (n (0 0)))
   (comment "empty cohort"))
 
@@ -76,6 +78,7 @@
   (label 3)
   (unrealized (1 0))
   (preskeleton)
+  (origs (n (0 0)))
   (comment "Not a skeleton"))
 
 (defskeleton test
@@ -90,6 +93,7 @@
   (label 4)
   (parent 3)
   (unrealized (1 0))
+  (dead)
   (origs (n (0 0)))
   (comment "empty cohort"))
 

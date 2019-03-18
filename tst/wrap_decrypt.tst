@@ -1,6 +1,6 @@
 (herald wrap-decrypt (bound 10))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from wrap_decrypt.lsp")
 (comment "Strand count bounded at 10")
 
@@ -51,6 +51,7 @@
   (label 0)
   (unrealized (1 2) (3 0) (4 0) (5 2) (5 3))
   (preskeleton)
+  (origs)
   (comment "Not a skeleton"))
 
 (defskeleton wrap-decrypt
@@ -345,6 +346,7 @@
   (label 10)
   (parent 6)
   (unrealized (1 2) (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -470,6 +472,7 @@
   (label 14)
   (parent 8)
   (unrealized (1 2) (3 0) (4 0))
+  (dead)
   (origs)
   (comment "empty cohort"))
 
@@ -664,6 +667,7 @@
   (label 20)
   (parent 12)
   (unrealized (1 2) (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -821,6 +825,7 @@
   (label 26)
   (parent 16)
   (unrealized (1 2) (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1059,6 +1064,7 @@
   (label 33)
   (parent 19)
   (unrealized (1 2) (8 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1257,6 +1263,7 @@
   (label 39)
   (parent 25)
   (unrealized (1 2) (7 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1326,6 +1333,7 @@
   (label 41)
   (parent 28)
   (unrealized (1 2) (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1433,6 +1441,7 @@
   (label 45)
   (parent 32)
   (unrealized (8 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1606,6 +1615,7 @@
   (label 51)
   (parent 38)
   (unrealized (7 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1713,6 +1723,7 @@
   (label 57)
   (parent 48)
   (unrealized (8 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1750,6 +1761,7 @@
   (label 58)
   (parent 49)
   (unrealized (8 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton wrap-decrypt
@@ -1787,6 +1799,7 @@
   (label 60)
   (parent 52)
   (unrealized (8 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Strand bound exceeded--aborting run")
@@ -1827,6 +1840,7 @@
   (label 22)
   (parent 12)
   (unrealized (1 2) (3 0) (4 0) (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -1866,6 +1880,7 @@
   (label 44)
   (parent 31)
   (unrealized (1 2) (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -1905,6 +1920,7 @@
   (label 47)
   (parent 34)
   (unrealized (1 2) (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -1944,6 +1960,7 @@
   (label 54)
   (parent 42)
   (unrealized (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -1983,6 +2000,7 @@
   (label 55)
   (parent 43)
   (unrealized (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -2022,6 +2040,7 @@
   (label 56)
   (parent 46)
   (unrealized (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -2061,6 +2080,7 @@
   (label 59)
   (parent 50)
   (unrealized (1 2) (9 0))
+  (aborted)
   (comment "aborted"))
 
 (defskeleton wrap-decrypt
@@ -2100,4 +2120,5 @@
   (label 61)
   (parent 53)
   (unrealized (1 2) (9 0))
+  (aborted)
   (comment "aborted"))

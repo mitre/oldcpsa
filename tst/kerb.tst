@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from kerb.scm")
 
 (defprotocol kerb-flawed basic
@@ -30,6 +30,7 @@
   (label 0)
   (unrealized (0 1) (1 0))
   (preskeleton)
+  (origs (n (0 0)) (m (0 2)))
   (comment "Not a skeleton"))
 
 (defskeleton kerb-flawed
@@ -112,6 +113,7 @@
   (label 4)
   (parent 3)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -143,6 +145,7 @@
   (label 5)
   (unrealized (0 1) (1 0))
   (preskeleton)
+  (origs (n (0 0)) (m (0 2)))
   (comment "Not a skeleton"))
 
 (defskeleton kerb-flawed2

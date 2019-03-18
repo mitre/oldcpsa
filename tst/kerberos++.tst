@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from kerberos++.scm")
 
 (defprotocol kerberos basic
@@ -150,6 +150,7 @@
   (label 3)
   (parent 1)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -201,6 +202,7 @@
   (label 4)
   (parent 2)
   (unrealized (2 0) (3 3))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -286,6 +288,7 @@
   (label 6)
   (parent 2)
   (unrealized (2 0) (3 1))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -327,6 +330,7 @@
   (label 7)
   (parent 2)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -690,6 +694,7 @@
   (label 15)
   (parent 10)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -787,6 +792,7 @@
   (label 17)
   (parent 11)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -846,6 +852,7 @@
   (label 18)
   (parent 12)
   (unrealized (3 0) (4 1))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -906,6 +913,7 @@
   (label 19)
   (parent 12)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -963,6 +971,7 @@
   (label 20)
   (parent 13)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -1013,6 +1022,7 @@
   (label 21)
   (parent 14)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -1138,6 +1148,7 @@
   (label 24)
   (parent 23)
   (unrealized (2 3))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos
@@ -1203,6 +1214,7 @@
   (label 26)
   (parent 23)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton kerberos

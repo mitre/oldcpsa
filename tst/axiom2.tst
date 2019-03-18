@@ -1,6 +1,6 @@
 (herald "Axiom 2 Protocol" (bound 20))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from axiom2.scm")
 (comment "Strand count bounded at 20")
 
@@ -112,6 +112,7 @@
   (label 6)
   (parent 5)
   (unrealized (0 1))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -229,6 +230,7 @@
   (label 13)
   (parent 12)
   (unrealized (0 1))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

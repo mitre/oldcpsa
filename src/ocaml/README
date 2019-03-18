@@ -1,0 +1,5 @@
+This directory contains ocaml code for reading and writing CPSA
+S-expressions.  See sexpr.mli for exported functions on S-expressions.
+Module Main provides a top-level loop for writing simple filters.
+Module Pp is a simple example of using Main to pretty print
+the S-expressions in a file.

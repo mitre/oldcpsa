@@ -114,7 +114,7 @@ expandAll macs sexpr =
 macroExpand :: Monad m => [Macro] -> Pos ->  Int ->
                SExpr Pos -> m (SExpr Pos)
 macroExpand _ pos limit _
-    | limit <= 0 = fail (shows pos "Expansion limit exceded")
+    | limit <= 0 = fail (shows pos "Expansion limit exceeded")
 macroExpand macs pos limit sexpr@(L _ (S _ sym : xs)) =
     case macroExpand1 macs sym xs of
       Nothing -> return sexpr   -- Nothing to do

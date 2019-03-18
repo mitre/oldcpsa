@@ -144,6 +144,7 @@ mkSkel :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
 mkSkel pos p goals nmap g insts as comment =
   do
     let o = foldr (mkPrec nmap) [] as
+    let lto = foldr (mkLeadsTo nmap) [] as
     let nr = foldr mkNon [] as
     let ar = foldr mkPnon [] as
     let ur = foldr mkUniq [] as
@@ -151,7 +152,7 @@ mkSkel pos p goals nmap g insts as comment =
     let decls = mkDcls nr ar ur gr
     let fs = foldr (mkFact nmap) [] as
     let prios = []
-    let k = mkPreskel g p goals insts o [] decls fs comment prios Nothing []
+    let k = mkPreskel g p goals insts o lto decls fs comment prios Nothing []
     mapM_ (checkUniqAt nmap k) as
     case termsWellFormed $ (termsInDlist decls) ++ kterms k of
       False -> fail (shows pos "Terms in skeleton not well formed")
@@ -168,6 +169,12 @@ mkPrec :: Eq t => [(t, Sid)] ->
 mkPrec nmap (_, Prec n n') o =
   (nMapLookup n nmap, nMapLookup n' nmap) : o
 mkPrec _ _ o = o
+
+mkLeadsTo :: Eq t => [(t, Sid)] ->
+          (Pos, AForm t) -> [Pair] -> [Pair]
+mkLeadsTo nmap (_, LeadsTo n n') o =
+  (nMapLookup n nmap, nMapLookup n' nmap) : o
+mkLeadsTo _ _ o = o
 
 mkDcls :: [t] -> [t] -> [t] -> [t] -> SkelDeclList t
 mkDcls nr ar ur gr =

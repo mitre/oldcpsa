@@ -52,8 +52,8 @@ loadPOV _ _ ps (L pos (S _ "defskeleton" : xs)) =
     do
       p <- findProt pos ps xs
       k <- loadPreskel pos p (pgen p) xs
-      case (isSkeleton k, isFringe k) of
-        (True, False) ->
+      case (isFringe k) of
+        False ->
           do                    -- Found POV
             origCheck pos k     -- Ensure uniqs originate
             return ((ps, [k]), Nothing)
@@ -264,7 +264,6 @@ data Preskel t g c = Preskel
       origs :: [(t, (t, Int))],
       -- ugen, ugenAt missing!
       facts :: [Fact t],
-      isSkeleton :: Bool,
       isFringe :: !Bool,         -- Always looked at, so make it strict
       homomorphisms :: [SExpr Pos], -- Loaded later
       varmap :: VM t }
@@ -297,7 +296,6 @@ loadPreskel pos prot gen (S _ _ : L _ (S _ "vars" : vars) : xs) =
                         uniqs = uniqs,
                         origs = map g origs,
                         facts = facts,
-                        isSkeleton = not $ hasKey preskeletonKey xs,
                         isFringe = hasKey shapeKey xs || hasKey fringeKey xs,
                         homomorphisms = assoc mapsKey xs,
                         varmap = varmap})
@@ -473,7 +471,7 @@ loadMap :: (Algebra t p g s e c, Monad m) => Preskel t g c ->
 loadMap pov k (L _ [L _ strandMap, L _ algebraMap]) =
     do
       perm <- mapM loadPerm strandMap -- Load the strand map
-      let nh = map (loadStrandEq k perm) (M.assocs $ varmap pov)
+      nh <- mapM (loadStrandEq k perm) (M.assocs $ varmap pov)
       -- Load the algebra part of the homomorphism
       ah <- mapM (loadMaplet (kvars k) (kvars pov)) algebraMap
       return (nh, ah)
@@ -484,10 +482,16 @@ loadPerm (N _ n) | n >= 0 = return n
 loadPerm x = fail (shows (annotation x) "Expecting a natural number")
 
 -- Applies a strand permutation to a strand.
--- Hope the strand map is valid, or !! will blow up.
-loadStrandEq :: Preskel t g c -> [Int] -> (Strand, t) -> (t, t)
+loadStrandEq :: Monad m => Preskel t g c -> [Int] -> (Strand, t) -> m (t, t)
 loadStrandEq k perm (z, v) =
-  (v, slookup (perm !! z) (varmap k))
+  do
+    z <- index perm z
+    return (v, slookup z (varmap k))
+
+index :: Monad m => [a] -> Int -> m a
+index (x : _) 0 = return x
+index (_ : xs) i | i > 0 = index xs (i - 1)
+index _ _ = fail "Bad strand map"
 
 -- Association lists
 
@@ -502,10 +506,6 @@ keyPred _ _ = False
 
 hasKey :: String -> [SExpr a] -> Bool
 hasKey key alist = any (keyPred key) alist
-
--- The key used to identify a non-skeleton
-preskeletonKey :: String
-preskeletonKey = "preskeleton"
 
 -- The key used to identify a shape
 shapeKey :: String

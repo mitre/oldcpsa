@@ -1,6 +1,6 @@
 (herald dhca (algebra diffie-hellman))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from dh-ca.scm")
 
 (defprotocol dhca diffie-hellman
@@ -528,6 +528,7 @@
   (label 15)
   (parent 8)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -586,6 +587,7 @@
   (label 17)
   (parent 9)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -618,6 +620,7 @@
   (label 18)
   (parent 9)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -879,6 +882,7 @@
   (label 25)
   (parent 16)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -924,6 +928,7 @@
   (label 26)
   (parent 19)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -988,6 +993,7 @@
   (label 28)
   (parent 20)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1023,6 +1029,7 @@
   (label 29)
   (parent 20)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1227,6 +1234,7 @@
   (label 34)
   (parent 23)
   (unrealized (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1262,6 +1270,7 @@
   (label 35)
   (parent 24)
   (unrealized (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1296,6 +1305,7 @@
   (label 36)
   (parent 24)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1330,6 +1340,7 @@
   (label 37)
   (parent 24)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1368,6 +1379,7 @@
   (label 38)
   (parent 24)
   (unrealized (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -1402,6 +1414,7 @@
   (label 39)
   (parent 27)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2033,6 +2046,7 @@
   (label 57)
   (parent 50)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2093,6 +2107,7 @@
   (label 59)
   (parent 51)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2126,6 +2141,7 @@
   (label 60)
   (parent 51)
   (unrealized (2 0) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2395,6 +2411,7 @@
   (label 67)
   (parent 58)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2441,6 +2458,7 @@
   (label 68)
   (parent 61)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2507,6 +2525,7 @@
   (label 70)
   (parent 62)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2543,6 +2562,7 @@
   (label 71)
   (parent 62)
   (unrealized (3 0) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2758,6 +2778,7 @@
   (label 76)
   (parent 65)
   (unrealized (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2794,6 +2815,7 @@
   (label 77)
   (parent 66)
   (unrealized (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2829,6 +2851,7 @@
   (label 78)
   (parent 66)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2864,6 +2887,7 @@
   (label 79)
   (parent 66)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2903,6 +2927,7 @@
   (label 80)
   (parent 66)
   (unrealized (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -2938,6 +2963,7 @@
   (label 81)
   (parent 69)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -3088,6 +3114,7 @@
   (label 84)
   (unrealized (0 1) (0 3) (1 1) (1 2) (1 4))
   (preskeleton)
+  (origs (n (1 3)))
   (comment "Not a skeleton"))
 
 (defskeleton dhca
@@ -3548,6 +3575,7 @@
   (label 95)
   (parent 93)
   (unrealized (0 1) (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -3591,6 +3619,7 @@
   (label 96)
   (parent 94)
   (unrealized (0 1) (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -3633,6 +3662,7 @@
   (label 97)
   (parent 94)
   (unrealized (0 1) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -3675,6 +3705,7 @@
   (label 98)
   (parent 94)
   (unrealized (0 1) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhca
@@ -3720,6 +3751,7 @@
   (label 99)
   (parent 94)
   (unrealized (0 1) (4 0) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

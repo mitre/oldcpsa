@@ -84,6 +84,9 @@ displayForm ctx (Param r p _ s t) =
 displayForm ctx (Prec (x, i) (y, j)) =
   L () [S () "prec", displayTerm ctx x, N () i,
         displayTerm ctx y, N () j]
+displayForm ctx (LeadsTo (x, i) (y, j)) =
+  L () [S () "leads-to", displayTerm ctx x, N () i,
+        displayTerm ctx y, N () j]
 displayForm ctx (Non t) =
   L () [S () "non", displayTerm ctx t]
 displayForm ctx (Pnon t) =

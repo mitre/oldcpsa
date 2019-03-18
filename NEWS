@@ -1,5 +1,14 @@
 CPSA NEWS
 
+  March, 2019:
+
+* Release 3.6.2 adds the leads-to predicate to the rule language, adds
+  better checks for malformed input, and fixes a bug so that now the
+  default depth is infinite as is specified in the manual.  It adds
+  structured annotations to skeleton output to facilitate post
+  processing programs besides cpsagraph.  The sources for OCaml
+  programs for processing CPSA input and output are now included.
+
   August, 2018:
 
 * Release 3.6.1 is a bug fix release.  It includes updates to the CPSA

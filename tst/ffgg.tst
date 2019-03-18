@@ -1,7 +1,7 @@
 (herald "The ffgg Protocol"
   (comment "From A Necessarily Parallel Attack by Jon K. Millen"))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from ffgg.scm")
 
 (defprotocol ffgg basic
@@ -29,6 +29,7 @@
   (label 0)
   (unrealized (1 0))
   (preskeleton)
+  (origs (m (0 2)))
   (comment "Not a skeleton"))
 
 (defskeleton ffgg

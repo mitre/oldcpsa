@@ -1,3 +1,41 @@
+2019-03-18  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.2
+
+2019-02-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Reduction.hs (addAnnoKey):  Added structured
+	annotations to skeleton output to facilitate post processing
+	programs besides cpsagraph.  The new keys are (aborted),
+	(satisfied-all), and (dead).
+
+2019-02-04  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Reduction.hs (step):  Changed default depth bound
+	to zero representing no bound and ignored the check when the bound
+	is not positive.  This matches what is documented in the manual.
+
+2019-01-31  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Loader.hs (badKey): Added checks for bad keys in
+	alists for skeletons ("defstrand" and "deflistener") and protocols
+	("defrole" and "defrule").
+
+2018-11-28  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Protocol.hs (AForm):  Added the leads-to predicate
+	to the goal language.
+
+2018-11-19  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Printer.hs (formula):  Added special pretty
+	printing rules for formulas in defgoal and defrule.
+
+2018-11-09  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (loadPOV): Use a preskeleton as a POV
+	instead of insisting on using a skeleton.
+
 2018-08-29  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.1

@@ -1,6 +1,6 @@
 (herald "Kerberos PKINIT")
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from pkinit.scm")
 
 (defprotocol pkinit-flawed basic
@@ -254,6 +254,7 @@
   (label 7)
   (parent 6)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -422,6 +423,7 @@
   (label 12)
   (parent 11)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -470,6 +472,7 @@
   (label 13)
   (unrealized (1 1))
   (preskeleton)
+  (origs (n1-0 (1 0)) (n2-0 (1 0)) (k (0 1)) (ak (0 1)))
   (comment "Not a skeleton"))
 
 (defskeleton pkinit-flawed
@@ -583,6 +586,7 @@
   (label 16)
   (unrealized (1 1))
   (preskeleton)
+  (origs (n1-0 (1 0)) (n2-0 (1 0)) (k (0 1)) (ak (0 1)))
   (comment "Not a skeleton"))
 
 (defskeleton pkinit-fix1
@@ -755,6 +759,7 @@
   (label 22)
   (parent 20)
   (unrealized (0 0) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -810,6 +815,7 @@
   (label 23)
   (unrealized (1 1))
   (preskeleton)
+  (origs (n1-0 (1 0)) (n2-0 (1 0)) (k (0 1)) (ak (0 1)))
   (comment "Not a skeleton"))
 
 (defskeleton pkinit-fix2
@@ -972,6 +978,7 @@
   (label 28)
   (parent 27)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

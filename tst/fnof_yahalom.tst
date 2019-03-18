@@ -2,7 +2,7 @@
   "Yahalom Protocol with Forwarding Removed, using fnof to emulate ltk function"
   (bound 12))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from fnof_yahalom.scm")
 
 (defprotocol yahalom basic
@@ -268,6 +268,7 @@
   (label 8)
   (parent 6)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -297,6 +298,7 @@
   (label 9)
   (parent 7)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

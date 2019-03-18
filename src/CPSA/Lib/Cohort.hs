@@ -134,12 +134,12 @@ explainable k n leadsto =
 -- pos    = p
 -- ek     = encription key if ct is an encyption else nothing
 -- escape = esc(k, v, t)
--- k'     = k
--- (s, p) = v and n
+-- k      = k'
+-- n      = v
 -- subst  = sigma
 solved :: Algebra t p g s e c => t -> p -> [t] -> Set t ->
           Preskel t g s e -> Node -> s -> [(t,t)] -> Bool
-solved ct pos eks escape k (s, p) subst absent =
+solved ct pos eks escape k n subst absent =
     -- Condition 1
     isAncestorInSet escape' t pos || derivable a escape' ct' ||
     -- Condition 2
@@ -155,7 +155,7 @@ solved ct pos eks escape k (s, p) subst absent =
     -- Condition 6: hack!
     length (kabsent k) > length absent
     where
-      v = vertex k (s, p)       -- Look up vertex in k
+      v = vertex k n                 -- Look up vertex in k
       t = evt id erro errs (event v)  -- Term at v
       erro = const $ assertError "Cohort.solved: got an outbound term"
       errs = const $ assertError "Cohort.solved: got a state synchronization term"

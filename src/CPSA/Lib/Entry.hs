@@ -99,7 +99,7 @@ defaultOptions = Options {
   optGoalsSat = False,
   optLimit = 2000,
   optBound = 12,
-  optDepth = 32,
+  optDepth = 0,
   optMargin = 72,
   optIndent = 2 }
 

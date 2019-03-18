@@ -1,7 +1,7 @@
 (herald "Yahalom Protocol with Forwarding Removed"
   (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from yahalom.scm")
 
 (defprotocol yahalom diffie-hellman
@@ -277,6 +277,7 @@
   (label 11)
   (parent 5)
   (unrealized (0 3) (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -329,6 +330,7 @@
   (label 13)
   (parent 7)
   (unrealized (0 3) (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -598,6 +600,7 @@
   (label 22)
   (parent 15)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -963,6 +966,7 @@
   (label 33)
   (parent 21)
   (unrealized (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1065,6 +1069,7 @@
   (label 36)
   (parent 25)
   (unrealized (2 1) (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1138,6 +1143,7 @@
   (label 38)
   (parent 27)
   (unrealized (3 1) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1315,6 +1321,7 @@
   (label 43)
   (parent 31)
   (unrealized (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1350,6 +1357,7 @@
   (label 44)
   (parent 32)
   (unrealized (2 1) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1414,6 +1422,7 @@
   (label 46)
   (parent 35)
   (unrealized (2 1) (5 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1452,6 +1461,7 @@
   (label 47)
   (parent 37)
   (unrealized (3 1) (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1521,6 +1531,7 @@
   (label 49)
   (parent 41)
   (unrealized (7 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1559,6 +1570,7 @@
   (label 50)
   (parent 42)
   (unrealized (2 1) (6 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1703,6 +1715,7 @@
   (label 56)
   (parent 54)
   (unrealized (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton yahalom
@@ -1725,6 +1738,7 @@
   (label 57)
   (parent 55)
   (unrealized (0 3) (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

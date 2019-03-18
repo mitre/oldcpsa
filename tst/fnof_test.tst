@@ -1,7 +1,7 @@
 (herald "Function constraint test protocol"
   (comment "Skeletons 2, 4, and 7 should have no shapes."))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from fnof_test.scm")
 
 (defprotocol fnoftest basic
@@ -56,6 +56,7 @@
   (traces ((send (cat n0 (enc an0 an1 n0 n1 k))) (recv n1)))
   (label 2)
   (unrealized (0 1))
+  (dead)
   (origs (n0 (0 0)) (n1 (0 0)))
   (comment "empty cohort"))
 
@@ -78,6 +79,7 @@
   (label 3)
   (unrealized)
   (preskeleton)
+  (origs (n1 (0 0)))
   (comment "Not a skeleton"))
 
 (defskeleton fnoftest
@@ -113,6 +115,7 @@
   (traces ((send (cat n1 (enc an0 an1 n1 n1 k))) (recv n1)))
   (label 5)
   (unrealized)
+  (origs (n1 (0 0)))
   (comment "Input cannot be made into a skeleton--nothing to do"))
 
 (defprotocol fnoftest2 basic
@@ -221,6 +224,7 @@
   (traces ((send (cat n0 (enc bn0 bn1 an0 an1 n0 n1 k))) (recv n1)))
   (label 10)
   (unrealized (0 1))
+  (dead)
   (origs (n0 (0 0)) (n1 (0 0)))
   (comment "empty cohort"))
 

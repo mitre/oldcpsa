@@ -1,7 +1,7 @@
 (herald "Diffie-Hellman enhanced Needham-Schroeder-Lowe Protocol"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from dhnsl_basic.scm")
 
 (defprotocol dhnsl diffie-hellman
@@ -147,6 +147,7 @@
   (label 5)
   (parent 2)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -235,6 +236,7 @@
   (label 9)
   (parent 4)
   (unrealized (2 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -364,6 +366,7 @@
   (label 14)
   (parent 6)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -388,6 +391,7 @@
   (label 15)
   (parent 7)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -411,6 +415,7 @@
   (label 16)
   (parent 8)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -438,6 +443,7 @@
   (label 17)
   (parent 10)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -468,6 +474,7 @@
   (label 18)
   (parent 11)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -525,6 +532,7 @@
   (label 20)
   (parent 13)
   (unrealized (4 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")
@@ -627,6 +635,7 @@
   (label 24)
   (parent 23)
   (unrealized (1 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -746,6 +755,7 @@
   (label 29)
   (parent 26)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (defskeleton dhnsl
@@ -770,6 +780,7 @@
   (label 30)
   (parent 27)
   (unrealized (3 0))
+  (dead)
   (comment "empty cohort"))
 
 (comment "Nothing left to do")

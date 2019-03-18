@@ -214,6 +214,20 @@
       (= z z-0))))
   (comment "Double initiator point of view"))
 
+;;; Double initiator point of view
+(defskeleton ns
+  (vars (a b name) (n1 n1-0 text))
+  (defstrand init 3 (a a) (b b) (n1 n1))
+  (defstrand init 3 (a a) (b b) (n1 n1-0))
+  (non-orig (privk b) (privk a))
+  (uniq-orig n1 n1-0)
+  (goals
+  (forall ((z z-0 strd))
+    (implies
+      (and (p "init" z 3) (p "init" z-0 3))
+      (= z z-0))))
+  (comment "Double initiator point of view 2"))
+
 (defprotocol nsl-typeless basic
   (defrole init
     (vars (a b name) (n1 text) (n2 mesg))

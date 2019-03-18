@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.1")
+(comment "CPSA 3.6.2")
 (comment "All input read from owang.scm")
 
 (defprotocol wang basic
@@ -294,6 +294,7 @@
   (label 0)
   (unrealized (1 0))
   (preskeleton)
+  (origs (m (0 0)) (k (0 0)))
   (comment "Not a skeleton"))
 
 (defskeleton wang
@@ -795,6 +796,7 @@
   (label 7)
   (unrealized (1 0))
   (preskeleton)
+  (origs (m (0 0)) (k (0 0)))
   (comment "Not a skeleton"))
 
 (defskeleton wang
