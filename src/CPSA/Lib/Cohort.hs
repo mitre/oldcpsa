@@ -63,7 +63,7 @@ unrealizedInNode k (acc, ns) n =
         case derivable (avoid k) ts t of
           True -> (acc, ns')
           False -> (graphNode n : acc, ns')
-    Sync (Tran (Just _, _, _))
+    Sync (Tran (Just _, _))
       | not (explainable k n (leadsto k)) ->
           (graphNode n : acc, ns)
     _ -> (acc, ns)
@@ -688,9 +688,9 @@ nextNode now g role =
       loop (ht + 1) acc c
     loop ht acc (Out _ : c) =
       loop (ht + 1) acc c
-    loop ht acc (Sync (Tran (_, Nothing, _)) : c) =
+    loop ht acc (Sync (Tran (_, Nothing)) : c) =
       loop (ht + 1) acc c
-    loop ht acc (Sync (Tran (_, Just next, _)) : c) =
+    loop ht acc (Sync (Tran (_, Just next)) : c) =
       loop (ht + 1) acc' c
       where
         acc' = nextNodeA now g role ht next acc

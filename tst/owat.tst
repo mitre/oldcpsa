@@ -1,7 +1,7 @@
 (herald "One-way Authentication Test with bltk keys"
   (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.2")
+(comment "CPSA 3.6.3")
 (comment "All input read from owat.scm")
 
 (defprotocol owa diffie-hellman

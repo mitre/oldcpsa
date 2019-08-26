@@ -424,7 +424,7 @@ badKey keys (L _ (S pos key : _) : xs)
       fail (shows pos (key ++ " declaration too late in enclosing form"))
     | otherwise = badKey keys xs
 badKey _ _ = return ()
- 
+
 loadTrace :: (Algebra t p g s e c, Monad m) => [t] ->
              [SExpr Pos] -> m [Event t]
 loadTrace vars xs = mapM (loadEvt vars) xs
@@ -443,31 +443,15 @@ loadEvt vars (L _ [S _ "tran", t0, t1]) =
     do
       t0 <- loadTerm vars True t0
       t1 <- loadTerm vars True t1
-      return $ Sync $ Tran (Just t0, Just t1, Nothing)
-loadEvt vars (L _ [S _ "tran", t0, t1, t2]) =
-    do
-      t0 <- loadTerm vars True t0
-      t1 <- loadTerm vars True t1
-      t2 <- loadTerm vars True t2
-      return $ Sync $ Tran (Just t0, Just t1, Just t2)
+      return $ Sync $ Tran (Just t0, Just t1)
 loadEvt vars (L _ [S _ "obsv", t0]) =
     do
       t0 <- loadTerm vars True t0
-      return $ Sync $ Tran (Just t0, Nothing, Nothing)
-loadEvt vars (L _ [S _ "obsv", t0, t1]) =
-    do
-      t0 <- loadTerm vars True t0
-      t1 <- loadTerm vars True t1
-      return $ Sync $ Tran (Just t0, Nothing, Just t1)
+      return $ Sync $ Tran (Just t0, Nothing)
 loadEvt vars (L _ [S _ "init", t0]) =
     do
       t0 <- loadTerm vars True t0
-      return $ Sync $ Tran (Nothing, Just t0, Nothing)
-loadEvt vars (L _ [S _ "init", t0, t1]) =
-    do
-      t0 <- loadTerm vars True t0
-      t1 <- loadTerm vars True t1
-      return $ Sync $ Tran (Nothing, Just t0, Just t1)
+      return $ Sync $ Tran (Nothing, Just t0)
 loadEvt _ (L pos [S _ dir, _]) =
     fail (shows pos $ "Malformed direction: " ++ dir)
 loadEvt _ x = fail (shows (annotation x) "Malformed event")
@@ -612,7 +596,7 @@ loadPriorities ((L pos [L _ [N _ s, N _ i], N _ p]) : rest) insts
     | otherwise =
         case trace (insts !! s) !! i of
           Out _ -> fail (shows pos "Priority declaration disallowed on sending")
-          Sync (Tran (Nothing, _, _))
+          Sync (Tran (Nothing, _))
             -> fail (shows pos
                      "Priority declaration disallowed on initializers")
           _ -> do
@@ -937,12 +921,13 @@ loadImplication md _ prot g vars (L pos [S _ "implies", a, c]) =
   do
     antec <- loadCheckedConj md pos prot vars vars a
     (g, vc) <- loadConclusion pos prot g vars c
-    let (evars, concl) = unzip vc
+    let f (evars, form) = (evars, map snd form)
+    let consq = map f vc        -- Expunge position info
     let goal =
           Goal { uvars = vars,
                  antec = map snd antec,
-                 evars = evars,
-                 concl = map (map snd) concl }
+                 consq = consq,
+                 concl = map snd consq }
     return (g, goal, antec)
 loadImplication _ pos _ _ _ _ = fail (shows pos "Malformed goal implication")
 
@@ -999,7 +984,11 @@ loadRoleSpecific pos prot vars unbound x =
   do
     as <- loadConjunction pos prot vars x
     let as' = L.sortBy (\(_, x) (_, y) -> aFormOrder x y) as
-    unbound <- foldM roleSpecific unbound as'
+    let unbound' =
+          if useFactVars
+          then foldl factSpecific unbound as'
+          else unbound
+    unbound <- foldM roleSpecific unbound' as'
     case unbound of
       [] -> return as'
       (v : _) -> fail (shows (annotation x) ("Malformed defgoal: " ++ showst v " not used"))
@@ -1202,3 +1191,9 @@ roleSpecific unbound (pos, Equals t t')
   | isStrdVar t' = fail (shows pos "Type mismatch in equals")
   | allBound unbound t && allBound unbound t' = return unbound
   | otherwise = fail (shows pos "Unbound variable in equals")
+
+-- Remove unbound message variables that occur in a fact
+factSpecific :: Algebra t p g s e c => [t] -> (Pos, AForm t) -> [t]
+factSpecific unbound (_, AFact _ fs) =
+  unbound L.\\ foldl addVars [] (L.filter (not . isStrdVar) fs)
+factSpecific unbound _ = unbound

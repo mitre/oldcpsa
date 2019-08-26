@@ -95,7 +95,7 @@ let need_newline = ref false
 
 let expand o macs x =
   if !need_newline
-  then print_newline ();
+  then output_char o '\n';
   print_sexpr o (expand_all macs x);
   need_newline := true
 

@@ -258,6 +258,7 @@ data Preskel t g c = Preskel
       insts :: [Instance t c],
       strands :: [t],           -- A variable for each instance
       orderings :: [((t, Int), (t, Int))],
+      leadsto :: [((t, Int), (t, Int))],
       nons :: [t],
       pnons :: [t],
       uniqs :: [t],
@@ -276,6 +277,7 @@ loadPreskel pos prot gen (S _ _ : L _ (S _ "vars" : vars) : xs) =
       insts <- loadInsts prot kvars [] xs
       let heights = map height insts
       orderings <- loadOrderings heights (assoc precedesKey xs)
+      leadsto <- loadOrderings heights (assoc leadstoKey xs)
       nons <- loadBaseTerms kvars (assoc nonOrigKey xs)
       pnons <- loadBaseTerms kvars (assoc pnonOrigKey xs)
       uniqs <- loadBaseTerms kvars (assoc uniqOrigKey xs)
@@ -291,6 +293,7 @@ loadPreskel pos prot gen (S _ _ : L _ (S _ "vars" : vars) : xs) =
                         insts = insts,
                         strands = M.elems varmap,
                         orderings = map f orderings,
+                        leadsto = map f leadsto,
                         nons = nons,
                         pnons = pnons,
                         uniqs = uniqs,
@@ -523,6 +526,10 @@ mapsKey = "maps"
 precedesKey :: String
 precedesKey = "precedes"
 
+-- The key used in preskeletons for leadsto orderings
+leadstoKey :: String
+leadstoKey = "leadsto"
+
 -- The key used in preskeletons for non-originating atoms
 nonOrigKey :: String
 nonOrigKey = "non-orig"
@@ -618,6 +625,7 @@ mapSkel env pov k =
       insts = map (mapInst env) (insts k),
       strands = zs,
       orderings = mapPair (instantiate env) (orderings k),
+      leadsto = mapPair (instantiate env) (leadsto k),
       nons = map (instantiate env) (nons k),
       pnons = map (instantiate env) (pnons k),
       uniqs = map (instantiate env) (uniqs k),
@@ -666,6 +674,7 @@ skel ctx k =
    map (lengthForm kctx k) (M.assocs (varmap k)) ++
    concatMap (paramForm kctx) (zip (strands k) $ insts k) ++
    map (precForm kctx) (orderings k) ++
+   map (leadsToForm kctx) (leadsto k) ++
    map (unary "non" kctx) (nons k) ++
    map (unary "pnon" kctx) (pnons k) ++
    -- Not possible map (unary "uniq" kctx) (noOrigUniqs k) ++
@@ -714,6 +723,10 @@ paramForm c (z, inst) =
 -- Creates the atomic formula used to describe a node ordering relation
 precForm :: Algebra t p g s e c => c -> ((t, Int), (t, Int)) -> SExpr ()
 precForm = quaternary "prec"
+
+-- Creates the atomic formula used to describe a leads to ordering relation
+leadsToForm :: Algebra t p g s e c => c -> ((t, Int), (t, Int)) -> SExpr ()
+leadsToForm = quaternary "leads-to"
 
 uniqAtForm :: Algebra t p g s e c => c -> (t, (t, Int)) -> SExpr ()
 uniqAtForm = ternary "uniq-at"

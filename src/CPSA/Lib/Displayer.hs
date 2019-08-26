@@ -52,7 +52,7 @@ displayImpl :: Algebra t p g s e c => c -> Goal t -> SExpr ()
 displayImpl ctx g =
   L () [S () "implies",
         displayConj ctx (antec g),
-        displayDisj ctx (zip (evars g) (concl g)) ]
+        displayDisj ctx (consq g) ]
 
 displayDisj :: Algebra t p g s e c => c -> [([t], [AForm t])] -> SExpr ()
 displayDisj _ [] = L () [S () "false"]
@@ -180,20 +180,13 @@ displayTrace ctx trace =
       displayDt (Sync t) = L () (displayTran ctx t)
 
 displayTran :: Algebra t p g s e c => c -> Tran t -> [SExpr ()]
-displayTran ctx (Tran(Just now, Just next, Nothing)) =
+displayTran ctx (Tran(Just now, Just next)) =
   [S () "tran", displayTerm ctx now,  displayTerm ctx next]
-displayTran ctx (Tran(Just now, Just next, Just label)) =
-  [S () "tran", displayTerm ctx now,  displayTerm ctx next,
-                displayTerm ctx label]
-displayTran ctx (Tran(Just now, Nothing, Nothing)) =
+displayTran ctx (Tran(Just now, Nothing)) =
   [S () "obsv", displayTerm ctx now]
-displayTran ctx (Tran(Just now, Nothing, Just label)) =
-  [S () "obsv", displayTerm ctx now, displayTerm ctx label]
-displayTran ctx (Tran(Nothing, Just next, Nothing)) =
+displayTran ctx (Tran(Nothing, Just next)) =
   [S () "init", displayTerm ctx next]
-displayTran ctx (Tran(Nothing, Just next, Just label)) =
-  [S () "init", displayTerm ctx next, displayTerm ctx label]
-displayTran _ (Tran(Nothing, Nothing, _)) =
+displayTran _ (Tran(Nothing, Nothing)) =
   assertError("Displayer.displayTran: encountered sync node with current or next state")
 
 -- Display of preskeletons

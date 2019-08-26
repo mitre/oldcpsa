@@ -150,7 +150,7 @@ solve p h (k : ks) n =
                 do
                   let lk = LPreskel k n (-1) Nothing
                   let ks'' = L.nubBy (\k1 k2 -> isomorphic (gist k1) (gist k2)) ks'
-                  wrt p h (commentPreskel lk [] (unrealized k) Ordinary 
+                  wrt p h (commentPreskel lk [] (unrealized k) Ordinary
                             Preskeleton "Not a skeleton")
                   let lk_nums = zip [(n+1) .. (n+length(ks'))] ks''
                   let lks' = map (\(n', k')-> withParent k' n' lk) lk_nums
@@ -176,7 +176,7 @@ begin p h ks m n seen todo =
                        Nada "Not closed under rules")
               let (n', seen', todo', _) =
                     foldl (next lk) (n, seen, todo, []) kids
-              loop n' seen' todo' lks
+              loop n' seen' (reverse todo') lks
 
 -- Apply collapse until all possibilities are exhausted.
 search :: Algebra t p g s e c => Options -> Handle ->

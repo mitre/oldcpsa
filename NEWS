@@ -1,5 +1,12 @@
 CPSA NEWS
 
+  August 2019:
+
+* Release 3.6.3 adds the cpsainit program and fixes bugs.  The
+  cpsainit program copies files from the CPSA data directory into a
+  fresh CPSA project directory.  The files ease the task of automating
+  the use of the various CPSA tools.
+
   March, 2019:
 
 * Release 3.6.2 adds the leads-to predicate to the rule language, adds

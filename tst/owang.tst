@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.2")
+(comment "CPSA 3.6.3")
 (comment "All input read from owang.scm")
 
 (defprotocol wang basic

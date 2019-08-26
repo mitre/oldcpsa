@@ -1,5 +1,5 @@
 Name:			cpsa
-Version:		3.6.2
+Version:		3.6.3
 Maintainer:		mliskov@mitre.org
 Cabal-Version:		>= 1.6
 License:		BSD3
@@ -71,6 +71,7 @@ Data-Files:
   examples/fluffy_draft03_gske.scm
   examples/fluffy_draft03_improving_pske.scm
   examples/fluffy_draft03_pske.scm examples/eq_test.scm
+  init/Makefile init/template.lisp
   examples/eq_test.xhtml
 Data-Dir:	    	doc
 Extra-Source-Files:
@@ -233,3 +234,12 @@ Executable cpsamatch
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.Match.Match
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
+
+Executable cpsainit
+  Main-Is:		CPSA/Init/Main.hs
+  Build-Depends:	base, directory
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:	src
+  Other-Modules:
+    Paths_cpsa

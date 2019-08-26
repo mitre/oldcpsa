@@ -1,3 +1,72 @@
+2019-08-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.3
+
+2019-08-22  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (doRewritesLoop): Fixed the code that
+	counts rewrite rules applied so it is accurate.  This allows the
+	rewrite rule limit to be correctly enforced.
+
+2019-08-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (runiqAt): Ensured that rewriting with
+	uniq-at fails when the index is greater than the strand length.
+
+2019-08-19  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Init/Main.hs (main): Added program cpsainit.  The
+	programs copies the files Makefile, cpsa4.mk, Make4.hs, and
+	template.lisp from the CPSA data directory to the current
+	directory, thereby easing the task of starting a CPSA project.
+
+2019-07-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/State.hs: Removed the label field in a transition.
+	The field was always ignored, and it causes confusion on input.
+
+2019-06-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (multiset): Used multisets of trace
+	briefs to reduce the number of full permutation isomorphism
+	checks.
+
+2019-06-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (brief): Added a summary of trace that
+	reduces the need for matching during isomorphism checking.
+
+2019-06-04  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Reduction.hs (begin): Reversed todo list after
+	running rules so as to get the output order correct.
+
+2019-05-20  Joshua D. Guttman  <guttman@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (tryPerm): Fixed bug in isomorphism
+	checking.  Checking of facts used wrong environment.
+
+2019-05-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (leadstoKey):  Added support for leadsto in
+	shape analysis sentences.
+
+	* src/CPSA/Lib/Strand.hs (kfactVars):  Allow message variables in
+	facts that occur nowhere else.
+	(useFactVars):  Add flag that disables message variable in facts
+	that occur nowhere else and disable it, because isomorphism
+	checking is broken.
+
+	* src/CPSA/Strand.hs (doRewriteOne):  Values associated with
+	existential variables in rules are freshly generated so that
+	parameter terms can be compound.
+
+2019-04-03  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (verbosePreskelWellFormed): Added a check
+	that ensures the every variable that occurs in a fact also occurs
+	in some strand.
+
 2019-03-18  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.2

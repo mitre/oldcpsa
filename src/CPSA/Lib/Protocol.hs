@@ -80,13 +80,13 @@ sendTerm _ = Nothing
 -- Extract the term in an inbound event.
 inbnd :: Event t -> Maybe t
 inbnd (In t) = Just t
-inbnd (Sync (Tran (Just t,_,_))) = Just t
+inbnd (Sync (Tran (Just t, _))) = Just t
 inbnd _ = Nothing
 
 -- Extract the term in an outbound event.
 outbnd :: Event t -> Maybe t
 outbnd (Out t) = Just t
-outbnd (Sync (Tran (_,Just t,_))) = Just t
+outbnd (Sync (Tran (_, Just t))) = Just t
 outbnd _ = Nothing
 
 {-
@@ -411,7 +411,8 @@ type NodeTerm t = (t, Int)
 data Goal t
   = Goal { uvars :: [t],          -- Universally quantified variables
            antec :: [AForm t],    -- Antecedent
-           evars :: [[t]],        -- Existentially quantified variables
+           -- Consequent with existentially quantified variables
+           consq :: [([t], [AForm t])],
            concl :: [[AForm t]] } -- Conclusion
   deriving Show
 

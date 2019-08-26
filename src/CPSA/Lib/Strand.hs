@@ -1,4 +1,4 @@
--- on data structures and support functions.
+-- Instance and preskeleton data structures and support functions.
 
 -- Copyright (c) 2009 The MITRE Corporation
 --
@@ -9,7 +9,7 @@
 module CPSA.Lib.Strand (Instance, mkInstance, bldInstance, mkListener,
     role, env, trace, height, listenerTerm, Sid, Node, mkPreskel,
     firstSkeleton, Pair, Preskel, gen, protocol, kgoals, insts,
-    orderings, leadsto, kfacts,
+    orderings, leadsto, kfacts, useFactVars,
     pov, korig, kcomment, nstrands, kvars, kpriority, kpriorities,
     strandids, kterms, avoid, preskelWellFormed, verbosePreskelWellFormed,
     Strand, inst, nodes, Vertex, preds, event, kabsent,
@@ -73,6 +73,10 @@ useSingleStrandThinning = False -- True
 -- use thinning without de-origination.
 useDeOrigination :: Bool
 useDeOrigination = False -- useThinning
+
+-- Enable variables in facts that do not occur elsewhere in skeletons
+useFactVars :: Bool
+useFactVars = False -- True
 
 -- Sanity check: ensure no role variable occurs in a skeleton.
 useCheckVars :: Bool
@@ -468,8 +472,8 @@ mkPreskel gen protocol gs insts orderings leadsto dlist facts comment priorities
       checkLeadsto [] _ = []
       checkLeadsto (((s1,i1),(s2,i2)) : rest) consumed =
         case ((trace (insts !! s1)) !! i1) of
-          Sync (Tran (_, Just t, _)) -> case ((trace (insts !! s2)) !! i2) of
-            Sync (Tran (Just t', nxt, _)) ->
+          Sync (Tran (_, Just t)) -> case ((trace (insts !! s2)) !! i2) of
+            Sync (Tran (Just t', nxt)) ->
                if (t /= t') then error ("Strand.mkPreskel: invalid state edge at " ++ show (s1,i1))
                else case nxt of
                  Nothing -> (((s1,i1),(s2,i2)) : checkLeadsto rest consumed)
@@ -599,9 +603,9 @@ reducedPairWellOrdered :: Edge t e -> Bool
 reducedPairWellOrdered (n0, n1) =
     case (event n0, event n1) of
       (Out _, In _) -> True
-      (Sync (Tran (_, Just _, _)), Sync (Tran (Just _, _, _))) ->
+      (Sync (Tran (_, Just _)), Sync (Tran (Just _, _))) ->
         True
-      (Sync (Tran (_, Nothing, _)), Sync (Tran (Just _, Just _, _))) ->
+      (Sync (Tran (_, Nothing)), Sync (Tran (Just _, Just _))) ->
         True
       (Sync _, In _) -> True
       (Out _, Sync _) -> True
@@ -646,12 +650,14 @@ acyclicOrder k =
       numbering = dfs preds start'
 
 -- Variables in this preskeleton, excluding ones in roles, and ones
--- that only occur in a cause.
+-- that only occur in a cause.  The variables in facts are explicitly
+-- included.
 kvars :: Algebra t p g s e c => Preskel t g s e -> [t]
 kvars k =
     S.elems $ foldl addIvars dvars (insts k)
     where
-      dvars = foldl f S.empty $ declsTerms (decls k)
+      factVars = if useFactVars then kfactVars k else S.empty
+      dvars = foldl f factVars $ declsTerms (decls k)
       f s t = foldVars (flip S.insert) s t
 
 traceBase :: Int
@@ -694,6 +700,7 @@ data Gist t g = Gist
       gfacts :: [Fact t],
       nvars :: !Int,           -- Number of variables
       ntraces :: !Int,         -- Number of traces
+      briefs :: [(Int, Int)],  -- Multiset of trace briefs
       norderings :: !Int,      -- Number of orderings
       nleadsto :: !Int,        -- Number of leadsto pairs
       nsndecls :: [Int],       -- Counts of decls
@@ -711,18 +718,45 @@ gist k =
            gpatterns = patterns,
            nvars = length (kvars k),
            ntraces = length gtraces,
+           briefs = multiset (map fst gtraces),
            norderings = length gorderings,
            nleadsto = length gleadsto,
            nsndecls = nsds gdecls,
            nfacts = length gfacts }
     where
-      gtraces = map (\i -> (height i, trace i)) (insts k)
+      gtraces = map f (insts k)
+      -- Old: f i = (height i, trace i)
+      f i =
+        (brief c, c)
+        where c = trace i
       gorderings = orderings k
       gleadsto = leadsto k
       gdecls = decls k
       gfacts = kfacts k
       patterns = L.sort (map (tracePattern . trace) (insts k))
       nsds decls = [length (dknon decls), length (dkpnon decls), length (dkunique decls)]
+
+-- Summarize a trace so that two traces don't match unless they have
+-- the same number.  The summary used to be the height of the trace.
+brief :: Algebra t p g s e c => Trace t -> Int
+brief [] = 0
+brief (In _ : c) = 1 + 4 * brief c
+brief (Out _ : c) = 2 + 4 * brief c
+brief (Sync _ : c) = 3 + 4 * brief c
+
+-- Convert a list of integers into a sorted multiset representation.
+-- The output is a list of pairs, (i, n). Integer n gives the
+-- multiplity of integer i in the input list.  List is sorted based on
+-- the first element in each pair.
+multiset :: [Int] -> [(Int, Int)]
+multiset brf =
+  L.foldl insert [] brf
+  where
+    insert [] b = [(b, 1)]
+    insert ((k, n) : brf) b
+      | k == b = (k, n + 1) : brf
+      | k > b = (b, 1) : (k, n) : brf
+      | otherwise = (k, n) : insert brf b
 
 -- Test to see if two preskeletons are isomorphic
 
@@ -748,6 +782,7 @@ isomorphic :: Algebra t p g s e c => Gist t g -> Gist t g -> Bool
 isomorphic g g' =
 --    nvars g == nvars g' &&  -- Wrong in DH
     ntraces g == ntraces g' &&
+    briefs g == briefs g' &&
     norderings g == norderings g' &&
     gpatterns g == gpatterns g' &&
     nleadsto g == nleadsto g' &&
@@ -836,7 +871,7 @@ tryPerm g g' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv (invperm perm) &&
     checkFacts g g' fenv perm &&
-    checkFacts g' g fenv (invperm perm) &&
+    checkFacts g' g renv (invperm perm) &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g)
 
@@ -846,7 +881,7 @@ tryPermProb g g' prob prob' (fenv, renv, perm) =
     checkOrigs g g' fenv perm &&
     checkOrigs g' g renv perm &&
     checkFacts g g' fenv perm &&
-    checkFacts g' g fenv (invperm perm) &&
+    checkFacts g' g renv (invperm perm) &&
     containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
     containsMapped (permutePair perm) (gleadsto g') (gleadsto g) &&
     all (\n -> perm !! (prob !! n) == prob' !! n) [0..((length prob)-1)]
@@ -2086,6 +2121,7 @@ preskelWellFormed k =
     varSubset (kpnon k) terms &&
     all nonCheck (knon k) &&
     all uniqueCheck (kunique k) &&
+    all factCheck (kfacts k) &&
     origNonNullCheck k && ugenNonNullCheck k &&
     wellOrdered k && acyclicOrder k &&
     roleOrigCheck k && fst (declCheck (decls k))
@@ -2094,6 +2130,7 @@ preskelWellFormed k =
       mesgterms = kmesgterms k
       nonCheck t = all (not . carriedBy t) mesgterms
       uniqueCheck t = any (carriedBy t) mesgterms
+      factCheck f = factVarsElem (kvars k) f
       origNonNullCheck k = (all (\(_, ns) -> not (null ns)) (korig k))
       ugenNonNullCheck k = (all (\(_, ns) -> not (null ns))
                             (filter (\(t, _) -> not (isNum t)) (kugen k)))
@@ -2118,6 +2155,7 @@ verbosePreskelWellFormed k =
                    $ varSubset (kpnon k) terms
       mapM_ nonCheck $ knon k
       mapM_ uniqueCheck $ kunique k
+      mapM_ factCheck $ kfacts k
       origNonNullCheck k
       uniqgenNonNullCheck k
       failwith "ordered pairs not well formed" $ wellOrdered k
@@ -2135,6 +2173,9 @@ verbosePreskelWellFormed k =
       uniqueCheck t =
           failwith (showString "uniq-orig " $ showst t " not carried")
                        $ any (carriedBy t) mesgterms
+      factCheck f =
+          failwith ("a fact var in " ++  factPred f ++ " not in some strand")
+                       $ factVarsElem (kvars k) f
       origNonNullCheck k =
           let ts = filter (\(_, ns) -> null ns) (korig k) in
           failwith (showString "uniq-orig " $
@@ -2163,7 +2204,7 @@ noStateSplit k
     loop [] _ = True
     loop ((n0, (s, i)) : es) ns =
       case (trace (insts k !! s) !! i) of
-        Sync (Tran (Just _, Just _, _)) ->
+        Sync (Tran (Just _, Just _)) ->
           S.notMember n0 ns && loop es (S.insert n0 ns)
         _ -> loop es ns
 
@@ -2451,7 +2492,7 @@ addSyncOrderings es orderings =
                                                  else acc
     f acc _ = acc
     xform = filter g es         -- Edges that transform
-    g (_, (Sync t@(Tran (_, Just _, _)), Sync t'@(Tran (Just _, Just _, _)))) =
+    g (_, (Sync t@(Tran (_, Just _)), Sync t'@(Tran (Just _, Just _)))) =
       next t == now t'
     g _ = False
     h t0 pes =
@@ -2520,6 +2561,9 @@ data Fact t
   = Fact String [FTerm t]
   deriving (Eq, Show)
 
+factPred :: Fact t -> String
+factPred (Fact pred _) = pred
+
 substFTerm :: Algebra t p g s e c => s -> FTerm t -> FTerm t
 substFTerm s (FTerm t) = FTerm $ substitute s t
 substFTerm _ t = t
@@ -2564,6 +2608,17 @@ factVarsElem vs (Fact _ ts) =
 cleansFacts :: Algebra t p g s e c => [t] -> [Fact t] -> [Fact t]
 cleansFacts vs facts =
   L.filter (factVarsElem vs) facts
+
+kfactVars :: Algebra t p g s e c => Preskel t g s e -> Set t
+kfactVars k =
+  foldl (foldFactTerms $ foldVars $ flip S.insert) S.empty (kfacts k)
+
+foldFactTerms :: Algebra t p g s e c => (a -> t -> a) -> a -> Fact t -> a
+foldFactTerms f z (Fact _ ts) =
+  foldl g z ts
+  where
+    g a (FSid _) = a
+    g a (FTerm t) = f a t
 
 {-
 instvars :: Algebra t p g s e c => [Instance t e] -> [t]
@@ -2895,7 +2950,7 @@ rewrite k =
         if null vas then
           loop rs               -- Rule does not apply
         else
-          Just $ doRewrites 0 prules k r vas
+          Just $ doRewrites prules k r vas
 
 -- Returns the environments that show satifaction of the antecedent
 -- but fail to be extendable to show satifaction of one of the
@@ -2912,24 +2967,31 @@ ruleLimit :: Int
 ruleLimit = 500
 
 -- Repeatedly applies rules until no rule applies.
-doRewrites :: Algebra t p g s e c => Int -> [Rule t] -> Preskel t g s e ->
+doRewrites :: Algebra t p g s e c => [Rule t] -> Preskel t g s e ->
               Rule t -> [(g, e)] -> [Preskel t g s e]
-doRewrites lim _ _ _ _
+doRewrites rules k r vas =
+  doRewritesLoop rules k (length vas) (doRewrite k r vas) []
+
+doRewritesLoop :: Algebra t p g s e c => [Rule t] -> Preskel t g s e ->
+                  Int -> [Preskel t g s e] -> [Preskel t g s e] ->
+                  [Preskel t g s e]
+doRewritesLoop _ _ lim _ _
   | lim >= ruleLimit =
     error ("Aborting after applying " ++ show ruleLimit ++
            " rules and more are applicable")
-doRewrites lim rules k r vas =
-  concatMap f (doRewrite k r vas)
+doRewritesLoop _ _ _ [] ks = reverse ks
+doRewritesLoop rules k lim (k' : todo) ks =
+  loop rules
   where
-    f k = loop rules
-      where
-        loop [] = [k]           -- No rules apply
-        loop (r : rs) =
-          let vas = tryRule k r in
-            if null vas then
-              loop rs           -- Rule does not apply
-            else
-              doRewrites (lim + 1) rules k r vas
+    loop [] =                   -- No rules apply
+      doRewritesLoop rules k lim todo (k' : ks)
+    loop (r : rs) =
+      let vas = tryRule k' r in
+        if null vas then
+          loop rs               -- Rule does not apply
+        else
+          let new = doRewrite k' r vas in
+            doRewritesLoop rules k (lim + length vas) (todo ++ new) ks
 
 -- Apply rewrite rule at all assignments
 doRewrite :: Algebra t p g s e c => Preskel t g s e ->
@@ -2942,14 +3004,25 @@ doRewriteOne :: Algebra t p g s e c => Preskel t g s e ->
                 Rule t -> (g, e) -> [Preskel t g s e]
 doRewriteOne k r e =
   do
-    cl <- concl $ rlgoal r
-    (k, _) <- doConj (rlname r) cl k e
+    (evars, cl) <- consq $ rlgoal r
+    let e' = foldl fresh e evars
+    (k, _) <- doConj (rlname r) cl k e'
     k <- wellFormedPreskel k
     k <- toSkeleton True k
     return $ f k                -- Add comment about rule application
   where f k = k { kcomment =
                   L () [S () "rule", S () (rlname r)] :
                   kcomment k }
+
+fresh :: Algebra t p g s e c => (g, e) -> t -> (g, e)
+fresh (g, e) t
+  | isStrdVar t = (g, e)
+  | otherwise =
+      case match t t' (g', e) of
+        e' : _ -> e'
+        [] -> error "Strand.fresh: Cannot match logical variable to clone"
+    where
+      (g', t') = clone g t
 
 type Rewrite t g s e =
   Preskel t g s e -> (g, e) -> [(Preskel t g s e, (g, e))]
@@ -3060,30 +3133,29 @@ rparam name r v h z t k (g, e) =
     Just s
       | height inst < h -> []
       | rname (role inst) == rname r ->
-        rParam k (g, e) t t'
+        rParam name k (g, e) t t'
       | otherwise ->
         do
           (k, (g, e)) <- rDisplace e k' ns s
-          rParam k (g, e) t t'
+          rParam name k (g, e) t t'
       where
         inst = strandInst k s
         t' = instantiate (env inst) v
         k' = addStrand g k r h
         ns = nstrands k
     Nothing ->
-      error ("In rule " ++ name ++ ", parameter predicate for " ++
-             rname r ++ " did not get a strand")
+      error ("In rule " ++ name ++
+             ", parameter predicate did not get a strand")
 
-rParam :: Algebra t p g s e c => Preskel t g s e ->
+rParam :: Algebra t p g s e c => String -> Preskel t g s e ->
           (g, e) -> t -> t -> [(Preskel t g s e, (g, e))]
-rParam k (g, e) t t' =
+rParam name k (g, e) t t' =
   case matched e t of
-    False ->
-      do
-        (g, e) <- match t t' (g, e)
-        return (k, (g, e))
     True ->
       rUnify k (g, e) (instantiate e t) t'
+    False ->
+      error ("In rule " ++ name ++
+             ", parameter predicate did not get a value")
 
 rUnify :: Algebra t p g s e c => Preskel t g s e ->
           (g, e) -> t -> t -> [(Preskel t g s e, (g , e))]
@@ -3196,6 +3268,7 @@ runiqAt name t (z, i) k (g, e) =
     (True, Just s)
       | elem (t', (s, i)) (dkuniqFull $ decls k) -> [(k, (g, e))]
       | not $ isAtom t' -> []
+      | i >= height (strandInst k s) -> []
       | otherwise ->
         [(k', (g, e))]
         where
