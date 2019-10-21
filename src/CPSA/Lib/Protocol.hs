@@ -6,6 +6,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Lib.Protocol (Event (..), evtTerms, evtMesgTerms, evtMap, evt,
     recvTerm, Trace, stripSync, tterms, originates,
     originationPos, gainedPos, genGainedPos, firstOccurs,
@@ -344,7 +350,7 @@ expandDecls _ trace dlist =
 -- the trace, and every variable that occurs in each atom
 -- declared to be non-originating occurs in some term in the trace,
 -- and the atom must never be carried by any term in the trace.
-roleWellFormed :: (Monad m, Algebra t p g s e c) => Role t -> m ()
+roleWellFormed :: (MonadFail m, Algebra t p g s e c) => Role t -> m ()
 roleWellFormed role =
     do
       failwith "[ASSERT FAILED] invalid declaration"

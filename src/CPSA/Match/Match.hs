@@ -4,6 +4,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Match.Match (testMatcher) where
 
 import CPSA.Lib.SExpr
@@ -31,7 +37,7 @@ go g (L _ (S _ "absent" : L _ vs : xs)) =
     return $ L () $ map (showSubst vs) (absenceSubst g a)
 go _ x = fail (shows (annotation x) "Malformed input!")
 
-loadMatch :: (Algebra t p g s e c, Monad m) =>
+loadMatch :: (Algebra t p g s e c, MonadFail m) =>
               [t] -> SExpr Pos -> m (t, t)
 loadMatch vs (L _ [r, n]) =
   do

@@ -1,7 +1,7 @@
 (herald "Diffie-Hellman protocol, man-in-the-middle attack"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.3")
+(comment "CPSA 3.6.4")
 (comment "All input read from dh_mim.scm")
 
 (defprotocol dh_mim diffie-hellman

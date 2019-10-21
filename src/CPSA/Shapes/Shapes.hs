@@ -6,6 +6,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Shapes.Shapes (Map, empty, shape) where
 
 import qualified Data.IntMap as I
@@ -24,7 +30,7 @@ empty = I.empty
 -- skeleton is changed to reflect omitted skeletons, and its seen
 -- children are deleted.
 
-shape :: Monad m => Map -> SExpr Pos -> m (Map, Maybe (SExpr Pos))
+shape :: MonadFail m => Map -> SExpr Pos -> m (Map, Maybe (SExpr Pos))
 shape map x@(L _ (S _ "defskeleton" : _ : _ : strands)) =
     do
       label <- nassoc "label" xs
@@ -71,7 +77,7 @@ assoc key alist =
       extend x (Just y) = Just (x ++ y)
 
 -- Look up a value known to be an Int
-nassoc :: Monad m => String -> [SExpr Pos] -> m (Maybe Int)
+nassoc :: MonadFail m => String -> [SExpr Pos] -> m (Maybe Int)
 nassoc key xs =
     case assoc key xs of
       Nothing -> return Nothing
@@ -82,7 +88,7 @@ nassoc key xs =
       Just (x:_) -> fail (shows (annotation x) "Expecting one number")
       Just [] -> fail (shows (annotation (head xs)) "Expecting one number")
 
-num :: Monad m => SExpr Pos -> m Int
+num :: MonadFail m => SExpr Pos -> m Int
 num (N _ n) = return n
 num x = fail (shows (annotation x) "Expecting a number")
 

@@ -6,6 +6,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Lib.Loader (loadSExprs) where
 
 import Control.Monad
@@ -28,14 +34,14 @@ import CPSA.Lib.Debug
 -- then return a list of preskeletons.  The name of the algebra is
 -- nom, and its variable generator is provided.
 
-loadSExprs :: (Algebra t p g s e c, Monad m) => String -> g ->
+loadSExprs :: (Algebra t p g s e c, MonadFail m) => String -> g ->
               [SExpr Pos] -> m [Preskel t g s e]
 loadSExprs nom origin xs =
     do
       (_, ks) <- foldM (loadSExpr nom origin) ([], []) xs
       return (reverse ks)
 
-loadSExpr :: (Algebra t p g s e c, Monad m) => String -> g ->
+loadSExpr :: (Algebra t p g s e c, MonadFail m) => String -> g ->
              ([Prot t g], [Preskel t g s e]) -> SExpr Pos ->
              m ([Prot t g], [Preskel t g s e])
 loadSExpr nom origin (ps, ks) (L pos (S _ "defprotocol" : xs)) =
@@ -58,7 +64,7 @@ loadSExpr _ _ _ x = fail (shows (annotation x) "Malformed input")
 
 -- load a protocol
 
-loadProt :: (Algebra t p g s e c, Monad m) => String -> g ->
+loadProt :: (Algebra t p g s e c, MonadFail m) => String -> g ->
             Pos -> [SExpr Pos] -> m (Prot t g)
 loadProt nom origin pos (S _ name : S _ alg : x : xs)
     | alg /= nom =
@@ -83,7 +89,7 @@ loadProt nom origin pos (S _ name : S _ alg : x : xs)
                 fail (shows pos msg)
 loadProt _ _ pos _ = fail (shows pos "Malformed protocol")
 
-loadRoles :: (Algebra t p g s e c, Monad m) => g -> [SExpr Pos] ->
+loadRoles :: (Algebra t p g s e c, MonadFail m) => g -> [SExpr Pos] ->
              m (g, [Role t], [SExpr Pos])
 loadRoles gen (L pos (S _ "defrole" : x) : xs) =
     do
@@ -93,7 +99,7 @@ loadRoles gen (L pos (S _ "defrole" : x) : xs) =
 loadRoles gen xs =
   return (gen, [], xs)
 
-loadRole :: (Algebra t p g s e c, Monad m) => g -> Pos ->
+loadRole :: (Algebra t p g s e c, MonadFail m) => g -> Pos ->
             [SExpr Pos] -> m (g, Role t)
 loadRole gen pos (S _ name :
                   L _ (S _ "vars" : vars) :
@@ -129,7 +135,7 @@ loadRole gen pos (S _ name :
 
 loadRole _ pos _ = fail (shows pos "Malformed role")
 
-loadAllPredefRoleDecls :: (Algebra t p g s e c, Monad m) => Int -> [t] ->
+loadAllPredefRoleDecls :: (Algebra t p g s e c, MonadFail m) => Int -> [t] ->
                           [SExpr Pos] -> m [RoleDeclaration t]
 loadAllPredefRoleDecls height vars exprs =
     do
@@ -140,7 +146,7 @@ loadAllPredefRoleDecls height vars exprs =
                 (nats (length formats))
       return result
 
-loadAllPredefSkelDecls :: (Algebra t p g s e c, Monad m) => [Int] -> [t] ->
+loadAllPredefSkelDecls :: (Algebra t p g s e c, MonadFail m) => [Int] -> [t] ->
                           [SExpr Pos] -> m ([SkelDeclaration t])
 loadAllPredefSkelDecls heights vars exprs =
     do
@@ -152,9 +158,10 @@ loadAllPredefSkelDecls heights vars exprs =
                 (nats (length formats))
       return result
 
-loadPredefRoleDeclsAux :: (Algebra t p g s e c, Monad m) => Int -> [t] -> String ->
-                       (DeclInFormat, Bool, Bool) ->
-                       [SExpr Pos] -> m [(RoleDeclaration t)]
+loadPredefRoleDeclsAux :: (Algebra t p g s e c, MonadFail m) => Int ->
+                          [t] -> String ->
+                          (DeclInFormat, Bool, Bool) ->
+                          [SExpr Pos] -> m [(RoleDeclaration t)]
 loadPredefRoleDeclsAux _ _ _ _ [] = do return []
 loadPredefRoleDeclsAux height vars tag (fmt,areq,False) exprs =
     do (tg,insts) <- loadPredefRoleDecls height vars tag "" fmt areq exprs
@@ -178,9 +185,10 @@ loadPredefRoleDeclsAux _ _ _ _ (x@(L _ ((N _ _):_)):_) =
 loadPredefRoleDeclsAux _ _ tag _ (x:_) =
     fail (shows (annotation x) ("Malformed declaration: subtag required " ++ tag))
 
-loadPredefSkelDeclsAux :: (Algebra t p g s e c, Monad m) => [Int] -> [t] -> String ->
-                       (DeclInFormat, Bool, Bool) ->
-                       [SExpr Pos] -> m [(SkelDeclaration t)]
+loadPredefSkelDeclsAux :: (Algebra t p g s e c, MonadFail m) => [Int] ->
+                          [t] -> String ->
+                          (DeclInFormat, Bool, Bool) ->
+                          [SExpr Pos] -> m [(SkelDeclaration t)]
 loadPredefSkelDeclsAux _ _ _ _ [] = do return []
 loadPredefSkelDeclsAux height vars tag (fmt,areq,False) exprs =
     do (tg,insts) <- loadPredefSkelDecls height vars tag "" fmt areq exprs
@@ -204,7 +212,7 @@ loadPredefSkelDeclsAux _ _ tag _ (x:_) =
      fail (shows (annotation x) ("Malformed declaration: subtag required " ++ tag))
 -- loadPredefSkelDeclsAux _ _ _ (_,_,True) _ = do return []
 
-loadPredefRoleDecls :: (Algebra t p g s e c, Monad m) => Int -> [t] -> String ->
+loadPredefRoleDecls :: (Algebra t p g s e c, MonadFail m) => Int -> [t] -> String ->
                        String -> DeclInFormat -> Bool ->
                        [SExpr Pos] -> m (RoleDeclaration t)
 -- Anything with no expressions: not present, return an empty list of instances.
@@ -252,7 +260,7 @@ loadPredefRoleDecls _ _ _ _ _ _ xs =
        then fail ("[ASSERT FAILED] Input format not supported")
        else fail (shows (annotation (head xs)) "[ASSERT FAILED] Input format not supported")
 
-loadPredefSkelDecls :: (Algebra t p g s e c, Monad m) => [Int] -> [t] -> String ->
+loadPredefSkelDecls :: (Algebra t p g s e c, MonadFail m) => [Int] -> [t] -> String ->
                        String -> DeclInFormat -> Bool ->
                        [SExpr Pos] -> m (SkelDeclaration t)
 -- Anything with no expressions: not present, return an empty list of instances.
@@ -297,7 +305,7 @@ loadPredefSkelDecls _ _ _ _ _ _ xs =
        then fail ("[ASSERT FAILED] Input format not supported")
        else fail (shows (annotation (head xs)) "[ASSERT FAILED] Input format not supported")
 
-loadRoleTermPairPlusMaybeOneLoc :: (Algebra t p g s e c, Monad m) => Int ->
+loadRoleTermPairPlusMaybeOneLoc :: (Algebra t p g s e c, MonadFail m) => Int ->
                                    [t] -> String ->
                                    SExpr Pos -> m (RoleDeclInst t)
 loadRoleTermPairPlusMaybeOneLoc _ vars stag (L _ [x1, x2]) =
@@ -314,7 +322,7 @@ loadRoleTermPairPlusMaybeOneLoc height vars stag (L _ [x1, x2, x3]) =
 loadRoleTermPairPlusMaybeOneLoc _ _ _ x = fail
                         (shows (annotation x) "Malformed pair of terms")
 
-loadSkelTermPair :: (Algebra t p g s e c, Monad m) => [t] -> String ->
+loadSkelTermPair :: (Algebra t p g s e c, MonadFail m) => [t] -> String ->
                                    SExpr Pos -> m (SkelDeclInst t)
 loadSkelTermPair vars stag (L _ [x1, x2]) =
     do
@@ -324,7 +332,7 @@ loadSkelTermPair vars stag (L _ [x1, x2]) =
 loadSkelTermPair _ _ x = fail
                         (shows (annotation x) "Malformed pair of terms")
 
-loadRolePriority :: Monad m => Int -> SExpr Pos -> m (Int, Int)
+loadRolePriority :: MonadFail m => Int -> SExpr Pos -> m (Int, Int)
 loadRolePriority n (L _ [N _ i, N _ p])
     | 0 <= i && i < n = return (i, p)
 loadRolePriority _ x = fail (shows (annotation x) "Malformed priority")
@@ -340,7 +348,8 @@ showst t =
 
 -- This is the only place a role is generated with an empty name.
 -- This is what marks a strand as a listener.
-mkListenerRole :: (Algebra t p g s e c, Monad m) => Pos -> g -> m (g, Role t)
+mkListenerRole :: (Algebra t p g s e c, MonadFail m) => Pos -> g ->
+                  m (g, Role t)
 mkListenerRole pos g =
   do
     (g, xs) <- loadVars g [L pos [S pos "x", S pos "mesg"]]
@@ -350,7 +359,7 @@ mkListenerRole pos g =
 
 -- Protocol Rules
 
-loadRules :: (Algebra t p g s e c, Monad m) => Prot t g -> g ->
+loadRules :: (Algebra t p g s e c, MonadFail m) => Prot t g -> g ->
              [SExpr Pos] -> m (g, [Rule t], [SExpr ()])
 loadRules prot g (L pos (S _ "defrule" : x) : xs) =
     do
@@ -365,7 +374,7 @@ loadRules _ g xs =
       comment <- alist [] xs    -- Ensure remaining is an alist
       return (g, [], comment)
 
-loadRule :: (Algebra t p g s e c, Monad m) => Prot t g -> g ->
+loadRule :: (Algebra t p g s e c, MonadFail m) => Prot t g -> g ->
             Pos -> [SExpr Pos] -> m (g, Rule t)
 loadRule prot g pos (S _ name : x : xs) =
   do
@@ -381,7 +390,7 @@ loadRule _ _ pos _ = fail (shows pos "Malformed rule")
 -- Make an association list into a comment.  The first argument is the
 -- set of keys of key-value pairs to be dropped from the comment.
 
-alist :: Monad m => [String] -> [SExpr Pos] -> m [SExpr ()]
+alist :: MonadFail m => [String] -> [SExpr Pos] -> m [SExpr ()]
 alist _ [] = return []
 alist keys (a@(L _ (S _ key : _)) : xs)
     | elem key keys = alist keys xs
@@ -418,18 +427,18 @@ hasKey key alist =
       f _ = False
 
 -- Complain if alist has a bad key
-badKey :: Monad m => [String] -> [SExpr Pos] -> m ()
+badKey :: MonadFail m => [String] -> [SExpr Pos] -> m ()
 badKey keys (L _ (S pos key : _) : xs)
     | elem key keys =
       fail (shows pos (key ++ " declaration too late in enclosing form"))
     | otherwise = badKey keys xs
 badKey _ _ = return ()
 
-loadTrace :: (Algebra t p g s e c, Monad m) => [t] ->
+loadTrace :: (Algebra t p g s e c, MonadFail m) => [t] ->
              [SExpr Pos] -> m [Event t]
 loadTrace vars xs = mapM (loadEvt vars) xs
 
-loadEvt :: (Algebra t p g s e c, Monad m) => [t] ->
+loadEvt :: (Algebra t p g s e c, MonadFail m) => [t] ->
           SExpr Pos -> m (Event t)
 loadEvt vars (L _ [S _ "recv", t]) =
     do
@@ -456,7 +465,7 @@ loadEvt _ (L pos [S _ dir, _]) =
     fail (shows pos $ "Malformed direction: " ++ dir)
 loadEvt _ x = fail (shows (annotation x) "Malformed event")
 
-loadBaseTerms :: (Algebra t p g s e c, Monad m) => [t] -> [SExpr Pos] -> m [t]
+loadBaseTerms :: (Algebra t p g s e c, MonadFail m) => [t] -> [SExpr Pos] -> m [t]
 loadBaseTerms _ [] = return []
 loadBaseTerms vars (x : xs) =
     do
@@ -464,7 +473,8 @@ loadBaseTerms vars (x : xs) =
       ts <- loadBaseTerms vars xs
       return (adjoin t ts)
 
-maybeLoadBaseTerm :: (Algebra t p g s e c, Monad m) => [t] -> SExpr Pos -> m (Maybe t)
+maybeLoadBaseTerm :: (Algebra t p g s e c, MonadFail m) => [t] ->
+                     SExpr Pos -> m (Maybe t)
 maybeLoadBaseTerm vars x =
     do
       t <- loadTerm vars False x
@@ -472,7 +482,7 @@ maybeLoadBaseTerm vars x =
          True -> return (Just t)
          False -> return Nothing
 
-loadBaseTerm :: (Algebra t p g s e c, Monad m) => [t] -> SExpr Pos -> m t
+loadBaseTerm :: (Algebra t p g s e c, MonadFail m) => [t] -> SExpr Pos -> m t
 loadBaseTerm vars x =
     do
       mt <- maybeLoadBaseTerm vars x
@@ -480,7 +490,7 @@ loadBaseTerm vars x =
         Just t -> return t
         Nothing -> fail (shows (annotation x) "Expecting an atom")
 
-loadPosBaseTerms :: (Algebra t p g s e c, Monad m) => [t] ->
+loadPosBaseTerms :: (Algebra t p g s e c, MonadFail m) => [t] ->
                     [SExpr Pos] -> m [(Maybe Int, t)]
 loadPosBaseTerms _ [] = return []
 loadPosBaseTerms vars (x : xs) =
@@ -489,7 +499,7 @@ loadPosBaseTerms vars (x : xs) =
       ts <- loadPosBaseTerms vars xs
       return (t:ts)
 
-loadPosBaseTerm :: (Algebra t p g s e c, Monad m) => [t] ->
+loadPosBaseTerm :: (Algebra t p g s e c, MonadFail m) => [t] ->
                    SExpr Pos -> m (Maybe Int, t)
 loadPosBaseTerm vars x'@(L _ [x, N _ opos])
     | opos < 0 =
@@ -506,7 +516,7 @@ loadPosBaseTerm vars x =
         True -> return (Nothing, t)
         False -> fail (shows (annotation x) "Expecting an atom")
 
-loadPositions :: Monad m => Int -> [SExpr Pos] -> m [Int]
+loadPositions :: MonadFail m => Int -> [SExpr Pos] -> m [Int]
 loadPositions _ [] = return []
 loadPositions height (x : xs) =
     do
@@ -514,7 +524,7 @@ loadPositions height (x : xs) =
       ps <- loadPositions height xs
       return (p:ps)
 
-loadPosition :: Monad m => Int -> SExpr Pos -> m Int
+loadPosition :: MonadFail m => Int -> SExpr Pos -> m Int
 loadPosition height x@(N _ pos)
     | pos < 0 = fail (shows (annotation x) "Expecting a non-negative height")
     | pos >= height = fail (shows (annotation x) "Height out of range")
@@ -523,7 +533,7 @@ loadPosition _ x = fail (shows (annotation x) "Expecting an integer height")
 
 -- Find protocol and then load a preskeleton.
 
-findPreskel :: (Algebra t p g s e c, Monad m) => Pos ->
+findPreskel :: (Algebra t p g s e c, MonadFail m) => Pos ->
                [Prot t g] -> [SExpr Pos] ->
                m (Preskel t g s e)
 findPreskel pos ps (S _ name : xs) =
@@ -532,7 +542,7 @@ findPreskel pos ps (S _ name : xs) =
       Just p -> loadPreskel pos p xs
 findPreskel pos _ _ = fail (shows pos "Malformed skeleton")
 
-loadPreskel :: (Algebra t p g s e c, Monad m) => Pos ->
+loadPreskel :: (Algebra t p g s e c, MonadFail m) => Pos ->
                Prot t g -> [SExpr Pos] ->
                m (Preskel t g s e)
 loadPreskel pos p (L _ (S _ "vars" : vars) : xs) =
@@ -541,7 +551,7 @@ loadPreskel pos p (L _ (S _ "vars" : vars) : xs) =
       loadInsts pos p kvars gen [] xs
 loadPreskel pos _ _ = fail (shows pos "Malformed skeleton")
 
-loadInsts :: (Algebra t p g s e c, Monad m) => Pos ->
+loadInsts :: (Algebra t p g s e c, MonadFail m) => Pos ->
              Prot t g -> [t] -> g -> [Instance t e] ->
              [SExpr Pos] -> m (Preskel t g s e)
 loadInsts top p kvars gen insts (L pos (S _ "defstrand" : x) : xs) =
@@ -587,7 +597,7 @@ loadComment _ [] = []
 loadComment key comment =
   [L () (S () key : map strip comment)]
 
-loadPriorities :: (Algebra t p g s e c, Monad m) => [SExpr Pos] ->
+loadPriorities :: (Algebra t p g s e c, MonadFail m) => [SExpr Pos] ->
                   [Instance t e] -> m [((Int,Int),Int)]
 loadPriorities [] _ = return []
 loadPriorities ((L pos [L _ [N _ s, N _ i], N _ p]) : rest) insts
@@ -612,7 +622,7 @@ assocDecls alist =
     where
       keys = [ key | L _ (S _ head : (S _ key : _)) <- alist, head=="decl" ]
 
-loadInst :: (Algebra t p g s e c, Monad m) => Pos ->
+loadInst :: (Algebra t p g s e c, MonadFail m) => Pos ->
             Prot t g -> [t] -> g -> String -> Int ->
             [SExpr Pos] -> m (g, Instance t e)
 loadInst pos p kvars gen role height env =
@@ -626,7 +636,7 @@ loadInst pos p kvars gen role height env =
               (gen', env') <- foldM (loadMaplet kvars vars) (gen, emptyEnv) env
               return (mkInstance gen' r env' height)
 
-lookupRole :: Monad m => Pos -> Prot t g -> String -> m (Role t)
+lookupRole :: MonadFail m => Pos -> Prot t g -> String -> m (Role t)
 lookupRole _ p role  | role == "" =
     return $ listenerRole p
 lookupRole pos p role =
@@ -635,7 +645,7 @@ lookupRole pos p role =
           fail (shows pos $ "Role " ++ role ++ " not found in " ++ pname p)
       Just r -> return r
 
-loadMaplet :: (Algebra t p g s e c, Monad m) => [t] -> [t] ->
+loadMaplet :: (Algebra t p g s e c, MonadFail m) => [t] -> [t] ->
               (g, e) -> SExpr Pos -> m (g, e)
 loadMaplet kvars vars env (L pos [domain, range]) =
     do
@@ -646,14 +656,14 @@ loadMaplet kvars vars env (L pos [domain, range]) =
         [] -> fail (shows pos "Domain does not match range")
 loadMaplet _ _ _ x = fail (shows (annotation x) "Malformed maplet")
 
-loadListener :: (Algebra t p g s e c, Monad m) => Prot t g ->
+loadListener :: (Algebra t p g s e c, MonadFail m) => Prot t g ->
                 [t] -> g -> SExpr Pos -> m (g, Instance t e)
 loadListener p kvars gen x =
     do
       t <- loadTerm kvars False x
       return $ mkListener p gen t
 
-loadRest :: (Algebra t p g s e c, Monad m) => Pos -> [t] ->
+loadRest :: (Algebra t p g s e c, MonadFail m) => Pos -> [t] ->
             Prot t g -> [Goal t] -> g -> [Instance t e] ->
             [SExpr Pos] -> [SExpr Pos] -> SkelDeclList t ->
             [SExpr Pos] -> [SExpr ()] -> [((Int,Int),Int)] ->
@@ -682,7 +692,7 @@ loadRest pos vars p gs gen insts orderings leadsto decls
       where
         termsInDlist olist = concat $ map dterms (concatMap snd olist)
 
-loadGenSkelDecls :: (Algebra t p g s e c, Monad m) => [Int] -> [t] ->
+loadGenSkelDecls :: (Algebra t p g s e c, MonadFail m) => [Int] -> [t] ->
                     [(String,[SExpr Pos])] -> m [SkelDeclaration t]
 loadGenSkelDecls _ _ [] = return []
 loadGenSkelDecls heights vars ((name,rawds):b) =
@@ -691,7 +701,8 @@ loadGenSkelDecls heights vars ((name,rawds):b) =
       b' <- loadGenSkelDecls heights vars b
       return ((name,a'):b')
 
-loadGenSkelDeclList :: (Algebra t p g s e c, Monad m) => [Int] -> [t] -> [SExpr Pos] ->
+loadGenSkelDeclList :: (Algebra t p g s e c, MonadFail m) => [Int] ->
+                       [t] -> [SExpr Pos] ->
                        m (SkelDeclInstList t)
 loadGenSkelDeclList _ _ [] = return []
 loadGenSkelDeclList heights vars (a:b) =
@@ -700,7 +711,8 @@ loadGenSkelDeclList heights vars (a:b) =
       b' <- loadGenSkelDeclList heights vars b
       return (a':b')
 
-loadGenSkelDecl :: (Algebra t p g s e c, Monad m) => [Int] -> [t] -> String ->
+loadGenSkelDecl :: (Algebra t p g s e c, MonadFail m) => [Int] ->
+                   [t] -> String ->
                    SExpr Pos -> m (SkelDeclInst t)
 loadGenSkelDecl heights vars stag (L _ (tlist:llist)) =
     do
@@ -712,7 +724,7 @@ loadGenSkelDecl _ _ _ x'@(L _ []) =
 loadGenSkelDecl _ _ _ x =
     fail (shows (annotation x) "Malformed declaration: expecting a list")
 
-loadGenRoleDecls :: (Algebra t p g s e c, Monad m) => Int -> [t] ->
+loadGenRoleDecls :: (Algebra t p g s e c, MonadFail m) => Int -> [t] ->
                     [(String,[SExpr Pos])] -> m [RoleDeclaration t]
 loadGenRoleDecls _ _ [] = return []
 loadGenRoleDecls height vars ((name,rawds):b) =
@@ -721,7 +733,8 @@ loadGenRoleDecls height vars ((name,rawds):b) =
       b' <- loadGenRoleDecls height vars b
       return ((name,a'):b')
 
-loadGenRoleDeclList :: (Algebra t p g s e c, Monad m) => Int -> [t] -> [SExpr Pos] ->
+loadGenRoleDeclList :: (Algebra t p g s e c, MonadFail m) => Int ->
+                       [t] -> [SExpr Pos] ->
                        m (RoleDeclInstList t)
 loadGenRoleDeclList _ _ [] = return []
 loadGenRoleDeclList height vars (a:b) =
@@ -730,7 +743,7 @@ loadGenRoleDeclList height vars (a:b) =
       b' <- loadGenRoleDeclList height vars b
       return (a':b')
 
-loadGenRoleDecl :: (Algebra t p g s e c, Monad m) => Int -> [t] -> String ->
+loadGenRoleDecl :: (Algebra t p g s e c, MonadFail m) => Int -> [t] -> String ->
                    SExpr Pos -> m (RoleDeclInst t)
 loadGenRoleDecl height vars stag (L _ (tlist:llist)) =
     do
@@ -742,7 +755,7 @@ loadGenRoleDecl _ _ _ x'@(L _ []) =
 loadGenRoleDecl _ _ _ x =
     fail (shows (annotation x) "Malformed declaration: expecting a list")
 
-loadOrderings :: Monad m => [Int] -> [SExpr Pos] -> Bool -> m [Pair]
+loadOrderings :: MonadFail m => [Int] -> [SExpr Pos] -> Bool -> m [Pair]
 loadOrderings heights x strict =
     foldM f [] x
     where
@@ -751,7 +764,7 @@ loadOrderings heights x strict =
             np <- loadPair heights x strict
             return (adjoin np ns)
 
-loadPair :: Monad m => [Int] -> SExpr Pos -> Bool -> m Pair
+loadPair :: MonadFail m => [Int] -> SExpr Pos -> Bool -> m Pair
 loadPair heights (L pos [x0, x1]) strict =
     do
       n0 <- loadNode heights x0
@@ -761,7 +774,7 @@ loadPair heights (L pos [x0, x1]) strict =
         False -> return (n0, n1)
 loadPair _ x _ = fail (shows (annotation x) "Malformed pair")
 
-loadTerms :: (Algebra t p g s e c, Monad m) => [t] -> SExpr Pos -> m [t]
+loadTerms :: (Algebra t p g s e c, MonadFail m) => [t] -> SExpr Pos -> m [t]
 loadTerms _ (L _ []) = return []
 loadTerms vars (L pos (head:rest)) =
     do
@@ -770,7 +783,7 @@ loadTerms vars (L pos (head:rest)) =
       return (a:b)
 loadTerms _ x = fail (shows (annotation x) "Malformed list of terms")
 
-loadNodes :: Monad m => [Int] -> [SExpr Pos] -> m [Node]
+loadNodes :: MonadFail m => [Int] -> [SExpr Pos] -> m [Node]
 loadNodes _ [] = return []
 loadNodes heights (head:rest) =
     do
@@ -778,7 +791,7 @@ loadNodes heights (head:rest) =
       a <- loadNode heights head
       return (a:b)
 
-loadIntsMax :: Monad m => Int -> [SExpr Pos] -> m [Int]
+loadIntsMax :: MonadFail m => Int -> [SExpr Pos] -> m [Int]
 loadIntsMax _ [] = return []
 loadIntsMax max (a:b) =
     do
@@ -786,14 +799,14 @@ loadIntsMax max (a:b) =
       b <- loadIntsMax max b
       return (a:b)
 
-loadIntMax :: Monad m => Int -> SExpr Pos -> m Int
+loadIntMax :: MonadFail m => Int -> SExpr Pos -> m Int
 loadIntMax max (N pos x)
     | x < 0 = fail (shows pos "Malformed declaration: Negative position in role")
     | x >= max = fail (shows pos "Malformed declaration: Bad position in role")
     | otherwise = return x
 loadIntMax _ x = fail (shows (annotation x) "Malformed declaration: position")
 
-loadNode :: Monad m => [Int] -> SExpr Pos -> m Node
+loadNode :: MonadFail m => [Int] -> SExpr Pos -> m Node
 loadNode heights (L pos [N _ s, N _ p])
     | s < 0 = fail (shows pos "Malformed node: Negative strand in node")
     | p < 0 = fail (shows pos "Malformed node: Negative position in node")
@@ -809,7 +822,7 @@ loadNode heights (L pos [N _ s, N _ p])
           | otherwise = height xs (s - 1)
 loadNode _ x = fail (shows (annotation x) "Malformed node")
 
-loadFact :: (Algebra t p g s e c, Monad m) =>
+loadFact :: (Algebra t p g s e c, MonadFail m) =>
             [Int] -> [t] -> SExpr Pos -> m (Fact t)
 loadFact heights vars (L _ (S _ name : fs)) =
   do
@@ -818,7 +831,7 @@ loadFact heights vars (L _ (S _ name : fs)) =
 loadFact _ _ x =
   fail (shows (annotation x) "Malformed fact")
 
-loadFterm :: (Algebra t p g s e c, Monad m) =>
+loadFterm :: (Algebra t p g s e c, MonadFail m) =>
              [Int] -> [t] -> SExpr Pos -> m (FTerm t)
 loadFterm heights _ (N pos s)
   | 0 <= s && s < length heights = return $ FSid s
@@ -828,7 +841,7 @@ loadFterm _ vars x =
     t <- loadTerm vars False x
     return $ FTerm t
 
-loadPov :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadPov :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
            [SExpr Pos] -> m (Maybe (Preskel t g s e), [Sid])
 loadPov _ _ [] = return (Nothing, [])
 loadPov pos p [L _ xs, x] =
@@ -838,18 +851,18 @@ loadPov pos p [L _ xs, x] =
     return (Just k, prob)
 loadPov pos _ _ = fail (shows pos "Bad POV within a skeleton")
 
-loadInt :: Monad m => SExpr Pos -> m Int
+loadInt :: MonadFail m => SExpr Pos -> m Int
 loadInt (N _ n) = return n
 loadInt x = fail (shows (annotation x) "Expecting an integer")
 
-loadPovPreskel :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadPovPreskel :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                   SExpr Pos -> m (Preskel t g s e)
 loadPovPreskel _ p (L pos (S _ "defskeleton" : S _ name : xs))
   | pname p == name = loadPreskel pos p xs
   | otherwise = fail (shows pos $ "Protocol " ++ name ++ " mismatch")
 loadPovPreskel pos _ _ = fail (shows pos "Malformed defskeleton")
 
-checkProb :: Monad m => Pos -> Int -> [Sid] -> m ()
+checkProb :: MonadFail m => Pos -> Int -> [Sid] -> m ()
 checkProb pos nstrands prob =
   mapM_ f prob
   where
@@ -859,7 +872,7 @@ checkProb pos nstrands prob =
 -- Security Goals
 
 -- Load a defgoal form
-findGoal :: (Algebra t p g s e c, Monad m) => Pos ->
+findGoal :: (Algebra t p g s e c, MonadFail m) => Pos ->
             [Prot t g] -> [SExpr Pos] -> m (Preskel t g s e)
 findGoal pos ps (S _ name : x : xs) =
     case L.find (\p -> name == pname p) ps of
@@ -889,7 +902,7 @@ findAlist xs = ([], xs)
 
 --- Load a sequence of security goals
 
-loadGoals :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadGoals :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
              g -> [SExpr Pos] -> m (g, [Goal t])
 loadGoals _ _ g [] = return (g, [])
 loadGoals pos prot g (x : xs) =
@@ -905,7 +918,7 @@ data Mode
 -- Load a single security goal, a universally quantified formula
 -- Returns the goal and the antecedent with position information.
 
-loadSentence :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+loadSentence :: (Algebra t p g s e c, MonadFail m) => Mode -> Pos ->
                 Prot t g -> g -> SExpr Pos -> m (g, Goal t, Conj t)
 loadSentence md _ prot g (L pos [S _ "forall", L _ vs, x]) =
   do
@@ -915,7 +928,8 @@ loadSentence _ pos _ _ _ = fail (shows pos "Malformed goal sentence")
 
 -- Load the top-level implication of a security goal
 
-loadImplication :: (Algebra t p g s e c, Monad m) => Mode -> Pos -> Prot t g ->
+loadImplication :: (Algebra t p g s e c, MonadFail m) => Mode ->
+                   Pos -> Prot t g ->
                    g -> [t] -> SExpr Pos -> m (g, Goal t, Conj t)
 loadImplication md _ prot g vars (L pos [S _ "implies", a, c]) =
   do
@@ -934,7 +948,7 @@ loadImplication _ pos _ _ _ _ = fail (shows pos "Malformed goal implication")
 -- The conclusion must be a disjunction.  Each disjunct may introduce
 -- existentially quantified variables.
 
-loadConclusion :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadConclusion :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                   g -> [t] -> SExpr Pos -> m (g, [([t], Conj t)])
 loadConclusion _ _ g _ (L _ [S _ "false"]) = return (g, [])
 loadConclusion _ prot g vars (L pos (S _ "or" : xs)) =
@@ -944,7 +958,7 @@ loadConclusion pos prot g vars x =
     (g, a) <- loadExistential pos prot g vars x
     return (g, [a])
 
-loadDisjuncts :: (Algebra t p g s e c, Monad m) => Pos ->
+loadDisjuncts :: (Algebra t p g s e c, MonadFail m) => Pos ->
                  Prot t g -> g -> [t] -> [SExpr Pos] ->
                  [([t], Conj t)] -> m (g, [([t], Conj t)])
 loadDisjuncts _ _ g _ [] rest = return (g, reverse rest)
@@ -953,7 +967,7 @@ loadDisjuncts pos prot g vars (x : xs) rest =
     (g, a) <- loadExistential pos prot g vars x
     loadDisjuncts pos prot g vars xs (a : rest)
 
-loadExistential :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadExistential :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                    g -> [t] -> SExpr Pos -> m (g, ([t], Conj t))
 loadExistential _ prot g vars (L pos [S _ "exists", L _ vs, x]) =
   do
@@ -968,7 +982,7 @@ loadExistential pos prot g vars x =
 -- Load a conjunction and check the result as determined by the mode
 -- md.
 
-loadCheckedConj :: (Algebra t p g s e c, Monad m) => Mode -> Pos ->
+loadCheckedConj :: (Algebra t p g s e c, MonadFail m) => Mode -> Pos ->
                    Prot t g -> [t] -> [t] -> SExpr Pos -> m (Conj t)
 loadCheckedConj RoleSpec pos prot vars unbound x =
   loadRoleSpecific pos prot vars unbound x
@@ -978,7 +992,7 @@ loadCheckedConj UnusedVars pos prot vars unbound x =
 --- Load a conjunction of atomic formulas and ensure the formula is
 --- role specific.
 
-loadRoleSpecific :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadRoleSpecific :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                     [t] -> [t] -> SExpr Pos -> m (Conj t)
 loadRoleSpecific pos prot vars unbound x =
   do
@@ -996,7 +1010,7 @@ loadRoleSpecific pos prot vars unbound x =
 -- Load a conjuction of atomic formulas and ensure that all declared
 -- variables are used.
 
-loadUsedVars :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadUsedVars :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                 [t] -> [t] -> SExpr Pos -> m (Conj t)
 loadUsedVars pos prot vars unbound x =
   do
@@ -1009,7 +1023,7 @@ loadUsedVars pos prot vars unbound x =
 
 -- Load a conjunction of atomic formulas
 
-loadConjunction :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadConjunction :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                    [t] -> SExpr Pos -> m (Conj t)
 loadConjunction _ p kvars (L pos (S _ "and" : xs)) =
   loadConjuncts pos p kvars xs []
@@ -1018,7 +1032,7 @@ loadConjunction top p kvars x =
     (pos, a) <- loadPrimary top p kvars x
     return [(pos, a)]
 
-loadConjuncts :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadConjuncts :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                  [t] -> [SExpr Pos] -> Conj t -> m (Conj t)
 loadConjuncts _ _ _ [] rest = return (reverse rest)
 loadConjuncts top p kvars (x : xs) rest =
@@ -1028,7 +1042,7 @@ loadConjuncts top p kvars (x : xs) rest =
 
 -- Load the atomic formulas
 
-loadPrimary :: (Algebra t p g s e c, Monad m) => Pos -> Prot t g ->
+loadPrimary :: (Algebra t p g s e c, MonadFail m) => Pos -> Prot t g ->
                [t] -> SExpr Pos -> m (Pos, AForm t)
 loadPrimary _ _ kvars (L pos [S _ "=", x, y]) =
   do
@@ -1105,7 +1119,7 @@ loadPrimary pos _ _ _ = fail (shows pos "Bad formula")
 
 -- Load a term and make sure it has sort strd
 
-loadStrdTerm :: (Algebra t p g s e c, Monad m) =>
+loadStrdTerm :: (Algebra t p g s e c, MonadFail  m) =>
                 [t] -> SExpr Pos -> m t
 loadStrdTerm ts x =
   do
@@ -1116,7 +1130,7 @@ loadStrdTerm ts x =
 
 -- Load a term and make sure it describes a node
 
-loadNodeTerm :: (Algebra t p g s e c, Monad m) =>
+loadNodeTerm :: (Algebra t p g s e c, MonadFail m) =>
                 [t] -> SExpr Pos -> SExpr Pos -> m (NodeTerm t)
 loadNodeTerm ts x (N _ i) | i >= 0 =
   do
@@ -1127,7 +1141,7 @@ loadNodeTerm _ _ y =
 
 -- Load a term and make sure it does not have sort node
 
-loadAlgTerm :: (Algebra t p g s e c, Monad m) => [t] -> SExpr Pos -> m t
+loadAlgTerm :: (Algebra t p g s e c, MonadFail m) => [t] -> SExpr Pos -> m t
 loadAlgTerm _ x@(L _ [N _ _, N _ _]) =
   fail (shows (annotation x) "Expecting an algebra term")
 loadAlgTerm ts x =
@@ -1148,7 +1162,7 @@ allBound unbound t =
 
 -- Returns variables in unbound that are not role specific
 
-roleSpecific :: (Algebra t p g s e c, Monad m) =>
+roleSpecific :: (Algebra t p g s e c, MonadFail m) =>
                 [t] -> (Pos, AForm t) -> m [t]
 roleSpecific unbound (_, Length _ z _) =
   return $ L.delete z unbound

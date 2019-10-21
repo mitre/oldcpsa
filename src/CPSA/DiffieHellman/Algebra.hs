@@ -98,6 +98,10 @@
 
 {-# LANGUAGE MultiParamTypeClasses, CPP #-}
 
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 -- Fail on non-canonical terms with this is defined
 -- #define CANONICAL
 
@@ -2416,20 +2420,20 @@ instance C.Env Term Gen Subst Env where
 
 -- Term specific loading functions
 
-loadVars :: Monad m => Gen -> [SExpr Pos] -> m (Gen, [Term])
+loadVars :: MonadFail m => Gen -> [SExpr Pos] -> m (Gen, [Term])
 loadVars gen sexprs =
     do
       pairs <- mapM loadVarPair sexprs
       (g, vars) <- foldM loadVar (gen, []) (concat pairs)
       return (g, reverse vars)
 
-loadVarPair :: Monad m => SExpr Pos -> m [(SExpr Pos, SExpr Pos)]
+loadVarPair :: MonadFail m => SExpr Pos -> m [(SExpr Pos, SExpr Pos)]
 loadVarPair (L _ (x:y:xs)) =
     let (t:vs) = reverse (x:y:xs) in
     return [(v,t) | v <- reverse vs]
 loadVarPair x = fail (shows (annotation x) "Malformed vars declaration")
 
-loadVar :: Monad m => (Gen, [Term]) -> (SExpr Pos, SExpr Pos) ->
+loadVar :: MonadFail m => (Gen, [Term]) -> (SExpr Pos, SExpr Pos) ->
            m (Gen, [Term])
 loadVar (gen, vars) (S pos name, S pos' sort) =
     case loadLookup pos vars name of
@@ -2442,7 +2446,7 @@ loadVar (gen, vars) (S pos name, S pos' sort) =
             return (gen', p : vars)
 loadVar _ (x,_) = fail (shows (annotation x) "Bad variable syntax")
 
-mkVar :: Monad m => Pos -> String -> Id -> m Term
+mkVar :: MonadFail m => Pos -> String -> Id -> m Term
 mkVar pos sort x
   | sort == "mesg" = return $ I x
   | sort == "text" = return $ F Text [I x]
@@ -2467,14 +2471,14 @@ loadLookup pos (t : u) name =
     let name' = idName (varId t) in
     if name' == name then Right t else loadLookup pos u name
 
-loadLookupName :: Monad m => Pos -> [Term] -> String -> m Term
+loadLookupName :: MonadFail m => Pos -> [Term] -> String -> m Term
 loadLookupName pos vars name =
     either fail f (loadLookup pos vars name)
     where
       f t@(F Name [I _]) = return t
       f _ = fail (shows pos $ "Expecting " ++ name ++ " to be a name")
 
-loadLookupAkey :: Monad m => Pos -> [Term] -> String -> m Term
+loadLookupAkey :: MonadFail m => Pos -> [Term] -> String -> m Term
 loadLookupAkey pos vars name =
     either fail f (loadLookup pos vars name)
     where
@@ -2482,7 +2486,7 @@ loadLookupAkey pos vars name =
       f _ = fail (shows pos $ "Expecting " ++ name ++ " to be an akey")
 
 -- Load term and check that it is well-formed.
-loadTerm :: Monad m => [Term] -> Bool -> SExpr Pos -> m Term
+loadTerm :: MonadFail m => [Term] -> Bool -> SExpr Pos -> m Term
 loadTerm vars _ (S pos s) =
     either fail return (loadLookup pos vars s)
 loadTerm _ _ (Q _ t) =
@@ -2495,7 +2499,7 @@ loadTerm _ _ x = fail (shows (annotation x) "Malformed term")
 
 type LoadFunction m = Pos -> Bool -> [Term] -> [SExpr Pos] -> m Term
 
-loadDispatch :: Monad m => [(String, LoadFunction m)]
+loadDispatch :: MonadFail m => [(String, LoadFunction m)]
 loadDispatch =
     [("pubk", loadPubk)
     ,("privk", loadPrivk)
@@ -2514,7 +2518,7 @@ loadDispatch =
 
 -- Atom constructors: pubk privk invk ltk
 
-loadPubk :: Monad m => LoadFunction m
+loadPubk :: MonadFail m => LoadFunction m
 loadPubk _ _ vars [S pos s] =
     do
       t <- loadLookupName pos vars s
@@ -2525,7 +2529,7 @@ loadPubk _ _ vars [Q _ c, S pos s] =
       return $ F Akey [F Pubk [C c, I $ varId t]]
 loadPubk pos _ _ _ = fail (shows pos "Malformed pubk")
 
-loadPrivk :: Monad m => LoadFunction m
+loadPrivk :: MonadFail m => LoadFunction m
 loadPrivk _ _ vars [S pos s] =
     do
       t <- loadLookupName pos vars s
@@ -2536,7 +2540,7 @@ loadPrivk _ _ vars [Q _ c, S pos s] =
       return $ F Akey [F Invk [F Pubk [C c, I $ varId t]]]
 loadPrivk pos _ _ _ = fail (shows pos "Malformed privk")
 
-loadInvk :: Monad m => LoadFunction m
+loadInvk :: MonadFail m => LoadFunction m
 loadInvk _ _ vars [S pos s] =
     do
       t <- loadLookupAkey pos vars s
@@ -2553,7 +2557,7 @@ loadInvk _ _ vars [L _ [S _ pubk, Q _ c, S pos s]]
       return $ F Akey [F Invk [F Pubk [C c, I $ varId t]]]
 loadInvk pos _ _ _ = fail (shows pos "Malformed invk")
 
-loadLtk :: Monad m => LoadFunction m
+loadLtk :: MonadFail m => LoadFunction m
 loadLtk _ _ vars [S pos s, S pos' s'] =
     do
       t <- loadLookupName pos vars s
@@ -2561,7 +2565,7 @@ loadLtk _ _ vars [S pos s, S pos' s'] =
       return $ F Skey [F Ltk [I $ varId t, I $ varId t']]
 loadLtk pos _ _ _ = fail (shows pos "Malformed ltk")
 
-loadBltk :: Monad m => LoadFunction m
+loadBltk :: MonadFail m => LoadFunction m
 loadBltk _ _ vars [S pos s, S pos' s'] =
     do
       t <- loadLookupName pos vars s
@@ -2571,12 +2575,12 @@ loadBltk pos _ _ _ = fail (shows pos "Malformed bltk")
 
 -- Base and exponents
 
-loadGen :: Monad m => LoadFunction m
+loadGen :: MonadFail m => LoadFunction m
 loadGen _ _ _ [] =
     return $ F Base [F Genr []]
 loadGen pos _ _ _ = fail (shows pos "Malformed gen")
 
-loadExp :: Monad m => LoadFunction m
+loadExp :: MonadFail m => LoadFunction m
 loadExp _ _ vars [x, x'] =
     do
       t <- loadBase vars x
@@ -2584,7 +2588,7 @@ loadExp _ _ vars [x, x'] =
       return $ F Base [idSubst emptyIdMap $ F Exp [t, G t']]
 loadExp pos _ _ _ = fail (shows pos "Malformed exp")
 
-loadBase :: Monad m => [Term] -> SExpr Pos -> m Term
+loadBase :: MonadFail m => [Term] -> SExpr Pos -> m Term
 loadBase vars x =
     do
       t <- loadTerm vars False x
@@ -2592,7 +2596,7 @@ loadBase vars x =
         F Base [t] -> return t
         _ -> fail (shows (annotation x) "Malformed base")
 
-loadExpr :: Monad m => [Term] -> Bool -> SExpr Pos -> m Group
+loadExpr :: MonadFail m => [Term] -> Bool -> SExpr Pos -> m Group
 loadExpr vars False x =
     do
       t <- loadTerm vars False x
@@ -2604,13 +2608,13 @@ loadExpr vars True x = loadExpr vars False x
 --    do
 --      fail (shows (annotation x) "Disallowed bare exponent")
 
-loadOne :: Monad m => LoadFunction m
+loadOne :: MonadFail m => LoadFunction m
 loadOne _ False _ [] =
     return $ G M.empty
 loadOne pos True _ _ = fail (shows pos "Disallowed bare exponent")
 loadOne pos _ _ _ = fail (shows pos "Malformed one")
 
-loadRec :: Monad m => LoadFunction m
+loadRec :: MonadFail m => LoadFunction m
 loadRec _ False vars [x] =
     do
       t <- loadExpr vars False x
@@ -2618,7 +2622,7 @@ loadRec _ False vars [x] =
 loadRec pos True _ _ = fail (shows pos "Disallowed bare exponent")
 loadRec pos _ _ _ = fail (shows pos "Malformed rec")
 
-loadMul :: Monad m => LoadFunction m
+loadMul :: MonadFail m => LoadFunction m
 loadMul _ False vars xs =
     do
       t <- foldM f M.empty xs
@@ -2632,14 +2636,14 @@ loadMul pos True _ _ = fail (shows pos "Disallowed bare exponent")
 
 -- Term constructors: cat enc
 
-loadCat :: Monad m => LoadFunction m
+loadCat :: MonadFail m => LoadFunction m
 loadCat _ strict vars (l : ls) =
     do
       ts <- mapM (loadTerm vars strict) (l : ls)
       return $ foldr1 (\a b -> F Cat [a, b]) ts
 loadCat pos _ _ _ = fail (shows pos "Malformed cat")
 
-loadEnc :: Monad m => LoadFunction m
+loadEnc :: MonadFail m => LoadFunction m
 loadEnc pos strict vars (l : l' : ls) =
     do
       let (butLast, last) = splitLast l (l' : ls)
@@ -2655,7 +2659,7 @@ splitLast x xs =
       loop z x [] = (reverse z, x)
       loop z x (y : ys) = loop (x : z) y ys
 
-loadHash :: Monad m => LoadFunction m
+loadHash :: MonadFail m => LoadFunction m
 loadHash _ strict vars (l : ls) =
    do
      ts <- mapM (loadTerm vars strict) (l : ls)

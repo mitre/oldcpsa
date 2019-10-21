@@ -1,6 +1,6 @@
 (herald "Kerberos PKINIT")
 
-(comment "CPSA 3.6.3")
+(comment "CPSA 3.6.4")
 (comment "All input read from pkinit.scm")
 
 (defprotocol pkinit-flawed basic

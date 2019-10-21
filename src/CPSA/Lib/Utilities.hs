@@ -7,6 +7,8 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
 module CPSA.Lib.Utilities where
 
 import qualified Data.Set as S
@@ -30,7 +32,13 @@ instance Applicative ReturnFail where
 instance Monad ReturnFail where
     Fail l >>= _   = Fail l
     Return r >>= k = k r
-    fail s = Fail s             -- This must be moved to MonadFail
+
+#if (MIN_VERSION_base(4,13,0))
+instance MonadFail ReturnFail where
+#else
+#define MonadFail Monad
+#endif
+    fail s         = Fail s
 
 adjoin :: Eq a => a -> [a] -> [a]
 adjoin x xs
@@ -62,7 +70,7 @@ nats :: Int -> [Int]
 nats n = [0..(n - 1)]
 
 {-# INLINE assert #-}
-assert :: Monad m => (a -> Bool) -> a -> m a
+assert :: MonadFail m => (a -> Bool) -> a -> m a
 assert pred x
     | pred x = return x
     | otherwise = fail "assertion failed"
@@ -114,7 +122,7 @@ backEdge alist (node, node') =
       (Just n, Just n') -> n >= n'
       _ -> True
 
-failwith :: Monad m => String -> Bool -> m ()
+failwith :: MonadFail m => String -> Bool -> m ()
 failwith msg test =
     case test of
       True -> return ()

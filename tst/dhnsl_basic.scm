@@ -9,7 +9,7 @@
      (recv (enc (exp (gen) x) a (pubk b)))
      (send (enc (exp (gen) x) (exp (gen) y) b (pubk a)))
      (recv (enc (exp (gen) y) (pubk b)))
-     
+
      )
     (absent (y (exp (gen) x)))
 ;    (uniq-gen y)

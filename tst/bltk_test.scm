@@ -71,5 +71,3 @@
   (vars (a b name))
   (defstrand recvr 2 (a a) (b b))
   (non-orig (bltk a b)))
-
-

@@ -6,6 +6,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Lib.Strand (Instance, mkInstance, bldInstance, mkListener,
     role, env, trace, height, listenerTerm, Sid, Node, mkPreskel,
     firstSkeleton, Pair, Preskel, gen, protocol, kgoals, insts,
@@ -1250,7 +1256,7 @@ thinManyStrands :: Algebra t p g s e c => PRS t p g s e c ->
 thinManyStrands prs ps =
   [ prs' | prs' <- compressMany prs ps,
            prs'' <- compressMany prs (swap ps),
-           isomorphic (gist (skel prs')) (gist (skel prs''))]
+           probIsomorphic (skel prs') (skel prs'')]
 
 compressMany :: Algebra t p g s e c => PRS t p g s e c ->
                 [(Sid, Sid)] -> [PRS t p g s e c]
@@ -2136,7 +2142,7 @@ preskelWellFormed k =
                             (filter (\(t, _) -> not (isNum t)) (kugen k)))
 
 -- Do notation friendly preskeleton well formed check.
-wellFormedPreskel :: (Monad m, Algebra t p g s e c) =>
+wellFormedPreskel :: (MonadFail m, Algebra t p g s e c) =>
                      Preskel t g s e -> m (Preskel t g s e)
 wellFormedPreskel k
     | preskelWellFormed k = return k
@@ -2145,7 +2151,7 @@ wellFormedPreskel k
 -- Exported
 -- A version of preskelWellFormed that explains why a preskeleton is
 -- not well formed.
-verbosePreskelWellFormed :: (Monad m, Algebra t p g s e c) =>
+verbosePreskelWellFormed :: (MonadFail m, Algebra t p g s e c) =>
                             Preskel t g s e -> m ()
 verbosePreskelWellFormed k =
     do
@@ -2189,14 +2195,14 @@ verbosePreskelWellFormed k =
           (null ts)
 
 -- Do notation friendly preskeleton well formed check.
-reducedWellFormed :: Monad m => Preskel t g s e -> m ()
+reducedWellFormed :: MonadFail m => Preskel t g s e -> m ()
 reducedWellFormed k
   | reducedWellOrdered k = return ()
   | otherwise = fail "reduced preskeleton not well formed"
 
 -- A transition or an observer node should have at most one transition
 -- node immediately after it.
-noStateSplit :: Monad m => Preskel t g s e -> m ()
+noStateSplit :: MonadFail m => Preskel t g s e -> m ()
 noStateSplit k
   | loop (leadsto k) S.empty = return ()
   | otherwise = fail "reduced preskeleton has a state split"

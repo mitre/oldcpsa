@@ -1,6 +1,6 @@
 (herald dhca (algebra diffie-hellman))
 
-(comment "CPSA 3.6.3")
+(comment "CPSA 3.6.4")
 (comment "All input read from dh-ca.scm")
 
 (defprotocol dhca diffie-hellman

@@ -8,6 +8,12 @@
 
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Lib.Algebra where
 
 import Data.Set (Set)
@@ -90,7 +96,7 @@ class (Ord t, Show t) => Term t where
     escapeSet :: Set t -> Set t -> t -> Maybe (Set t)
 
     -- Given a list of variables, load a term from an S-expression.
-    loadTerm :: Monad m => [t] -> Bool -> SExpr Pos -> m t
+    loadTerm :: MonadFail m => [t] -> Bool -> SExpr Pos -> m t
 
     -- Determines if an element is "numeric", meaning that it is
     -- part of a numeric sort.
@@ -162,7 +168,7 @@ class (Term t, Show g) => Gen t g | t -> g, g -> t where
     -- Given a generator, load a list of variables or return an error
     -- message.  Each element of the list is an identifier and a sort.
     -- The varibles are returned in the reverse order.
-    loadVars :: Monad m => g -> [SExpr Pos] -> m (g, [t])
+    loadVars :: MonadFail m => g -> [SExpr Pos] -> m (g, [t])
 
     -- For DH
 

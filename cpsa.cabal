@@ -1,10 +1,10 @@
-Name:			cpsa
-Version:		3.6.3
-Maintainer:		mliskov@mitre.org
-Cabal-Version:		>= 1.6
-License:		BSD3
-License-File:		license.txt
-Synopsis:		Symbolic cryptographic protocol analyzer
+Name:                   cpsa
+Version:                3.6.4
+Maintainer:             mliskov@mitre.org
+Cabal-Version:          >= 1.6
+License:                BSD3
+License-File:           license.txt
+Synopsis:               Symbolic cryptographic protocol analyzer
 Description:
   The Cryptographic Protocol Shapes Analyzer (CPSA) attempts to
   enumerate all essentially different executions possibe for a
@@ -46,8 +46,8 @@ Description:
   F. Doghmi, F. Javier Thayer, Paul D. Rowe, and Moses D. Liskov.
   John D. Ramsdell and Moses D. Liskov implemented the algorithm in
   Haskell.  CPSA was designed and implemented at The MITRE Corporation.
-Category:		Cryptography
-Build-Type:		Simple
+Category:               Cryptography
+Build-Type:             Simple
 Data-Files:
   Make.hs cpsa.mk cpsamanual.pdf examples/blanchet.scm
   examples/blanchet.xhtml examples/bltk_or.scm examples/bltk_or.xhtml
@@ -73,7 +73,7 @@ Data-Files:
   examples/fluffy_draft03_pske.scm examples/eq_test.scm
   init/Makefile init/template.lisp
   examples/eq_test.xhtml
-Data-Dir:	    	doc
+Data-Dir:               doc
 Extra-Source-Files:
   Makefile ChangeLog README.txt NEWS ghci cpsatst setup.bat
   src/cpsa.el src/cpsaops.scm src/cpsa.pl src/pp.pl
@@ -112,17 +112,22 @@ Extra-Source-Files:
   tst/wrap_decrypt.tst tst/yahalom.scm tst/yahalom.tst
   tst/aik.scm tst/aik.tst tst/reflect.scm tst/reflect.tst
   tst/station.scm tst/station.tst tst/kerb.scm tst/kerb.tst
+  tst/attest.scm tst/attest.tst tst/comp_test.scm tst/comp_test.tst
+  tst/fluffy_draft03_gske.scm tst/fluffy_draft03_gske.tst
+  tst/ordered.scm tst/ordered.tst tst/prottrans.scm tst/prottrans.tst
+  tst/role_uniq.scm tst/role_uniq.tst tst/rule-order.scm
+  tst/rule-order.tst tst/trust-anchor.scm tst/trust-anchor.tst
   
 Source-Repository head
   Type:     git
   Location: git://github.com/mitre/cpsa.git
 
 Executable cpsa
-  Main-Is:		CPSA/Lib/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers, parallel
+  Main-Is:              CPSA/Lib/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers, parallel
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports -threaded -rtsopts
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities
     CPSA.Lib.Pretty CPSA.Lib.SExpr CPSA.Lib.Printer CPSA.Lib.Entry
@@ -133,11 +138,11 @@ Executable cpsa
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra CPSA.Lib.Declaration
 
 Executable cpsagraph
-  Main-Is:		CPSA/Graph/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Graph/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Notation CPSA.Lib.Entry CPSA.Lib.Algebra
@@ -147,22 +152,22 @@ Executable cpsagraph
     CPSA.Graph.ExpandedView CPSA.Graph.LaTeXView CPSA.Basic.Algebra
 
 Executable cpsashapes
-  Main-Is:		CPSA/Shapes/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Shapes/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Shapes.Shapes CPSA.Basic.Algebra
 
 Executable cpsaannotations
-  Main-Is:		CPSA/Annotations/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Annotations/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
@@ -170,76 +175,76 @@ Executable cpsaannotations
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
     
 Executable cpsadiff
-  Main-Is:		CPSA/Diff/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Diff/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Basic.Algebra
 
 Executable cpsasas
-  Main-Is:		CPSA/SAS/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/SAS/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.SAS.SAS
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
 
 Executable cpsapp
-  Main-Is:		CPSA/Pretty/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Pretty/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Basic.Algebra
 
 Executable cpsajson
-  Main-Is:		CPSA/JSON/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/JSON/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Basic.Algebra
 
 Executable cpsadebase
-  Main-Is:		CPSA/Debase/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Debase/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Basic.Algebra
 
 Executable cpsamatch
-  Main-Is:		CPSA/Match/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Main-Is:              CPSA/Match/Main.hs
+  Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.Match.Match
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
 
 Executable cpsainit
-  Main-Is:		CPSA/Init/Main.hs
-  Build-Depends:	base, directory
+  Main-Is:              CPSA/Init/Main.hs
+  Build-Depends:        base, directory
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
-  Hs-Source-Dirs:	src
+  Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa

@@ -6,6 +6,12 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Lib.Expand (expand, readSExprs) where
 
 import Control.Monad
@@ -82,7 +88,7 @@ data Macro = Macro
       args :: [String],
       body :: SExpr Pos }
 
-defmacro :: Monad m => Pos -> [SExpr Pos] -> m Macro
+defmacro :: MonadFail m => Pos -> [SExpr Pos] -> m Macro
 defmacro _ [L _ (name : args), body] =
     do
       name <- symbol name
@@ -92,13 +98,13 @@ defmacro _ [L _ (name : args), body] =
                        body = body}
 defmacro pos _ = fail (shows pos "Malformed macro")
 
-symbol :: Monad m => SExpr Pos -> m String
+symbol :: MonadFail m => SExpr Pos -> m String
 symbol (S _ string) = return string
 symbol x = fail (shows (annotation x) "Malformed macro: Expecting a symbol")
 
 -- Expand an S-expression using a given set of macros
 
-expandAll :: Monad m => [Macro] -> SExpr Pos -> m (SExpr Pos)
+expandAll :: MonadFail m => [Macro] -> SExpr Pos -> m (SExpr Pos)
 expandAll macs sexpr =
     do
       sexpr <- macroExpand macs (annotation sexpr) limit sexpr
@@ -111,7 +117,7 @@ expandAll macs sexpr =
 
 -- Expand one S-expression limiting the number of expansions.
 
-macroExpand :: Monad m => [Macro] -> Pos ->  Int ->
+macroExpand :: MonadFail m => [Macro] -> Pos ->  Int ->
                SExpr Pos -> m (SExpr Pos)
 macroExpand _ pos limit _
     | limit <= 0 = fail (shows pos "Expansion limit exceeded")

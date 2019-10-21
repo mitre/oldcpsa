@@ -1,5 +1,14 @@
 CPSA NEWS
 
+  October 2019:
+
+* Release 3.6.4 adds support for the latest version of the GHC
+  compiler.  As of version 8.8, the Monad type class no longer
+  contains the fail method, and that method is now provided by the
+  MonadFail type class.  This version of CPSA makes use of the C
+  preprocessor to handle this incompatible change.  The release also
+  fixes a bug in thinning.
+
   August 2019:
 
 * Release 3.6.3 adds the cpsainit program and fixes bugs.  The

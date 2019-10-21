@@ -6,12 +6,19 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
+{-# LANGUAGE CPP #-}
+
+#if !(MIN_VERSION_base(4,13,0))
+#define MonadFail Monad
+#endif
+
 module CPSA.Annotations.Formulas (Formula, truth, true, says, implies,
     freeVars, finstantiate, mapAccumLM, loadDecls, loadFormula,
     displayFormula) where
 
 import Control.Monad
 import qualified Data.Set as S
+import CPSA.Lib.Utilities
 import CPSA.Lib.SExpr
 import CPSA.Lib.Algebra
 
@@ -136,7 +143,7 @@ keywords = ["forall", "exists", "says", "not",
 -- the loading process so that every bound variable is quantified
 -- once, and no free variable is bound within a formula.  Use
 -- loadDecls to ensure vars are not keywords.
-loadFormula :: (Algebra t p g s e c, Monad m) => [t] -> g ->
+loadFormula :: (Algebra t p g s e c, MonadFail m) => [t] -> g ->
                SExpr Pos -> m (g, Formula t)
 loadFormula vars gen (L _ (S _ pred : xs)) -- Atomic formula
     | notElem pred keywords =
@@ -175,77 +182,33 @@ loadFormula vars gen (L _ [S _ "exists", L _ xs, x]) = -- Existential
 loadFormula _ _ x =
     fail (shows (annotation x) "Malformed formula")
 
-data EitherS a
-    = RightS a
-    | LeftS String
-
-instance Functor (EitherS) where
-    fmap _ (LeftS x) = LeftS x
-    fmap f (RightS y) = RightS (f y)
-
-instance Applicative (EitherS) where
-    pure          = RightS
-    LeftS e <*> _ = LeftS e
-    RightS f <*> r = fmap f r
-
-instance Monad EitherS where
-    return = RightS
-    LeftS l >>= _ = LeftS l
-    RightS r >>= k = k r
-    fail s = LeftS s
-
-{- Monad laws
-
-1. return a >>= k          <==> k a
-
-RightS r >>= k ==> k r
-
-2. m >>= return            <==> m
-
-  Cases on m
-  a. m is RightS r
-     RightS r >>= RightS ==> RightS r ==> m
-  b. m is LeftS l
-     LeftS l >>= RightS ==> LeftS l ==> m
-
-3. m >>= (\x -> k x >>= h) <===> (m >>= k) >>= h
-
-  Cases on m
-  a. m is RightS r
-     1. RightS r >>= (\x -> k x >>= h) ==> k r >>= h
-     2. (RightS r >> k) >>= h ==> k r >>= h
-  b. m is LeftS l ==>
-     1. LeftS l >>= (\x -> k x >>= h) ==> LeftS l
-     2. (LeftS l >>= k) >>= h ==> LeftS l >>= h ==> LeftS l
--}
-
-loadFTerms :: (Algebra t p g s e c, Monad m) => [t] ->
+loadFTerms :: (Algebra t p g s e c, MonadFail m) => [t] ->
               [SExpr Pos] -> m [FTerm t]
 loadFTerms vars xs =
     foldM f [] (reverse xs)
     where
       f acc x =
           case loadFTerm vars x of
-            RightS t -> return (t : acc)
-            LeftS msg -> fail msg
+            Return t -> return (t : acc)
+            Fail msg -> fail msg
 
 -- Load a formula term
 loadFTerm :: Algebra t p g s e c => [t] -> SExpr Pos ->
-             EitherS (FTerm t)
+             ReturnFail (FTerm t)
 loadFTerm vars x =
     case loadTerm vars False x of
-      RightS t -> return (AlgTerm t)
-      LeftS msg ->              -- If x is not an algebra term
+      Return t -> return (AlgTerm t)
+      Fail msg ->               -- If x is not an algebra term
           case x of             -- see if it's an application
             L _ (S pos fun : xs)
                 | elem fun keywords ->
-                    LeftS (shows pos $
+                    Fail (shows pos $
                            "Keyword " ++ fun ++ " used as a function")
                 | otherwise ->
                  case mapM (loadFTerm vars) xs of
-                   RightS ts -> RightS (Application fun ts)
-                   LeftS _ -> LeftS msg
-            _ -> LeftS msg
+                   Return ts -> Return (Application fun ts)
+                   Fail _ -> Fail msg
+            _ -> Fail msg
 
 -- A monad version of map accumulation from the left
 mapAccumLM :: Monad m => (a -> b -> m (a, c)) -> a -> [b] -> m (a, [c])
@@ -260,7 +223,7 @@ mapAccumLM f z (x : xs) =
 -- Load a quantified formula.  Note that loadVars returns variables in
 -- reverse order, so list append is the correct way to extend the list
 -- of variables that are in scope.
-loadQuantified :: (Algebra t p g s e c, Monad m) =>
+loadQuantified :: (Algebra t p g s e c, MonadFail m) =>
                   ([t] -> Formula t -> Formula t) ->
                   [t] -> g -> [SExpr Pos] -> SExpr Pos ->
                   m (g, Formula t)
@@ -270,7 +233,7 @@ loadQuantified build vars gen decls body =
       (gen'', f) <- loadFormula (vars' ++ vars) gen' body
       return (gen'', build (reverse vars') f)
 
-loadDecls :: (Algebra t p g s e c, Monad m) => g ->
+loadDecls :: (Algebra t p g s e c, MonadFail m) => g ->
              [SExpr Pos] -> m (g, [t])
 loadDecls gen decls =
     do
@@ -278,7 +241,7 @@ loadDecls gen decls =
       loadVars gen decls
 
 -- Fail if a variable is used as a keyword
-checkDecl :: Monad m => SExpr Pos -> m ()
+checkDecl :: MonadFail m => SExpr Pos -> m ()
 checkDecl (L _ (S pos sym : _))
     | elem sym keywords =
         fail (shows pos "Keyword " ++ sym ++ " used as a variable")

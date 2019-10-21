@@ -1,3 +1,23 @@
+2019-10-21  John D. Ramsdell  <ramsdell@gootoo.mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.4
+
+2019-10-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Utilities.hs: Used the C preprocessor to allow
+	compilation using older versions of GHC.
+
+2019-10-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Utilities.hs: Updated code to support the removal
+	of fail from Monad as implemented in base-4.13.0.0.
+
+2019-09-16  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (thinManyStrands):  Replaced isomorphic
+	check with probIsomorphic check so that strands in the
+	point-of-view remain unmodified.
+
 2019-08-26  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.3
