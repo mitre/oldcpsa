@@ -1,6 +1,6 @@
 (herald "Signed DH exchange" (algebra diffie-hellman))
 
-(comment "CPSA 3.6.4")
+(comment "CPSA 3.6.5")
 (comment "All input read from dh_sig.scm")
 
 (defprotocol dh_sig diffie-hellman

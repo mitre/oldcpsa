@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.4")
+(comment "CPSA 3.6.5")
 (comment "All input read from kerb.scm")
 
 (defprotocol kerb-flawed basic

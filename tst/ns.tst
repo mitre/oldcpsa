@@ -2,7 +2,7 @@
   (comment "This protocol contains a man-in-the-middle"
     "attack discovered by Galvin Lowe."))
 
-(comment "CPSA 3.6.4")
+(comment "CPSA 3.6.5")
 (comment "All input read from ns.scm")
 
 (defprotocol ns basic

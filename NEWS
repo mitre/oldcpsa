@@ -1,5 +1,10 @@
 CPSA NEWS
 
+  November 2019:
+
+* Release 3.6.5 is a bug fix release.  There are no user visible
+  changes.
+
   October 2019:
 
 * Release 3.6.4 adds support for the latest version of the GHC

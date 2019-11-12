@@ -884,13 +884,8 @@ tryPerm g g' (fenv, renv, perm) =
 tryPermProb :: Algebra t p g s e c => Gist t g ->
            Gist t g -> [Sid] -> [Sid] -> ((g, e), (g, e), [Sid]) -> Bool
 tryPermProb g g' prob prob' (fenv, renv, perm) =
-    checkOrigs g g' fenv perm &&
-    checkOrigs g' g renv perm &&
-    checkFacts g g' fenv perm &&
-    checkFacts g' g renv (invperm perm) &&
-    containsMapped (permutePair perm) (gorderings g') (gorderings g) &&
-    containsMapped (permutePair perm) (gleadsto g') (gleadsto g) &&
-    all (\n -> perm !! (prob !! n) == prob' !! n) [0..((length prob)-1)]
+    all (\n -> perm !! (prob !! n) == prob' !! n) [0..((length prob)-1)] &&
+    tryPerm g g' (fenv, renv, perm)
 
 invperm :: [Int] -> [Int]
 invperm p = map snd (L.sortOn fst (zip p [0..]))

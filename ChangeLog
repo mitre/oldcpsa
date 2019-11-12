@@ -1,3 +1,15 @@
+2019-11-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.5
+
+	* src/CPSA/Lib/Strand.hs (tryPermProb): Rewrote tryPermProb so
+	that it uses tryPerm.
+
+2019-11-08  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (tryPermProb):  Added missing invperm to
+	the third line of tryPermProb, and reenabled multistrand thinning.
+
 2019-10-21  John D. Ramsdell  <ramsdell@gootoo.mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.4
