@@ -108,9 +108,9 @@ has usage instructions.
 PARALLELISM
 
 CPSA is built so it can make use of multiple processors.  To make use
-of more than one processor, start CPSA with a runtime flag that
-specifies the number of processors to be used, such as "+RTS -N4
--RTS".  The GHC documentation describes the -N option in detail.
+of more than one processor, start CPSA with the -N runtime flag, as in
+"+RTS -N -RTS".  The GHC documentation describes the -N option in
+detail.
 
 TEST SUITE
 

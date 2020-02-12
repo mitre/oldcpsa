@@ -3,11 +3,10 @@
 # The all target creates a default configuration if need be.
 
 PACKAGE := $(wildcard *.cabal)
-CONFIG	= dist/setup-config
-SETUP	= runhaskell Setup.hs
+CONFIG	= configured
 
 all:	$(CONFIG)
-	$(SETUP) build
+	cabal build
 
 Makefile:
 	@echo make $@
@@ -16,9 +15,14 @@ $(PACKAGE):
 	@echo make $@
 
 $(CONFIG):	$(PACKAGE)
-	$(SETUP) configure $(CABALFLAGS) --ghc --user --prefix="${HOME}"
+	cabal configure $(CABALFLAGS) --ghc --user --prefix="${HOME}"
+	touch $(CONFIG)
+
+clean:
+	-rm $(CONFIG)
+	cabal clean
 
 %:	force
-	$(SETUP) $@
+	cabal $@
 
-.PHONY:	all force
+.PHONY:	all clean force
