@@ -15,7 +15,7 @@ $(PACKAGE):
 	@echo make $@
 
 $(CONFIG):	$(PACKAGE)
-	cabal configure $(CABALFLAGS) --ghc --user --prefix="${HOME}"
+	cabal configure
 	touch $(CONFIG)
 
 clean:

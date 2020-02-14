@@ -8,6 +8,37 @@
 # template for your needs, but probably not.  Look at doc/cpsa.mk
 # first.
 
-cd tst
-make clean
-make "$@"
+# ./cpsashapesall
+# ./cpsagraphall
+
+CPSAFLAGS="+RTS -M512m -N -RTS"
+
+for i in tst/*.scm
+do
+    b=tst/`basename "$i" .scm`
+    echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
+    cabal run cpsa -- ${CPSAFLAGS} -o "$b.txt" "$i" || echo cpsa failed.
+    echo cpsadiff "$b.tst" "$b.txt"
+    cabal run cpsadiff -- "$b.tst" "$b.txt"
+    echo cpsagraph -o "$b.xhtml" "$b.txt"
+    cabal run cpsagraph -- -o "$b.xhtml" "$b.txt"
+    echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
+    cabal run cpsashapes -- -o "${b}_shapes.txt" "$b.txt"
+    echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    cabal run cpsagraph -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+done
+
+for i in tst/*.lsp
+do
+    b=tst/`basename "$i" .lsp`
+    echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
+    cabal run cpsa -- ${CPSAFLAGS} -o "$b.txt" "$i"
+    echo cpsadiff "$b.tst" "$b.txt"
+    cabal run cpsadiff -- "$b.tst" "$b.txt"
+    echo cpsagraph -o "$b.xhtml" "$b.txt"
+    cabal run cpsagraph -- -o "$b.xhtml" "$b.txt"
+    echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
+    cabal run cpsashapes -- -o "${b}_shapes.txt" "$b.txt"
+    echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    cabal run cpsagraph -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+done
