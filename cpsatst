@@ -1,8 +1,8 @@
 #! /bin/sh
 
 # This script runs the test suite, and then reduces the data for
-# inspection.  If make fails, something is very wrong.  If differences
-# appear in the output, there might be a problem.
+# inspection.  If you see "cpsa failed", something is very wrong.  If
+# differences appear in the output, there might be a problem.
 
 # The following scripts in the tst directory might also serve as a
 # template for your needs, but probably not.  Look at doc/cpsa.mk
@@ -17,28 +17,28 @@ for i in tst/*.scm
 do
     b=tst/`basename "$i" .scm`
     echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
-    cabal run cpsa -- ${CPSAFLAGS} -o "$b.txt" "$i" || echo cpsa failed.
+    cabal run cpsa -v0 -- ${CPSAFLAGS} -o "$b.txt" "$i" || echo cpsa failed.
     echo cpsadiff "$b.tst" "$b.txt"
-    cabal run cpsadiff -- "$b.tst" "$b.txt"
+    cabal run cpsadiff -v0 -- "$b.tst" "$b.txt"
     echo cpsagraph -o "$b.xhtml" "$b.txt"
-    cabal run cpsagraph -- -o "$b.xhtml" "$b.txt"
+    cabal run cpsagraph -v0 -- -o "$b.xhtml" "$b.txt"
     echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
-    cabal run cpsashapes -- -o "${b}_shapes.txt" "$b.txt"
+    cabal run cpsashapes -v0 -- -o "${b}_shapes.txt" "$b.txt"
     echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
-    cabal run cpsagraph -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    cabal run cpsagraph -v0 -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
 done
 
 for i in tst/*.lsp
 do
     b=tst/`basename "$i" .lsp`
     echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
-    cabal run cpsa -- ${CPSAFLAGS} -o "$b.txt" "$i"
+    cabal run cpsa -v0 -- ${CPSAFLAGS} -o "$b.txt" "$i"
     echo cpsadiff "$b.tst" "$b.txt"
-    cabal run cpsadiff -- "$b.tst" "$b.txt"
+    cabal run cpsadiff -v0 -- "$b.tst" "$b.txt"
     echo cpsagraph -o "$b.xhtml" "$b.txt"
-    cabal run cpsagraph -- -o "$b.xhtml" "$b.txt"
+    cabal run cpsagraph -v0 -- -o "$b.xhtml" "$b.txt"
     echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
-    cabal run cpsashapes -- -o "${b}_shapes.txt" "$b.txt"
+    cabal run cpsashapes -v0 -- -o "${b}_shapes.txt" "$b.txt"
     echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
-    cabal run cpsagraph -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    cabal run cpsagraph -v0 -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
 done
