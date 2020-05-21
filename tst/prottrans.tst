@@ -1,7 +1,7 @@
 (herald "Protocol Transformations With Rules")
 
-(comment "CPSA 3.6.5")
-(comment "All input read from prottrans.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/prottrans.scm")
 
 (defprotocol ns basic
   (defrole init

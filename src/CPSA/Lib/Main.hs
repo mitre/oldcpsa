@@ -218,8 +218,8 @@ options =
       Option ['m'] ["margin"]   (ReqArg Margin "INT")
       ("set output margin (default " ++ show (optMargin defaultOptions) ++ ")"),
       Option ['e'] ["expand"]   (NoArg Expand)
-      "expand macros only; don't analyze",
-      Option ['z'] ["noanalyze"] (NoArg NoAnalyze) "don't analyze",
+      "expand macros only; don't load or analyze",
+      Option ['z'] ["noanalyze"] (NoArg NoAnalyze) "load but don't analyze",
       Option ['n'] ["noisochk"] (NoArg NoIsoChk)
       "disable isomorphism checks",
       Option ['c'] ["check-nonces"] (NoArg CheckNoncesFirst)

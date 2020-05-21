@@ -1,7 +1,7 @@
 (herald "Kerberos PKINIT")
 
-(comment "CPSA 3.6.5")
-(comment "All input read from pkinit.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/pkinit.scm")
 
 (defprotocol pkinit-flawed basic
   (defrole client

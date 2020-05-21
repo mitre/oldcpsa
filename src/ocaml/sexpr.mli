@@ -40,8 +40,7 @@ val annotation : 'a sexpr -> 'a
 val read_lexbuf : string -> in_channel -> lexbuf
 
 (** Read an S-expression from a file annotated with the position of
-    the datum in the file.  See module {!module:Reader} for functions
-    that use positions to construct informative error messages.
+    the datum in the file.
 
     @raise End_of_file on end of file
     @raise Failure on malformed input *)
@@ -50,6 +49,13 @@ val read_sexpr : lexbuf -> position sexpr
 (** Read an S-expression from a string annotated with the position of
     the datum in the string. *)
 val read_sexpr_from_string : string -> position sexpr
+
+(** Add position information to a message. *)
+val error_msg : position -> string -> string
+
+(** Add position information to a message and fail.
+    @raise Failure always *)
+val failwith_msg : position -> string -> 'a
 
 (** {1 Output} *)
 

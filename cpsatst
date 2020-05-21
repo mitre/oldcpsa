@@ -13,19 +13,34 @@
 
 CPSAFLAGS="+RTS -M512m -N -RTS"
 
+# Analyze the results of a CPSA run.
+analyze () {
+    echo cpsadiff "$1.tst" "$1.txt"
+    cabal run cpsadiff -v0 -- "$1.tst" "$1.txt"
+    echo cpsagraph -o "$1.xhtml" "$1.txt"
+    cabal run cpsagraph -v0 -- -o "$1.xhtml" "$1.txt"
+    echo cpsashapes -o "${1}_shapes.txt" "$1.txt"
+    cabal run cpsashapes -v0 -- -o "${1}_shapes.txt" "$1.txt"
+    echo cpsagraph -o "${1}_shapes.xhtml" "${1}_shapes.txt"
+    cabal run cpsagraph -v0 -- -o "${1}_shapes.xhtml" "${1}_shapes.txt"
+}
+
 for i in tst/*.scm
 do
     b=tst/`basename "$i" .scm`
     echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
     cabal run cpsa -v0 -- ${CPSAFLAGS} -o "$b.txt" "$i" || echo cpsa failed.
-    echo cpsadiff "$b.tst" "$b.txt"
-    cabal run cpsadiff -v0 -- "$b.tst" "$b.txt"
-    echo cpsagraph -o "$b.xhtml" "$b.txt"
-    cabal run cpsagraph -v0 -- -o "$b.xhtml" "$b.txt"
-    echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
-    cabal run cpsashapes -v0 -- -o "${b}_shapes.txt" "$b.txt"
-    echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
-    cabal run cpsagraph -v0 -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    analyze "$b"
+done
+
+for i in tst/*.prot
+do
+    b=tst/`basename "$i" .prot`
+    echo cpsaprot  "$i" '|' cpsa ${CPSAFLAGS} -o "$b.txt"
+    cabal run cpsaprot -v0 -- "$i" | \
+	cabal run cpsa -v0 -- ${CPSAFLAGS} -o "$b.txt" || \
+	echo cpsa failed.
+    analyze "$b"
 done
 
 for i in tst/*.lsp
@@ -33,12 +48,5 @@ do
     b=tst/`basename "$i" .lsp`
     echo cpsa ${CPSAFLAGS} -o "$b.txt" "$i"
     cabal run cpsa -v0 -- ${CPSAFLAGS} -o "$b.txt" "$i"
-    echo cpsadiff "$b.tst" "$b.txt"
-    cabal run cpsadiff -v0 -- "$b.tst" "$b.txt"
-    echo cpsagraph -o "$b.xhtml" "$b.txt"
-    cabal run cpsagraph -v0 -- -o "$b.xhtml" "$b.txt"
-    echo cpsashapes -o "${b}_shapes.txt" "$b.txt"
-    cabal run cpsashapes -v0 -- -o "${b}_shapes.txt" "$b.txt"
-    echo cpsagraph -o "${b}_shapes.xhtml" "${b}_shapes.txt"
-    cabal run cpsagraph -v0 -- -o "${b}_shapes.xhtml" "${b}_shapes.txt"
+    analyze "$b"
 done

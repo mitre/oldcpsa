@@ -3,8 +3,8 @@
   (comment
     "Based on the Internet-Draft: https://www.ietf.org/archive/id/draft-hardjono-ace-fluffy-03.txt"))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from fluffy_draft03_gske.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/fluffy_draft03_gske.scm")
 
 (defprotocol fluffy basic
   (defrole sp

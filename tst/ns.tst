@@ -2,8 +2,8 @@
   (comment "This protocol contains a man-in-the-middle"
     "attack discovered by Galvin Lowe."))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from ns.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/ns.scm")
 
 (defprotocol ns basic
   (defrole init

@@ -1,7 +1,7 @@
 (herald goals)
 
-(comment "CPSA 3.6.5")
-(comment "All input read from goals.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/goals.scm")
 
 (defprotocol ns basic
   (defrole init
@@ -871,7 +871,7 @@
   (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
   (non-orig (privk a) (privk b))
   (uniq-orig n1 n1-0)
-  (subgoals
+  (goals
     (forall ((n1 n1-0 n2 n2-0 text) (a b name) (z z-0 strd))
       (implies
         (and (p "init" z 3) (p "init" z-0 3) (p "init" "n1" z n1)
@@ -1057,7 +1057,7 @@
   (defstrand init 3 (n1 n1-0) (n2 n2-0) (a a) (b b))
   (non-orig (privk a) (privk b))
   (uniq-orig n1 n1-0)
-  (subgoals
+  (goals
     (forall ((z z-0 strd))
       (implies (and (p "init" z 3) (p "init" z-0 3)) (= z z-0))))
   (comment "Double initiator point of view 2")

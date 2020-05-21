@@ -61,7 +61,8 @@
 				tne tno "false")))
      (tran state (extend value state)))
     (uniq-orig tne)
-    (non-orig (invk tpmkey)))
+    ;; (non-orig (invk tpmkey))  ; JDG:  This assumption irrelevant 
+    )
 
   ;; This role creates a key whose use is restricted to a requested
   ;; pcr value (since we only model one pcr).  It doesn't create or
@@ -113,9 +114,15 @@
      (send (enc v k)))
     (uniq-orig n v tno esk)
     (neq (tno n))
-    (non-orig aik esk1 (invk tpmkey))))
+    (non-orig aik esk1 (invk tpmkey)	; JDG:  This assumption important 
+	      )))
 
 ;;; Initial skeleton
+(defskeleton envelope
+  (vars (v n data) (esk skey) (k aik tpmkey akey) (pcr mesg))
+  (deflistener esk)
+  (defstrand alice 7 (esk esk) (n n) (pcr pcr) (v v) (k k) (aik aik)))
+
 (defskeleton envelope
   (vars (v n data) (k aik akey) (pcr mesg))
   (deflistener (refuse n pcr v k aik))
@@ -126,3 +133,9 @@
   (vars (v data))
   (deflistener v)
   (defstrand alice 7 (v v)))
+
+(defskeleton envelope
+  (vars (v n data) (k aik akey) (pcr mesg))
+  (deflistener (refuse n pcr v k aik))
+  ;;   (deflistener v)
+  (defstrand alice 7 (n n) (pcr pcr) (v v) (k k) (aik aik)))

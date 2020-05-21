@@ -1,8 +1,8 @@
 (herald "Plain diffie-hellman protocol with challenge-response"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from plaindh.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/plaindh.scm")
 
 (defprotocol plaindh diffie-hellman
   (defrole init

@@ -1,7 +1,7 @@
 (herald reflect)
 
-(comment "CPSA 3.6.5")
-(comment "All input read from reflect.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/reflect.scm")
 
 (defprotocol reflect basic
   (defrole init

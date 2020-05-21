@@ -1,8 +1,8 @@
 (herald "Blanchet's Simple Example Protocol"
   (comment "There is a flaw in this protocol by design"))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from blanchet.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/blanchet.scm")
 
 (defprotocol blanchet basic
   (defrole init

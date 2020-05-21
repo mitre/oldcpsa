@@ -7,6 +7,10 @@
 %.txt:		%.scm
 	$(CPSATIME) cpsa $(CPSAFLAGS) -o $@ $<
 
+# Preprocess by transforming defprot forms into defprotocol
+%.scm:		%.prot
+	cpsaprot $(CPSAPROTFLAGS) -o $@ $<
+
 # Analyze protocols for shapes, but don't fail when CPSA does
 %.txt:		%.lsp
 	-$(CPSATIME) cpsa $(CPSAFLAGS) -o $@ $<

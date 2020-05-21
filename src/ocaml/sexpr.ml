@@ -1,6 +1,7 @@
-include Sexpr_type
 open Lexing
 open Format
+open Token
+include Sexpr_type
 
 let annotation = function
   | S (a, _) -> a
@@ -13,12 +14,57 @@ let read_lexbuf fname ch =
   lexbuf.lex_curr_p <- { lexbuf.lex_curr_p with pos_fname = fname };
   lexbuf
 
+let error_msg = error_msg
+
+let failwith_msg = failwith_msg
+
+let parse_err = failwith_msg
+
+let rec parse_list lexfun lexbuf lpos list =
+  let tok = lexfun lexbuf in
+  let pos = lexeme_start_p lexbuf in
+  match tok with
+  | SYM s -> parse_list lexfun lexbuf lpos (S (pos, s) :: list)
+  | STR s -> parse_list lexfun lexbuf lpos (Q (pos, s) :: list)
+  | NUM n -> parse_list lexfun lexbuf lpos (N (pos, n) :: list)
+  | LPAR ->
+      let x = parse_list lexfun lexbuf pos [] in
+      parse_list lexfun lexbuf lpos (x :: list)
+  | RPAR -> L (lpos, List.rev list)
+  | EOF -> parse_err pos "End of file in list"
+
+let top lexfun lexbuf =
+  let tok = lexfun lexbuf in
+  let pos = lexeme_start_p lexbuf in
+  match tok with
+  | SYM s -> S (pos, s)
+  | STR s -> Q (pos, s)
+  | NUM n -> N (pos, n)
+  | LPAR -> parse_list lexfun lexbuf pos []
+  | RPAR -> parse_err pos "Unmatched right parenthesis"
+  | EOF -> raise End_of_file
+
+let one lexfun lexbuf =
+  let tok = lexfun lexbuf in
+  let pos = lexeme_start_p lexbuf in
+  let x =
+    match tok with
+    | SYM s -> S (pos, s)
+    | STR s -> Q (pos, s)
+    | NUM n -> N (pos, n)
+    | LPAR -> parse_list lexfun lexbuf pos []
+    | RPAR -> parse_err pos "Unmatched right parenthesis"
+    | EOF -> parse_err pos "Nothing in string" in
+  match lexfun lexbuf with
+  | EOF -> x
+  | _ -> parse_err (lexeme_start_p lexbuf) "Trailing garbage in string"
+
 let read_sexpr lexbuf =
-  Reader.top Scanner.token lexbuf
+  top Scanner.token lexbuf
 
 let read_sexpr_from_string ch =
   let lexbuf = Lexing.from_string ch in
-  Reader.one Scanner.token lexbuf
+  one Scanner.token lexbuf
 
 let rec sexpr_printer f x =
   match x with

@@ -558,10 +558,22 @@ loadInsts top p kvars gen insts (L pos (S _ "defstrand" : x) : xs) =
     case x of
       S _ role : N _ height : env ->
           do
-            (gen, i) <- loadInst pos p kvars gen role height env
+            (gen, i) <- loadInst pos p kvars gen role height env False
             loadInsts top p kvars gen (i : insts) xs
       _ ->
           fail (shows pos "Malformed defstrand")
+loadInsts top p kvars gen insts (L pos (S _ "defstrandmax" : x) : xs) =
+    case x of
+      S _ role : N _ height : env ->
+          do
+            (gen, i) <- loadInst pos p kvars gen role height env True
+            loadInsts top p kvars gen (i : insts) xs
+      S _ role : env ->
+          do
+            (gen, i) <- loadInst pos p kvars gen role 0 env True
+            loadInsts top p kvars gen (i : insts) xs
+      _ ->
+          fail (shows pos "Malformed defstrandmax")
 loadInsts top p kvars gen insts (L pos (S _ "deflistener" : x) : xs) =
     case x of
       [term] ->
@@ -572,7 +584,7 @@ loadInsts top p kvars gen insts (L pos (S _ "deflistener" : x) : xs) =
           fail (shows pos "Malformed deflistener")
 loadInsts top p kvars gen insts xs =
     do
-      badKey ["defstrand", "deflistener"] xs
+      badKey ["defstrand", "deflistener", "defstrandmax"] xs
       _ <- alist [] xs          -- Check syntax of xs
       others <- loadGenSkelDecls heights kvars (assocDecls xs)
       predefs <- loadAllPredefSkelDecls heights kvars xs
@@ -589,7 +601,7 @@ loadInsts top p kvars gen insts xs =
       goals = assoc "goals" xs
       pov = assoc "pov" xs
       kcomment =
-        loadComment "subgoals" goals ++
+        loadComment "goals" goals ++
         loadComment "comment" (assoc "comment" xs)
 
 loadComment :: String -> [SExpr Pos] -> [SExpr ()]
@@ -624,17 +636,19 @@ assocDecls alist =
 
 loadInst :: (Algebra t p g s e c, MonadFail m) => Pos ->
             Prot t g -> [t] -> g -> String -> Int ->
-            [SExpr Pos] -> m (g, Instance t e)
-loadInst pos p kvars gen role height env =
+            [SExpr Pos] -> Bool -> m (g, Instance t e)
+loadInst pos p kvars gen role height env count_from_max =
     do
       r <- lookupRole pos p role
-      case height < 1 || height > length (rtrace r) of
+      let height' = if count_from_max then ((length (rtrace r)) - height)
+                                      else height
+      case height' < 1 || height' > length (rtrace r) of
         True -> fail (shows pos "Bad height")
         False ->
             do
               let vars = rvars r
               (gen', env') <- foldM (loadMaplet kvars vars) (gen, emptyEnv) env
-              return (mkInstance gen' r env' height)
+              return (mkInstance gen' r env' height')
 
 lookupRole :: MonadFail m => Pos -> Prot t g -> String -> m (Role t)
 lookupRole _ p role  | role == "" =

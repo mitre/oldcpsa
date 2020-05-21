@@ -1,8 +1,8 @@
 (herald trust-anchor
   (comment "Tests rule application on initial skeleton"))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from trust-anchor.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/trust-anchor.scm")
 
 (defprotocol trust-anchor basic
   (defrule trust-anchor-inverse-is-non

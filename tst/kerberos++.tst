@@ -1,5 +1,5 @@
-(comment "CPSA 3.6.5")
-(comment "All input read from kerberos++.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/kerberos++.scm")
 
 (defprotocol kerberos basic
   (defrole client

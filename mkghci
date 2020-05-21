@@ -1,0 +1,9 @@
+#! /bin/sh
+autogen=`find . -name autogen -type d | grep '/cpsa/'`
+
+echo ':set' "-isrc:$autogen"
+echo ':set -fbreak-on-error'
+echo ':set' args ${1:-bug.scm}
+echo '-- ghci src/CPSA/Main.hs'
+echo '-- :trace main'
+

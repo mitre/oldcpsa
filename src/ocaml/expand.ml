@@ -2,7 +2,6 @@
 
 open Lexing
 open Sexpr
-open Reader
 open Main
 
 (* The macro expand loop limit *)

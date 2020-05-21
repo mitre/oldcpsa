@@ -1,7 +1,7 @@
 (herald "Receive priority test protocol")
 
-(comment "CPSA 3.6.5")
-(comment "All input read from priority_test.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/priority_test.scm")
 
 (defprotocol priority_test basic
   (defrole init

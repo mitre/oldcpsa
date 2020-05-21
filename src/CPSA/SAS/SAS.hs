@@ -267,6 +267,7 @@ data Preskel t g c = Preskel
       leadsto :: [((t, Int), (t, Int))],
       nons :: [t],
       pnons :: [t],
+      ugens :: [t],
       uniqs :: [t],
       origs :: [(t, (t, Int))],
       -- ugen, ugenAt missing!
@@ -286,6 +287,7 @@ loadPreskel pos prot gen (S _ _ : L _ (S _ "vars" : vars) : xs) =
       leadsto <- loadOrderings heights (assoc leadstoKey xs)
       nons <- loadBaseTerms kvars (assoc nonOrigKey xs)
       pnons <- loadBaseTerms kvars (assoc pnonOrigKey xs)
+      ugens <- loadBaseTerms kvars (assoc ugenOrigKey xs)
       uniqs <- loadBaseTerms kvars (assoc uniqOrigKey xs)
       origs <- loadOrigs kvars heights (assoc origsKey xs)
       (gen, varmap) <- makeVarmap pos gen [0..(length insts)-1]
@@ -302,6 +304,7 @@ loadPreskel pos prot gen (S _ _ : L _ (S _ "vars" : vars) : xs) =
                         leadsto = map f leadsto,
                         nons = nons,
                         pnons = pnons,
+                        ugens = ugens,
                         uniqs = uniqs,
                         origs = map g origs,
                         facts = facts,
@@ -546,6 +549,10 @@ nonOrigKey = "non-orig"
 pnonOrigKey :: String
 pnonOrigKey = "pen-non-orig"
 
+-- The key used in preskeletons for penetrator non-originating atoms
+ugenOrigKey :: String
+ugenOrigKey = "uniq-gen"
+
 -- The key used in preskeletons for uniquely originating atoms
 uniqOrigKey :: String
 uniqOrigKey = "uniq-orig"
@@ -636,6 +643,7 @@ mapSkel env pov k =
       leadsto = mapPair (instantiate env) (leadsto k),
       nons = map (instantiate env) (nons k),
       pnons = map (instantiate env) (pnons k),
+      ugens = map (instantiate env) (ugens k),
       uniqs = map (instantiate env) (uniqs k),
       origs = mapOrig (instantiate env) (origs k),
       facts = mapFact (instantiate env) (facts k),
@@ -685,6 +693,7 @@ skel ctx k =
    map (leadsToForm kctx) (leadsto k) ++
    map (unary "non" kctx) (nons k) ++
    map (unary "pnon" kctx) (pnons k) ++
+   map (unary "ugen" kctx) (ugens k) ++
    -- Not possible map (unary "uniq" kctx) (noOrigUniqs k) ++
    map (uniqAtForm kctx) (origs k) ++
    map (factForm kctx) (facts k))

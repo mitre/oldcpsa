@@ -1,8 +1,8 @@
 (herald "Function constraint test protocol"
   (comment "Skeletons 2, 4, and 7 should have no shapes."))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from fnof_test.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/fnof_test.scm")
 
 (defprotocol fnoftest basic
   (defrole init

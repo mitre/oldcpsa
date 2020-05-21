@@ -65,7 +65,6 @@ data Flag
     = Help                      -- Help
     | Info                      -- Version information
     | Margin String             -- Output line length
-    | Infix                     -- Select output notation
     | Json                      -- Select output format
     | Output String             -- Output file name
       deriving Show

@@ -2,8 +2,8 @@
   (comment
     "Version using variables of sort mesg, with ltk function emulated."))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from fnof_or.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/fnof_or.scm")
 
 (defprotocol or basic
   (defrole init

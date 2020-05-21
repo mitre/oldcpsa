@@ -1,3 +1,69 @@
+2020-05-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.6
+
+2020-05-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (rlugen): Replaced an incorrect call to
+	originationNodes to be a call to generationNodes.  This fixes a
+	bug when using the ugen predicate in the conclusion of a rule.
+
+2020-05-15  Moses D. Liskov <mliskov@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (preskelWellFormed): Added a check that
+	all variables used in any terms in any declarations are used in
+	the terms of the traces.
+	* src/CPSA/Lib/Strand.hs (verbosePreskelWellFormed): Made a similar
+	change, but without removing existing more specific messages that
+	may be informative for users.
+
+2020-04-15  Joshua D. Guttman  <guttman@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (graphCloseAll):  Added a procedure to
+	generate a transitive closure that includes pairs on the same
+	strand.  Adapted gprec to use it.
+
+2020-04-02  Ian D. Kretz  <ikretz@mitre.org>
+
+	* src/CPSA/Latex/Main.hs (main): Remove number from pubk, privk
+	newcommand
+
+2020-03-31  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/SAS/SAS.hs (Preskel): Added support for unique
+	generation assertions.
+
+2020-03-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Update version number as 3.6.6
+
+2020-03-04  Moses D. Liskov  <mliskov@mitre.org>
+
+	* src/CPSA/Prot/Main.hs (main): Added support for state to
+	cpsaprot.
+
+2020-02-27  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (probIsomorphic): Added quick checks for
+	thinning isomorphism check.
+
+2020-02-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Prot/Main.hs (main):  Improved error messages and added
+	(chmsg TERM) form for channel messages and clone for roles.
+
+2020-02-13  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Prot/Main.hs (main):  Added cpsaprot program.
+
+2020-02-11  Kretz, Ian D <ikretz@mitre.org>
+
+	* src/CPSA/LaTeX/Main.hs (main):  Added cpsa2latex program.
+
+2019-11-26  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/GoalSat/Main.hs: Added cpsagoalsat program.
+
 2019-11-12  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.5

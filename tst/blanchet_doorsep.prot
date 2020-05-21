@@ -1,0 +1,45 @@
+(defprot blanchet basic
+  (vars (a b akey) (s skey) (d data))
+  (msg init resp (enc (enc s (invk a)) b))
+  (msg resp init (enc d s))
+  (assume init (uniq-orig s))
+  (assume resp (uniq_orig d))
+  (comment "Blanchet's protocol"))
+
+(defskeleton blanchet
+  (vars (a b akey) (s skey) (d data))
+  (defstrand init 2 (a a) (b b) (s s) (d d))
+  (non-orig (invk b))
+  (comment "Analyze from the initiator's perspective"))
+
+(defprot doorsep basic
+  (vars (p d akey) (k skey) (t text))
+  (msg person door (enc (enc k (invk p)) d))
+  (msg door person (enc t k))
+  (msg person door t)
+  (assume person (uniq-orig k))
+  (defrule trust
+    (forall ((z strd) (p d akey) (k skey))
+	    (implies
+	     (and (p "person" z 1)
+		  (p "person" "p" z p)
+		  (p "person" "d" z d)
+		  (p "person" "k" z k)
+		  (fact trust p))
+	     (and (non (invk d))
+		  (uniq k))))))
+
+(defskeleton doorsep
+  (vars (p akey) (t text))
+  (defstrand door 3 (p p) (t t))
+  (non-orig (invk p))
+  (uniq-orig t)
+  (facts (trust p))
+  (comment "Analyze from the door's perspective"))
+
+(defskeleton doorsep
+  (vars (p akey) (t text))
+  (defstrand door 3 (p p) (t t))
+  (non-orig (invk p))
+  (uniq-orig t)
+  (comment "Analyze from the door's perspective when we don't trust p"))

@@ -1,7 +1,7 @@
 (herald rule-order)
 
-(comment "CPSA 3.6.5")
-(comment "All input read from rule-order.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/rule-order.scm")
 
 (defprotocol rule-order basic
   (defrole init (vars (s t text)) (trace (send (cat s t))))

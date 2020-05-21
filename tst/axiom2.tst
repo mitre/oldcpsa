@@ -1,7 +1,7 @@
 (herald "Axiom 2 Protocol" (bound 20))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from axiom2.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/axiom2.scm")
 (comment "Strand count bounded at 20")
 
 (defprotocol ax2 basic

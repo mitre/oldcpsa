@@ -1,7 +1,7 @@
 (herald attest-door)
 
-(comment "CPSA 3.6.5")
-(comment "All input read from attest.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/attest.scm")
 
 (defprotocol attest-door basic
   (defrole appraise

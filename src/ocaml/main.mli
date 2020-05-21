@@ -18,7 +18,7 @@ output is used when [-o OUTPUT] is omitted.
 
 Function [f] is invoked in a context that catches {!exception:Failure}
 exceptions, prints the failure message to standard error, and then
-exits with error code 1.  Function {!val:Reader.failwith_msg} raises
+exits with error code 1.  Function {!val:Sexpr.failwith_msg} raises
 {!exception:Failure} exceptions after adding position information to
 an error message. *)
 val main : (out_channel -> Lexing.position Sexpr.sexpr list -> unit) -> unit

@@ -2,8 +2,8 @@
   (comment "First, third, and fourth skeletons should have a shape,"
     "second should be dead."))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from subsort_test.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/subsort_test.scm")
 
 (defprotocol subsorttest basic
   (defrole init

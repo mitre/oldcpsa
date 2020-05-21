@@ -1,7 +1,7 @@
 (herald "Woo-Lam Protocol, using fnof to emulate ltk function")
 
-(comment "CPSA 3.6.5")
-(comment "All input read from fnof_woolam.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/fnof_woolam.scm")
 
 (defprotocol woolam basic
   (defrole init

@@ -1,9 +1,9 @@
 {
-open Reader
 open Lexing
+open Token
 
 let parse_error pos =
-  parse_err pos "Bad token"
+  failwith_msg pos "Bad token"
 }
 let special = ['*' '/' '<' '=' '>' '!' '?' ':' '$' '%' '_' '&' '~' '^']
 let start = ['a' - 'z' 'A' - 'Z'] | special

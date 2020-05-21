@@ -1,6 +1,5 @@
 (** Operations on positions produced by {!val:Sexpr.read_sexpr} *)
 
-open Sexpr_type
 open Lexing
 
 (**/**)
@@ -15,10 +14,3 @@ val error_msg : position -> string -> string
 (** Add position information to a message and fail.
     @raise Failure always *)
 val failwith_msg : position -> string -> 'a
-
-(**/**)
-
-val parse_err : position -> string -> 'a
-
-val top : (lexbuf -> token) -> lexbuf -> position sexpr
-val one : (lexbuf -> token) -> lexbuf -> position sexpr

@@ -1,5 +1,5 @@
 Name:                   cpsa
-Version:                3.6.5
+Version:                3.6.6
 Maintainer:             mliskov@mitre.org
 Cabal-Version:          >= 1.6
 License:                BSD3
@@ -75,14 +75,14 @@ Data-Files:
   examples/eq_test.xhtml
 Data-Dir:               doc
 Extra-Source-Files:
-  Makefile ChangeLog README.txt NEWS ghci cpsatst setup.bat
+  Makefile ChangeLog README.txt NEWS mkghci cpsatst setup.bat
   src/cpsa.el src/cpsaops.scm src/cpsa.pl src/pp.pl
   src/sexpr.pl src/ghcmemlimit src/cpsajson.py src/split.py
   src/ocaml/Makefile src/ocaml/README src/ocaml/cpsa.d.itarget
   src/ocaml/cpsa.itarget src/ocaml/cpsa.mllib src/ocaml/cpsa.mltop
   src/ocaml/cpsa.odocl src/ocaml/expand.ml src/ocaml/main.ml
-  src/ocaml/main.mli src/ocaml/pp.ml src/ocaml/reader.ml
-  src/ocaml/reader.mli src/ocaml/scanner.mll src/ocaml/sexpr.ml
+  src/ocaml/main.mli src/ocaml/pp.ml src/ocaml/token.ml
+  src/ocaml/token.mli src/ocaml/scanner.mll src/ocaml/sexpr.ml
   src/ocaml/sexpr.mli src/ocaml/sexpr_type.ml
   tst/checktst tst/updatetst tst/graphtst
   tst/Makefile tst/Make.hs tst/README
@@ -117,6 +117,7 @@ Extra-Source-Files:
   tst/ordered.scm tst/ordered.tst tst/prottrans.scm tst/prottrans.tst
   tst/role_uniq.scm tst/role_uniq.tst tst/rule-order.scm
   tst/rule-order.tst tst/trust-anchor.scm tst/trust-anchor.tst
+  tst/blanchet_doorsep.prot tst/blanchet_doorsep.tst
   
 Source-Repository head
   Type:     git
@@ -196,6 +197,17 @@ Executable cpsasas
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra CPSA.SAS.SAS
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
 
+Executable cpsaprot
+  Main-Is:              CPSA/Prot/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:       src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Basic.Algebra CPSA.Lib.Expand
+
 Executable cpsapp
   Main-Is:              CPSA/Pretty/Main.hs
   Build-Depends:        base >= 3 && < 5, containers
@@ -248,3 +260,25 @@ Executable cpsainit
   Hs-Source-Dirs:       src
   Other-Modules:
     Paths_cpsa
+
+Executable cpsagoalsat
+  Main-Is:              CPSA/GoalSat/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:       src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.Utilities CPSA.Lib.Pretty CPSA.Lib.SExpr
+    CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
+    CPSA.Basic.Algebra
+
+Executable cpsa2latex
+  Main-Is:              CPSA/Latex/Main.hs
+  Build-Depends:        base >= 3 && < 5, containers
+  GHC-Options:
+    -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+  Hs-Source-Dirs:       src
+  Other-Modules:
+    Paths_cpsa CPSA.Lib.SExpr CPSA.Lib.Expand CPSA.Lib.Entry
+    CPSA.Basic.Algebra CPSA.Lib.Algebra CPSA.Lib.Pretty
+    CPSA.Lib.Printer CPSA.Lib.Utilities

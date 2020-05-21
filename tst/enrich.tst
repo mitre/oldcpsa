@@ -1,7 +1,7 @@
 (herald enrich)
 
-(comment "CPSA 3.6.5")
-(comment "All input read from enrich.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/enrich.scm")
 
 (defprotocol enrich basic
   (defrole extend

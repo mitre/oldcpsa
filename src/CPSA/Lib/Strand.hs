@@ -314,13 +314,25 @@ graphReduce orderings =
           | elem n seen = loop dst ns seen
           | otherwise = loop dst (preds n ++ ns) (n : seen)
 
--- Compute the transitive closure
+-- Compute the transitive closure,
+-- omitting pairs on the same strand.  
 -- This routine returns pairs that are not well ordered.
 -- Deal with it!
 graphClose :: [GraphEdge e i] -> [GraphEdge e i]
 graphClose orderings =
-    filter (not . sameStrands) (loop orderings False orderings)
+    filter (not . sameStrands) (graphCloseAll orderings)
     where
+      sameStrands (n0, n1) = strand n0 == strand n1
+
+-- Compute the transitive closure
+-- including pairs on the same strand.  
+
+-- This routine returns pairs that are not well ordered.
+-- Deal with it!
+graphCloseAll :: [GraphEdge e i] -> [GraphEdge e i]
+graphCloseAll orderings =
+    loop orderings False orderings
+    where 
       loop orderings False [] = orderings
       loop orderings True [] =
           loop orderings False orderings -- restart loop
@@ -331,8 +343,8 @@ graphClose orderings =
       inner orderings repeat pairs (p : rest)
           | elem p orderings = inner orderings repeat pairs rest
           | otherwise = inner (p : orderings) True pairs rest
-      sameStrands (n0, n1) = strand n0 == strand n1
 
+                             
 {-
 -- The nodes that preceed node n via strand succession
 spreds :: GraphNode e i -> [GraphNode e i]
@@ -798,6 +810,14 @@ isomorphic g g' =
 
 probIsomorphic :: Algebra t p g s e c => Preskel t g s e -> Preskel t g s e -> Bool
 probIsomorphic k k' =
+--    nvars g == nvars g' &&  -- Wrong in DH
+    ntraces g == ntraces g' &&
+    briefs g == briefs g' &&
+    norderings g == norderings g' &&
+    gpatterns g == gpatterns g' &&
+    nleadsto g == nleadsto g' &&
+    nsndecls g == nsndecls g' &&
+    nfacts g == nfacts g' &&
     any (tryPermProb g g' pr pr') (permutations g g')
     where
       g = gist k
@@ -2108,18 +2128,16 @@ uniqOrig k =
 
 -- A preskeleton is well formed if the ordering relation is acyclic,
 -- each atom declared to be uniquely-originating is carried in some
--- preskeleton term, and every variable that occurs in each base term
--- declared to be non-originating or pen-non-originating occurs in
--- some preskeleton term, and the atom must never be carried by any
--- term, and every uniquely originating role term mapped by an
--- instance is mapped to a term that originates on the instance's
--- strand.
+-- preskeleton term, and every variable that occurs in any declaration
+-- occurs in some preskeleton term, and none of the declaration-based
+-- constraints are violated, and furthermore, every uniquely
+-- originating role term mapped by an instance is mapped to a term
+-- that originates on that instance's strand.
 
 -- Exported
 preskelWellFormed :: Algebra t p g s e c => Preskel t g s e -> Bool
 preskelWellFormed k =
-    varSubset (knon k) terms &&
-    varSubset (kpnon k) terms &&
+    varSubset (declsTerms (decls k)) terms &&
     all nonCheck (knon k) &&
     all uniqueCheck (kunique k) &&
     all factCheck (kfacts k) &&
@@ -2154,6 +2172,10 @@ verbosePreskelWellFormed k =
                    $ varSubset (knon k) terms
       failwith "a variable in pen-non-orig is not in some trace"
                    $ varSubset (kpnon k) terms
+      failwith "a variable in uniq-gen is not in some trace"
+                   $ varSubset (dkuniqgen (decls k)) terms
+      failwith "a variable in a declaration is not in some trace"
+                   $ varSubset (declsTerms (decls k)) terms
       mapM_ nonCheck $ knon k
       mapM_ uniqueCheck $ kunique k
       mapM_ factCheck $ kfacts k
@@ -2651,7 +2673,7 @@ chkFVarsS s k =
     f k v
       | elem v (kvars k) = k
       | otherwise = error (s ++ ": Bad var in fact " ++ show v)
-        -- ++ "\n\n" ++ show k)
+        -- ++ "\n\n" ++ show k
 --}
 
 {-
@@ -2822,7 +2844,7 @@ gprec n n' k (g, e) =
         (g, e) <- nodeMatch n p (g, e)
         nodeMatch n' p' (g, e)
   where
-    tc = map graphPair $ graphClose $ graphEdges $ strands k
+    tc = map graphPair $ graphCloseAll $ graphEdges $ strands k
 
 -- Node leads to
 gleadsTo :: Algebra t p g s e c => NodeTerm t -> NodeTerm t -> Sem t g s e
@@ -3306,7 +3328,7 @@ rlugen name t k (g, e) =
       | elem t' (dkuniqgen $ decls k) -> [(k, (g, e))]
       | not $ isAtom t' -> []
       | otherwise ->
-        case originationNodes (strands k) t' of
+        case generationNodes (strands k) t' of
           (_, []) -> []
           (_, n : _) ->
             [(k', (g, e))]

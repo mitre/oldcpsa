@@ -2,8 +2,8 @@
   (comment "First and third skeletons should have a shape,"
     "second and fourth should be dead."))
 
-(comment "CPSA 3.6.5")
-(comment "All input read from lt_test.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/lt_test.scm")
 
 (defprotocol lttest basic
   (defrole init

@@ -1,7 +1,7 @@
 (herald "Main Example")
 
-(comment "CPSA 3.6.5")
-(comment "All input read from comp_test.scm")
+(comment "CPSA 3.6.6")
+(comment "All input read from tst/comp_test.scm")
 
 (defprotocol main-ex-src basic
   (defrole qn
