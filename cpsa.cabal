@@ -1,7 +1,7 @@
 Name:                   cpsa
 Version:                3.6.6
 Maintainer:             mliskov@mitre.org
-Cabal-Version:          >= 1.6
+Cabal-Version:          >= 1.10
 License:                BSD3
 License-File:           license.txt
 Synopsis:               Symbolic cryptographic protocol analyzer
@@ -125,6 +125,7 @@ Source-Repository head
 
 Executable cpsa
   Main-Is:              CPSA/Lib/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers, parallel
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports -threaded -rtsopts
@@ -140,6 +141,7 @@ Executable cpsa
 
 Executable cpsagraph
   Main-Is:              CPSA/Graph/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -154,6 +156,7 @@ Executable cpsagraph
 
 Executable cpsashapes
   Main-Is:              CPSA/Shapes/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -165,6 +168,7 @@ Executable cpsashapes
 
 Executable cpsaannotations
   Main-Is:              CPSA/Annotations/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -177,6 +181,7 @@ Executable cpsaannotations
     
 Executable cpsadiff
   Main-Is:              CPSA/Diff/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -188,6 +193,7 @@ Executable cpsadiff
 
 Executable cpsasas
   Main-Is:              CPSA/SAS/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -199,6 +205,7 @@ Executable cpsasas
 
 Executable cpsaprot
   Main-Is:              CPSA/Prot/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -210,6 +217,7 @@ Executable cpsaprot
 
 Executable cpsapp
   Main-Is:              CPSA/Pretty/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -221,6 +229,7 @@ Executable cpsapp
 
 Executable cpsajson
   Main-Is:              CPSA/JSON/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -232,6 +241,7 @@ Executable cpsajson
 
 Executable cpsadebase
   Main-Is:              CPSA/Debase/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -243,6 +253,7 @@ Executable cpsadebase
 
 Executable cpsamatch
   Main-Is:              CPSA/Match/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 4 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -254,6 +265,7 @@ Executable cpsamatch
 
 Executable cpsainit
   Main-Is:              CPSA/Init/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base, directory
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -263,6 +275,7 @@ Executable cpsainit
 
 Executable cpsagoalsat
   Main-Is:              CPSA/GoalSat/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -274,6 +287,7 @@ Executable cpsagoalsat
 
 Executable cpsa2latex
   Main-Is:              CPSA/Latex/Main.hs
+  Default-Language:     Haskell2010
   Build-Depends:        base >= 3 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports

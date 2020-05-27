@@ -1,5 +1,16 @@
 CPSA NEWS
 
+  May 2020:
+
+* Release 3.6.6 adds a powerful feature: the cpsaprot preprocessing
+  tool.  This allows you to specify protocols in cpsa via a more
+  intuitive "Alice and Bob" notation where you specify messages being
+  sent from one role to another.  The cpsaprot tool builds the
+  standard defprotocol from this specification, which can then be run
+  through the main CPSA tool.  This helps to reduce duplications in
+  the input files actually created by humans and thus reduces the
+  occurrence of accidental errors in input.
+
   November 2019:
 
 * Release 3.6.5 is a bug fix release.  There are no user visible
