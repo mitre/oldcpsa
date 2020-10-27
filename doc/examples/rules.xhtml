@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<!-- CPSA 3.6.2 -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ <title>Rules and Facts</title>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+ <style>
+  svg.diagram { border-width: 1px; border-style: solid }
+ </style>
+</head>
+<body>
+
+<pre>(herald &quot;Rules and Facts&quot;)
+(comment &quot;CPSA 3.6.2&quot;)
+(comment &quot;All input read from rules.scm&quot;)</pre>
+
+<p id="top">Trees: <a href="#t0">0</a> <a href="#t2">2</a> <a href="#t3">3</a>.</p>
+
+<p id="t0">Tree <a href="#top">0</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='129.840pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 129.840 79.920' font-size='12.000'>
+  <text
+   x='89.880' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k1&quot;, &quot;_self&quot;)'>1</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k0&quot;, &quot;_self&quot;)'>0</text>
+  </svg></div>
+
+<pre>(defprotocol neq-test basic
+  (defrole init
+    (vars (n1 n2 text) (k skey))
+    (trace (send (cat n1 (enc n1 n2 k))) (recv n2))
+    (non-orig k)
+    (uniq-orig n1 n2))
+  (defrule neq (forall ((a mesg)) (implies (fact neq a a) (false))))
+  (comment &quot;Impose an nequality constraint using facts and rules&quot;))</pre>
+
+<p id="k0">Item <a href="#t0">0</a>, Child: <a href="#k1">1</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n2</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc n1 n2 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n1 n1) (n2 n2) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>neq-test 0</text>
+  </svg></div>
+
+<pre>(defskeleton neq-test
+  (vars (n1 n2 text) (k skey))
+  (defstrand init 2 (n1 n1) (n2 n2) (k k))
+  (non-orig k)
+  (uniq-orig n1 n2)
+  (comment &quot;This skeleton should have a shape&quot;)
+  (label 0)
+  (unrealized (0 1))
+  (origs (n1 (0 0)) (n2 (0 0)))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k1">Item <a href="#t0">1</a>, Parent: <a href="#k0">0</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n1</title>
+   <circle style='fill: blue;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc n1 n1 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n1 n1) (n2 n1) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960'
+   style='text-anchor: middle;'>neq-test 1 (realized)</text></svg></div>
+
+<pre>(defskeleton neq-test
+  (vars (n1 text) (k skey))
+  (defstrand init 2 (n1 n1) (n2 n1) (k k))
+  (non-orig k)
+  (uniq-orig n1)
+  (operation nonce-test (displaced 1 0 init 1) n2 (0 1) (enc n1 n2 k))
+  (label 1)
+  (parent 0)
+  (unrealized)
+  (shape)
+  (maps ((0) ((n1 n1) (n2 n1) (k k))))
+  (origs (n1 (0 0))))</pre>
+
+<p id="t2">Tree <a href="#top">2</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 79.920' font-size='12.000'>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: red;'
+   onclick='window.open(&quot;#k2&quot;, &quot;_self&quot;)'>2</text>
+  </svg></div>
+
+<pre>(defprotocol neq-test basic
+  (defrole init
+    (vars (n1 n2 text) (k skey))
+    (trace (send (cat n1 (enc n1 n2 k))) (recv n2))
+    (non-orig k)
+    (uniq-orig n1 n2))
+  (defrule neq (forall ((a mesg)) (implies (fact neq a a) (false))))
+  (comment &quot;Impose an nequality constraint using facts and rules&quot;))</pre>
+
+<p id="k2">Item <a href="#t2">2</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='229.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 229.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='189.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>n2</title>
+   <circle style='fill: red;' cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(cat n1 (enc n1 n2 k))</title>
+   <circle cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((n1 n1) (n2 n2) (k k))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>init</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>neq-test 2</text>
+  </svg></div>
+
+<pre>(defskeleton neq-test
+  (vars (n1 n2 text) (k skey))
+  (defstrand init 2 (n1 n1) (n2 n2) (k k))
+  (non-orig k)
+  (uniq-orig n1 n2)
+  (facts (neq n1 n2))
+  (comment &quot;This skeleton should have no shapes&quot;)
+  (label 2)
+  (unrealized (0 1))
+  (origs (n1 (0 0)) (n2 (0 0)))
+  (comment &quot;empty cohort&quot;))</pre>
+
+<p id="t3">Tree <a href="#top">3</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.760pt' height='79.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.760 79.920' font-size='12.000'>
+  <text
+   x='139.800' y='26.040'
+   style='font-weight: bold; text-anchor: middle; fill: blue;'
+   onclick='window.open(&quot;#k5&quot;, &quot;_self&quot;)'>5</text>
+  <line
+   x1='89.880' y1='39.960' x2='139.800' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='89.880' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k4&quot;, &quot;_self&quot;)'>4</text>
+  <line
+   x1='39.960' y1='39.960' x2='89.880' y2='39.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <text
+   x='39.960' y='26.040' style='text-anchor: middle; fill: black;'
+   onclick='window.open(&quot;#k3&quot;, &quot;_self&quot;)'>3</text>
+  </svg></div>
+
+<pre>(defprotocol doorsep basic
+  (defrole person
+    (vars (d p akey) (k skey) (t text))
+    (trace (send (enc (enc k (invk p)) d)) (recv (enc t k)) (send t)))
+  (defrole door
+    (vars (d p akey) (k skey) (t text))
+    (trace (recv (enc (enc k (invk p)) d)) (send (enc t k)) (recv t)))
+  (defrule trust
+    (forall ((z strd) (p d akey))
+      (implies
+        (and (p &quot;person&quot; z 1) (p &quot;person&quot; &quot;p&quot; z p) (p &quot;person&quot; &quot;d&quot; z d)
+          (non (invk p)))
+        (non (invk d))))
+    (comment &quot;The trust rule&quot;))
+  (comment &quot;Door Simple Example Protocol&quot;))</pre>
+
+<p id="k3">Item <a href="#t3">3</a>, Child: <a href="#k4">4</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='79.920pt' height='304.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 79.920 304.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <g><title>t</title>
+   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(enc t k)</title>
+   <circle cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(enc (enc k (invk p)) d)</title>
+   <circle style='fill: red;' cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((t t) (k k) (d d) (p p))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>door</text>
+   </g>
+  <text
+   x='39.960' y='39.960' style='text-anchor: middle;'>doorsep 3</text>
+  </svg></div>
+
+<pre>(defskeleton doorsep
+  (vars (t text) (k skey) (p d akey))
+  (defstrand door 3 (t t) (k k) (d d) (p p))
+  (non-orig (invk p))
+  (comment &quot;Analyze from the doors&apos;s perspective&quot;)
+  (label 3)
+  (unrealized (0 0))
+  (origs)
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k4">Item <a href="#t3">4</a>, Parent: <a href="#k3">3</a>, Child: <a href="#k5">5</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='304.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 304.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='114.960' x2='139.920' y2='114.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 139.920 114.960 Q 92.940 114.960 45.960 114.960'
+   style='stroke-dasharray: 6.000,2.400; stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(enc (enc k (invk p)) d-0)</title>
+   <circle cx='139.920' cy='114.960' r='6.000'/></g>
+  <g><title>t</title>
+   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(enc t k)</title>
+   <circle cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(enc (enc k (invk p)) d)</title>
+   <circle style='fill: red;' cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((k k) (d d-0) (p p))</title>
+   <text
+    x='139.920' y='77.460' style='text-anchor: middle;'>person</text>
+   </g>
+  <g><title>((t t) (k k) (d d) (p p))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>door</text>
+   </g>
+  <text
+   x='89.940' y='39.960' style='text-anchor: middle;'>doorsep 4</text>
+  </svg></div>
+
+<pre>(defskeleton doorsep
+  (vars (t text) (k skey) (p d d-0 akey))
+  (defstrand door 3 (t t) (k k) (d d) (p p))
+  (defstrand person 1 (k k) (d d-0) (p p))
+  (precedes ((1 0) (0 0)))
+  (non-orig (invk p) (invk d-0))
+  (rule trust)
+  (operation encryption-test (added-strand person 1) (enc k (invk p))
+    (0 0))
+  (label 4)
+  (parent 3)
+  (unrealized (0 0))
+  (comment &quot;1 in cohort - 1 not yet seen&quot;))</pre>
+
+<p id="k5">Item <a href="#t3">5</a>, Parent: <a href="#k4">4</a>.</p>
+
+<div>
+ <svg
+  class='diagram' width='179.880pt' height='304.920pt'
+  xmlns='http://www.w3.org/2000/svg' version='1.1'
+  viewBox='0 0 179.880 304.920' font-size='12.000'>
+  <defs>
+   <marker
+    id='arrow' orient='auto' markerWidth='5' markerHeight='10' refX='5'
+    refY='5'>
+    <path
+     d='M 0 0 5 5 0 10'
+     style='stroke-width: 2; fill: none; stroke: black;'/></marker>
+   </defs>
+  <line
+   x1='139.920' y1='114.960' x2='139.920' y2='114.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <line
+   x1='39.960' y1='114.960' x2='39.960' y2='264.960'
+   style='stroke-width: 0.960; stroke: gray;'/>
+  <path
+   d='M 139.920 114.960 Q 92.940 114.960 45.960 114.960'
+   style='stroke-width: 0.960; stroke: black; marker-end: url(#arrow); fill: none;'/>
+  <g><title>(enc (enc k (invk p)) d)</title>
+   <circle cx='139.920' cy='114.960' r='6.000'/></g>
+  <g><title>t</title>
+   <circle style='fill: blue;' cx='39.960' cy='264.960' r='6.000'/></g>
+  <g><title>(enc t k)</title>
+   <circle cx='39.960' cy='189.960' r='6.000'/></g>
+  <g><title>(enc (enc k (invk p)) d)</title>
+   <circle style='fill: blue;' cx='39.960' cy='114.960' r='6.000'/></g>
+  <g><title>((k k) (d d) (p p))</title>
+   <text
+    x='139.920' y='77.460' style='text-anchor: middle;'>person</text>
+   </g>
+  <g><title>((t t) (k k) (d d) (p p))</title>
+   <text x='39.960' y='77.460' style='text-anchor: middle;'>door</text>
+   </g>
+  <text
+   x='89.940' y='39.960'
+   style='text-anchor: middle;'>doorsep 5 (realized)</text></svg></div>
+
+<pre>(defskeleton doorsep
+  (vars (t text) (k skey) (p d akey))
+  (defstrand door 3 (t t) (k k) (d d) (p p))
+  (defstrand person 1 (k k) (d d) (p p))
+  (precedes ((1 0) (0 0)))
+  (non-orig (invk p) (invk d))
+  (operation encryption-test (contracted (d-0 d)) (enc k (invk p)) (0 0)
+    (enc (enc k (invk p)) d))
+  (label 5)
+  (parent 4)
+  (unrealized)
+  (shape)
+  (maps ((0) ((p p) (d d) (k k) (t t))))
+  (origs))</pre>
+
+</body>
+</html>
