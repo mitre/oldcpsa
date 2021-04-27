@@ -1,28 +1,15 @@
 # Haskell/Cabal Makefile
 # Requires GNU Make
-# The all target creates a default configuration if need be.
 
-PACKAGE := $(wildcard *.cabal)
-CONFIG	= configured
+TOOL =	cabal
 
-all:	$(CONFIG)
-	cabal build
+all:
+	$(TOOL) build
 
 Makefile:
 	@echo make $@
 
-$(PACKAGE):
-	@echo make $@
-
-$(CONFIG):	$(PACKAGE)
-	cabal configure
-	touch $(CONFIG)
-
-clean:
-	-rm $(CONFIG)
-	cabal clean
-
 %:	force
-	cabal $@
+	$(TOOL) $@
 
-.PHONY:	all clean force
+.PHONY:	all force

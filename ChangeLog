@@ -1,3 +1,15 @@
+2021-04-27  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.7
+
+2021-04-27  Joshua D. Guttman  <guttman@mitre.org>
+
+	* clarified package description (deorigination)
+
+2021-04-14  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* Makefile: Vastly simplified.
+
 2020-10-27  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Data-Files): Added missing examples to Data-files.

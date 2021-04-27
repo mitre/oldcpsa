@@ -1,5 +1,5 @@
 Name:                   cpsa
-Version:                3.6.6
+Version:                3.6.7
 Maintainer:             mliskov@mitre.org
 Cabal-Version:          >= 1.10
 License:                BSD3
@@ -7,39 +7,35 @@ License-File:           license.txt
 Synopsis:               Symbolic cryptographic protocol analyzer
 Description:
   The Cryptographic Protocol Shapes Analyzer (CPSA) attempts to
-  enumerate all essentially different executions possibe for a
+  enumerate all essentially different executions possible for a
   cryptographic protocol.  We call them the shapes of the protocol.
-  Naturally occurring protocols have only finitely many, indeed very
-  few shapes.  Authentication and secrecy properties are easy to
-  determine from them, as are attacks and anomalies.
+  Many naturally occurring protocols have only finitely many, indeed
+  very few shapes.  Authentication and secrecy properties are easy to
+  determine from them, as are attacks and anomalies, and an auxiliary
+  tool reads off strongest authentication and secrecy goals from the
+  shapes.
   .
   For each input problem, the CPSA program is given some initial
-  behavior, and it discovers what shapes are compatible with
-  it. Normally, the initial behavior is from the point of view of one
-  participant. The analysis reveals what the other participants must
-  have done, given the participant's view. The search is based on a
-  high-level algorithm that was claimed to be complete, i.e. every
-  shape can in fact be found in a finite number of steps. Further
-  theoretical work showed classes of executions that are not found by
-  the algorithm, however it also showed that every omitted execution
-  requires an unnatural interpretation of a protocol's roles.  Hence
-  the algorithm is complete relative to natural role semantics.
+  behavior, and it discovers what shapes are compatible with it.
+  Normally, the initial behavior is from the point of view of one
+  participant.  The analysis reveals what the other participants must
+  have done, given the participant's view.  The search is complete,
+  i.e. we proved every shape can in fact be found in a finite number
+  of steps, relative to a procedural semantics of protocol roles.
+  This version of CPSA has the ability to analyze Diffie-Hellman
+  protocols.
   .
-  The package contains a set of programs used to perform and display
-  the analysis.  A standards complient browser, such as Firefox,
-  Safari, or Chrome, is required to display the results.  Program
-  documentation is in the doc directory in the source distribution,
-  and installed in the package's data directory.  You can locate the
-  package's data directory by typing "cpsa --help" to a command
-  prompt.  New users should start learning to use the tool from the
-  manual, found at "cpsamanual.pdf" in the data directory.  Examples
-  referenced in the manual can be found in the data directory as well.
-  It is suggested that users make an examples directory and copy
-  "*.scm *.xhtml" to their local examples directory, both so that
-  they may be modified and for ease of access.
-  .
-  Serious Windows users should install MSYS so as to allow the use of
-  make and script execution.
+  The package contains a set of programs used to perform the analysis
+  and display it in a browser.  Program documentation is in the doc
+  directory in the source distribution, and installed in the package's
+  data directory.  You can locate the package's data directory by
+  typing "cpsa --help" to a command prompt.  New users should start
+  learning to use the tool from the manual, found at "cpsamanual.pdf"
+  in the data directory.  Examples referenced in the manual can be
+  found in the data directory as well.  It is suggested that users
+  make an examples directory and copy "*.scm *.xhtml" to their local
+  examples directory, both so that they may be modified and for ease
+  of access.
   .
   The theory and algorithm used by CPSA was developed with the help of
   Joshua D. Guttman, John D. Ramsdell, Jon C. Herzog, Shaddin
@@ -119,7 +115,7 @@ Extra-Source-Files:
   tst/role_uniq.scm tst/role_uniq.tst tst/rule-order.scm
   tst/rule-order.tst tst/trust-anchor.scm tst/trust-anchor.tst
   tst/blanchet_doorsep.prot tst/blanchet_doorsep.tst
-  
+
 Source-Repository head
   Type:     git
   Location: git://github.com/mitre/cpsa.git
@@ -179,7 +175,7 @@ Executable cpsaannotations
     CPSA.Lib.Printer CPSA.Lib.Entry CPSA.Lib.Algebra
     CPSA.Annotations.Formulas CPSA.Annotations.Annotations
     CPSA.Basic.Algebra CPSA.DiffieHellman.Algebra
-    
+
 Executable cpsadiff
   Main-Is:              CPSA/Diff/Main.hs
   Default-Language:     Haskell2010
