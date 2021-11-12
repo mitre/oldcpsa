@@ -8,4 +8,4 @@
 #
 
 chmod +x cpsatst tst/checktst tst/updatetst tst/cpsagraphtst
-
+chmod +x mkghci src/ghcmemlimit src/split.py
