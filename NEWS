@@ -1,5 +1,18 @@
 CPSA NEWS
 
+  November 2021:
+
+* Release 3.6.8 adds a stronger method for solving Diffie-Hellman
+  authentication tests for the case in which the test is a base value
+  of a special form.  The form is (exp (gen) (mul ...)), where all of
+  the variables in the exponent are random exponents and there is more
+  than one variable in the exponent.  In this case, it adds a listener
+  for each variable in the exponent.  The messages listened to is the
+  concatenation of the variable and the base value after the factor
+  that involves the variable has been removed.  Thus for (exp (gen)
+  (mul x y y)), a listener is created for (cat (exp (gen) (mul y y) x)
+  and (cat (exp (gen) x) y).
+
   May 2020:
 
 * Release 3.6.6 adds a powerful feature: the cpsaprot preprocessing

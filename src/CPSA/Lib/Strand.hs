@@ -6,12 +6,6 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
-{-# LANGUAGE CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 module CPSA.Lib.Strand (Instance, mkInstance, bldInstance, mkListener,
     role, env, trace, height, listenerTerm, Sid, Node, mkPreskel,
     firstSkeleton, Pair, Preskel, gen, protocol, kgoals, insts,
@@ -315,7 +309,7 @@ graphReduce orderings =
           | otherwise = loop dst (preds n ++ ns) (n : seen)
 
 -- Compute the transitive closure,
--- omitting pairs on the same strand.  
+-- omitting pairs on the same strand.
 -- This routine returns pairs that are not well ordered.
 -- Deal with it!
 graphClose :: [GraphEdge e i] -> [GraphEdge e i]
@@ -325,14 +319,14 @@ graphClose orderings =
       sameStrands (n0, n1) = strand n0 == strand n1
 
 -- Compute the transitive closure
--- including pairs on the same strand.  
+-- including pairs on the same strand.
 
 -- This routine returns pairs that are not well ordered.
 -- Deal with it!
 graphCloseAll :: [GraphEdge e i] -> [GraphEdge e i]
 graphCloseAll orderings =
     loop orderings False orderings
-    where 
+    where
       loop orderings False [] = orderings
       loop orderings True [] =
           loop orderings False orderings -- restart loop
@@ -344,7 +338,6 @@ graphCloseAll orderings =
           | elem p orderings = inner orderings repeat pairs rest
           | otherwise = inner (p : orderings) True pairs rest
 
-                             
 {-
 -- The nodes that preceed node n via strand succession
 spreds :: GraphNode e i -> [GraphNode e i]
@@ -1521,9 +1514,29 @@ addListener k n cause t =
       pair = ((length (insts k), 1), n)
       orderings' = pair : orderings k
 
+-- This function adds a stronger method for solving some
+-- Diffie-Hellman authentication tests.  The method handles the
+-- special case in which the critical term has the form (exp (gen)
+-- (mul ...)) and all of variables in the exponent are random
+-- exponents (rndx).
+
+-- When all of the factors in the exponent use rndx variables,
+-- baseRndx returns a list of concatenations of each variable with the
+-- base term exponentiated with the group without the variable.
+
 addBaseListener :: Algebra t p g s e c => Preskel t g s e -> Node ->
-               Cause t -> t -> [Ans t p g s e c]
+                   Cause t -> t -> [Ans t p g s e c]
 addBaseListener k n cause t =
+    case baseRndx t of
+      Just ts ->                -- All variables are rndx's.
+        do                      -- Add a listener for each one.
+          x <- ts
+          addListener k n cause x
+      _ -> formerAddBaseListener k n cause t
+
+formerAddBaseListener :: Algebra t p g s e c => Preskel t g s e -> Node ->
+                         Cause t -> t -> [Ans t p g s e c]
+formerAddBaseListener k n cause t =
     do
       k' <- wellFormedPreskel k'
       prs <- skeletonize useThinning
@@ -2538,7 +2551,7 @@ validateDeclEnv k k' mapping env =
 hull :: Algebra t p g s e c => Bool -> PRS t p g s e c ->
         [PRS t p g s e c]
 hull prune prs =
-    loop (korig $ skel prs)
+    loop (korig (skel prs) ++ kugen (skel prs))
     where
       -- No uniques originate on more than one strand
       loop [] = enrich prune prs

@@ -8,12 +8,6 @@
 
 {-# LANGUAGE MultiParamTypeClasses, FunctionalDependencies #-}
 
-{-# LANGUAGE CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 module CPSA.Lib.Algebra where
 
 import Data.Set (Set)
@@ -174,6 +168,10 @@ class (Term t, Show g) => Gen t g | t -> g, g -> t where
 
     -- Given a base value, create its precursor.
     basePrecursor :: g -> t -> (g, t)
+
+    -- Given a base value of the form (exp (gen) (mul ...))
+    -- all variables as rndx's, return listener values.
+    baseRndx :: t -> Maybe [t]
 
 -- Substitutions
 

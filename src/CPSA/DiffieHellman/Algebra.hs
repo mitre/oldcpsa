@@ -98,10 +98,6 @@
 
 {-# LANGUAGE MultiParamTypeClasses, CPP #-}
 
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 -- Fail on non-canonical terms with this is defined
 -- #define CANONICAL
 
@@ -286,12 +282,16 @@ cloneId :: Gen -> Id -> (Gen, Id)
 cloneId gen x = freshId gen (idName x)
 
 -- A term in an Abelian group is a map from identifiers to pairs of
--- bools and non-zero integers.  The boolean is true if the variable
--- is a basis element.
+-- sorts and non-zero integers.
+
+data Sort
+  = Rndx                        -- Sort of a basis element
+  | Expt
+  deriving (Show, Eq, Ord)
 
 type Coef = Int
 
-type Desc = (Bool, Coef)
+type Desc = (Sort, Coef)
 
 type Group = Map Id Desc
 
@@ -301,25 +301,25 @@ isGroupVar t =
 
 isBasisVar :: Group -> Bool
 isBasisVar t =
-  M.size t == 1 && head (M.elems t) == (True, 1)
+  M.size t == 1 && head (M.elems t) == (Rndx, 1)
 
 isExprVar :: Group -> Bool
 isExprVar t =
-  M.size t == 1 && head (M.elems t) == (False, 1)
+  M.size t == 1 && head (M.elems t) == (Expt, 1)
 
--- Assumes isGroupVar t == True or isBasisVar t == True!
+-- Assumes isGroupVar t, isBasisVar t, or isExprVar is true
 getGroupVar :: Group -> Id
 getGroupVar x = head $ M.keys x
 
 -- Create group var as a basis element if be is true
-groupVarG :: Bool -> Id -> Group
+groupVarG :: Sort -> Id -> Group
 groupVarG be x = M.singleton x (be, 1)
 
-groupVar :: Bool -> Id -> Term
+groupVar :: Sort -> Id -> Term
 groupVar be x = G $ groupVarG be x
 
 groupVarGroup :: Id -> Group
-groupVarGroup x = groupVarG False x
+groupVarGroup x = groupVarG Expt x
 
 dMapCoef :: (Coef -> Coef) -> Desc -> Desc
 dMapCoef f (be, c) = (be, f c)
@@ -381,7 +381,7 @@ data Symbol
     | Cat                       -- Term concatenation
     | Enc                       -- Encryption
     | Hash                      -- Hashing
-      deriving (Show, Eq, Ord, Enum, Bounded)
+      deriving (Show, Eq, Ord)
 
 -- A Diffie-Hellman Algebra Term
 
@@ -1035,11 +1035,9 @@ isExpr :: Term -> Bool
 isExpr (G _) = True
 isExpr _ = False
 
-{-
-isExpn :: Term -> Bool
-isExpn (G t) = isBasisVar t
-isExpn _ = False
--}
+isRndx :: Term -> Bool
+isRndx (G t) = isBasisVar t
+isRndx _ = False
 
 expnInExpr :: Term -> Term -> Bool
 expnInExpr (G n) (G r) =
@@ -1109,26 +1107,14 @@ places var source =
           | var == source = Place (reverse path) : paths
       f paths path (F _ u) =
           g paths path 0 u
-      f paths path (G t) =
-          groupPlaces (varId var) paths path 0 (linearize t)
+      f paths path (G t)
+          | M.member (varId var) t =
+            Place (reverse path) : paths
+          | otherwise = paths
       f paths _ _ = paths
       g paths _ _ [] = paths
       g paths path i (t : u) =
           g (f paths (i: path) t) path (i + 1) u
-
-linearize :: Group -> [Id]
-linearize t =
-    do
-      (x, (_, n)) <- M.assocs t
-      replicate (if n >= 0 then n else negate n) x
-
-groupPlaces ::  Id -> [Place] -> [Int] -> Int -> [Id] -> [Place]
-groupPlaces _ paths _ _ [] = paths
-groupPlaces x paths path i (y:ys) =
-    let paths' = if x == y then
-                     Place (reverse (i : path)) : paths
-                 else paths in
-    groupPlaces x paths' path (i + 1) ys
 
 -- Returns the places a term is carried by another term.
 carriedPlaces :: Term -> Term -> [Place]
@@ -1170,7 +1156,7 @@ replace var (Place ints) source =
           F s (C.replaceNth (loop path (u !! i)) i u)
       loop _ _ = C.assertError "Algebra.replace: Bad path to term"
 
-factors :: Group -> [(Id, (Bool, Int))]
+factors :: Group -> [Maplet]
 factors t =
     do
       (x, (be, n)) <- M.assocs t
@@ -1304,13 +1290,41 @@ mostGenPrecursors g t =
 
 basePrecursor :: Gen -> Term -> (Gen, Term)
 basePrecursor g (F Base [t]) =
-  (g', F Cat [F Base [F Exp [t, G $ invert x']], G x'])
+  (g', F Cat [F Base [simplifyBase $ F Exp [t, G $ invert x']],
+              G x'])
   where
     (g', x) = freshId g "w"
-    G x' = groupVar False x
-
+    x' = groupVarG Expt x
 basePrecursor _ t =
-  error ("Algebra.basePrecursor: Bad term " ++ show (F Base [t]))
+  error ("Algebra.basePrecursor: Bad term " ++ show t)
+
+simplifyBase :: Term -> Term
+simplifyBase (F Exp [t, G g])
+  | M.null g = simplifyBase t
+simplifyBase (F Exp [F Exp [t, G g0], G g1]) =
+  simplifyBase (F Exp [t, G (mul g0 g1)])
+simplifyBase t = t
+
+-- When all of the factors in a group use rndx variables, return a
+-- list of concatenations of each variable with the base term
+-- exponentiated with the group without the variable.
+
+baseRndx :: Term -> Maybe [Term]
+baseRndx (F Base [F Exp [F Genr [], G g]])
+  | M.size g > 1 =
+    loop [] (M.assocs g)
+    where
+      loop acc [] = Just acc
+      loop _ ((_, (Expt, _)) : _) = Nothing
+      loop acc ((id, (Rndx, _)) : maplets) =
+        loop (baseBuild g id : acc) maplets
+baseRndx _ = Nothing
+
+baseBuild :: Group -> Id -> Term
+baseBuild g var =
+  F Cat
+  [F Base [F Exp [F Genr [], G $ M.delete var g]],
+    groupVar Rndx var]
 
 instance C.Gen Term Gen where
     origin = origin
@@ -1320,6 +1334,7 @@ instance C.Gen Term Gen where
     clone = clone
     loadVars = loadVars
     basePrecursor = basePrecursor
+    baseRndx = baseRndx
 
 -- Functions used in both unification and matching
 
@@ -1377,7 +1392,7 @@ groupSubst subst t =
       f x (be, c) t =
           mul (expg (groupLookup subst be x) c) t
 
-groupLookup :: IdMap -> Bool -> Id -> Group
+groupLookup :: IdMap -> Sort -> Id -> Group
 groupLookup subst be x =
     case M.findWithDefault (groupVar be x) x subst of
       G t -> t
@@ -1438,7 +1453,8 @@ compose (Subst s0) (Subst s1) =
 
 nonTrivialBinding :: Id -> Term -> Bool
 nonTrivialBinding x (I y) = x /= y
-nonTrivialBinding x t@(G _) = not (t == groupVar True x || t == groupVar False x)
+nonTrivialBinding x t@(G _) =
+  not (t == groupVar Rndx x || t == groupVar Expt x)
 nonTrivialBinding _ _ = True
 
 -- During unification, variables determined to be equal are collected
@@ -1500,7 +1516,7 @@ chaseGroup s t =
        f x (be, c) t =
            mul (expg (chaseGroupLookup s be x) c) t
 
-chaseGroupLookup :: IdMap -> Bool -> Id -> Group
+chaseGroupLookup :: IdMap -> Sort -> Id -> Group
 chaseGroupLookup s be x =
     case M.lookup x s of
       Nothing -> groupVarG be x
@@ -1718,12 +1734,12 @@ latticeCrawl g as =
       doGatherAll acc ((v,t):as) =
           doGatherAll (acc ++ [v] ++ (gatherInTerm t)) as
       gatherInTerm (G m) =
-          map fst (filter (\(_,(b,_))->b) $ M.assocs m)
+          map fst (filter (\(_,(b,_))->b == Rndx) $ M.assocs m)
       gatherInTerm (F Base [F Genr []]) = []
       gatherInTerm (F Base [I _]) = []
       gatherInTerm (F Base [F Exp [_, G m]]) = gatherInTerm (G m)
       gatherInTerm _ = error ("Algebra.latticeCrawl: unexpected pattern")
-      allExpns = map (\id -> G (M.singleton id (True,1))) $ gatherAllExpns as
+      allExpns = map (\id -> G (M.singleton id (Rndx,1))) $ gatherAllExpns as
       allExpnIds = map foo allExpns
       foo (G grp) = getGroupVar grp
       foo _ = C.assertError ("Algebra.latticeCrawl: critical failure!")
@@ -1750,7 +1766,7 @@ nullifyAllPartition g as part =
     partUnifierLoop ([]:rest) acc = partUnifierLoop rest acc
     partUnifierLoop ([_]:rest) acc = partUnifierLoop rest acc
     partUnifierLoop ((a:(b:more)):rest) acc = partUnifierLoop ((b:more):rest)
-           [gs' | gs <- acc, gs' <- unify (groupVar True a) (groupVar True b) gs]
+           [gs' | gs <- acc, gs' <- unify (groupVar Rndx a) (groupVar Rndx b) gs]
     apply s as =
         map (substituteIdTerm s) as
 
@@ -1760,7 +1776,7 @@ nullifyOne g as s =
   map (\(g,e) -> (g, compose (substitution e) s)) ges
   where
     isolateExprs (v, (G m)) =
-        (v, G $ M.filterWithKey (\k (b,_) -> ((not b) || k == v)) m)
+        (v, G $ M.filterWithKey (\k (b,_) -> (b == Expt || k == v)) m)
     isolateExprs (v, (F Base [F Exp [base, G m]])) =
         (v, F Base [F Exp [base, snd $ isolateExprs (v,(G m))]])
     isolateExprs (v, t@(F Base _)) = (v, t)
@@ -2070,7 +2086,7 @@ mkInitMatchDecis :: Set Id -> Group -> Decision Id
 mkInitMatchDecis vs t =
   mkDecis { dist = [(x, y) | x <- v, y <- v, x /= y] }
   where
-    v = [x | (x, (be, _)) <- M.assocs t, be, not $ S.member x vs]
+    v = [x | (x, (be, _)) <- M.assocs t, be == Rndx, not $ S.member x vs]
 
 -- Move fresh variables on the RHS of the equation to the LHS
 -- Move variables of sort expn on the LHS to the RHS
@@ -2081,7 +2097,7 @@ partition t0 t1 v =
     (v1, c1) = M.partitionWithKey g t1 -- Fresh variables go in v1
     g x y = S.member x v && f y        -- only when they are exprs
     (v0, c0) = M.partition f t0        -- Basis elements go in c0
-    f (be, _) = not be
+    f (be, _) = be == Expt
     lhs = mul v0 (invert v1)
     rhs = mul c1 (invert c0)
 
@@ -2090,7 +2106,7 @@ partition t0 t1 v =
 constSolve :: [Maplet] -> Set Id -> Gen -> IdMap ->
               Decision Id -> [(Set Id, Gen, IdMap)]
 constSolve t v g r d
-  | any (\(_, (be, _)) -> not be) t = [] -- Fail expr var is on RHS
+  | any (\(_, (be, _)) -> be == Expt) t = [] -- Fail expr var is on RHS
   | otherwise = constSolve1 t v g r d    -- All vars are expn
 
 constSolve1 :: [Maplet] -> Set Id -> Gen ->
@@ -2109,7 +2125,7 @@ constSolve1 t v g r d =
         t' = identify x y t     -- Equate x y in t
         v' = S.delete x v       -- Eliminate x in v
         r' = eliminate x y' r   -- And in r
-        y' = groupVar True y
+        y' = groupVar Rndx y
         d' = d {same = (x, y):same d} -- And note decision
 
 -- Find a pair of variables for which no decision has been made.
@@ -2119,8 +2135,8 @@ nextDecis d t =
     not $ decided d x y]
   where
     vars = foldr f [] t
-    f (x, (True, _)) v = x:v
-    f (_, (False, _)) v = v
+    f (x, (Rndx, _)) v = x:v
+    f (_, (Expt, _)) v = v
     decided d x y =             -- Is x and y decided?
       u == v ||
       any f (dist d)
@@ -2254,10 +2270,10 @@ agSolve x ci i t0 t1 v g r d
       solve t0' t1 (S.insert x' $ S.delete x v) g' r' d
       where
         (g', x') = cloneId g x
-        t = G $ group ((x', (False, 1)) :
+        t = G $ group ((x', (Expt, 1)) :
                        mInverse (divide ci (omit i t0)))
         r' = eliminate x t r
-        t0' = (x', (False, ci)) : modulo ci (omit i t0)
+        t0' = (x', (Expt, ci)) : modulo ci (omit i t0)
 
 eliminate :: Id -> Term -> IdMap -> IdMap
 eliminate x t r =
@@ -2299,7 +2315,7 @@ identSolve z ci i t0 t1 v g r d =
         t1' = identify x y t1   -- Equate x y in t1
         v' = S.delete x v       -- Eliminate x in v
         r' = eliminate x y' r   -- And in r
-        y' = groupVar True y
+        y' = groupVar Rndx y
         d' = d {same = (x, y):same d}
 
 {-
@@ -2429,8 +2445,10 @@ loadVars gen sexprs =
 
 loadVarPair :: MonadFail m => SExpr Pos -> m [(SExpr Pos, SExpr Pos)]
 loadVarPair (L _ (x:y:xs)) =
-    let (t:vs) = reverse (x:y:xs) in
-    return [(v,t) | v <- reverse vs]
+    case reverse (x:y:xs) of
+      t : vs -> return [(v,t) | v <- reverse vs]
+      [] -> error "Algebra.loadVarPair: [] cannot happen"
+      
 loadVarPair x = fail (shows (annotation x) "Malformed vars declaration")
 
 loadVar :: MonadFail m => (Gen, [Term]) -> (SExpr Pos, SExpr Pos) ->
@@ -2456,11 +2474,11 @@ mkVar pos sort x
   | sort == "akey" = return $ F Akey [I x]
   | sort == "base" = return $ F Base [I x]
   | sort == "tag" = return $ F Tag [I x]
-  | sort == "expt" = return $ groupVar False x
-  | sort == "rndx" = return $ groupVar True x
+  | sort == "expt" = return $ groupVar Expt x
+  | sort == "rndx" = return $ groupVar Rndx x
   -- Legecy names
-  | sort == "expr" = return $ groupVar False x
-  | sort == "expn" = return $ groupVar True x
+  | sort == "expr" = return $ groupVar Expt x
+  | sort == "expn" = return $ groupVar Rndx x
   | sort == "strd" = return $ D x
   | otherwise = fail (shows pos "Sort " ++ sort ++ " not recognized")
 
@@ -2470,6 +2488,14 @@ loadLookup pos [] name =
 loadLookup pos (t : u) name =
     let name' = idName (varId t) in
     if name' == name then Right t else loadLookup pos u name
+
+loadLookupStrict :: Pos -> [Term] -> String -> Either String Term
+loadLookupStrict pos vars name =
+  case loadLookup pos vars name of
+    Left msg -> Left msg
+    Right t | not (isExpr t) || isRndx t -> Right t
+    _ -> Left (shows pos $ "Identifier " ++ name ++
+               " is an expt--must be a rndx")
 
 loadLookupName :: MonadFail m => Pos -> [Term] -> String -> m Term
 loadLookupName pos vars name =
@@ -2486,8 +2512,13 @@ loadLookupAkey pos vars name =
       f _ = fail (shows pos $ "Expecting " ++ name ++ " to be an akey")
 
 -- Load term and check that it is well-formed.
+-- Load in strict mode when the second argument is true.
+-- In this case, make sure that when an exponent is a carried term,
+-- the exponent is a rndx variable reference.
 loadTerm :: MonadFail m => [Term] -> Bool -> SExpr Pos -> m Term
-loadTerm vars _ (S pos s) =
+loadTerm vars True (S pos s) =
+    either fail return (loadLookupStrict pos vars s)
+loadTerm vars False (S pos s) =
     either fail return (loadLookup pos vars s)
 loadTerm _ _ (Q _ t) =
     return (F Tag [(C t)])
@@ -2648,7 +2679,7 @@ loadEnc pos strict vars (l : l' : ls) =
     do
       let (butLast, last) = splitLast l (l' : ls)
       t <- loadCat pos strict vars butLast
-      t' <- loadTerm vars strict last
+      t' <- loadTerm vars False last
       return $ F Enc [t, t']
 loadEnc pos _ _ _ = fail (shows pos "Malformed enc")
 
@@ -2660,9 +2691,9 @@ splitLast x xs =
       loop z x (y : ys) = loop (x : z) y ys
 
 loadHash :: MonadFail m => LoadFunction m
-loadHash _ strict vars (l : ls) =
+loadHash _ _ vars (l : ls) =
    do
-     ts <- mapM (loadTerm vars strict) (l : ls)
+     ts <- mapM (loadTerm vars False) (l : ls)
      return $ F Hash [foldr1 (\a b -> F Cat [a, b]) ts]
 loadHash pos _ _ _ = fail (shows pos "Malformed hash")
 
@@ -2673,13 +2704,15 @@ newtype Context = Context [(Id, String)] deriving Show
 displayVars :: Context -> [Term] -> [SExpr ()]
 displayVars _ [] = []
 displayVars ctx vars =
-    let (v,t):pairs = map (displayVar ctx) vars in
-    loop t [v] pairs
-    where
-      loop t vs [] = [L () (reverse (t:vs))]
-      loop t vs ((v',t'):xs)
-          | t == t' = loop t (v':vs) xs
-          | otherwise = L () (reverse (t:vs)):loop t' [v'] xs
+    case map (displayVar ctx) vars of
+      (v,t):pairs ->
+        loop t [v] pairs
+        where
+          loop t vs [] = [L () (reverse (t:vs))]
+          loop t vs ((v',t'):xs)
+            | t == t' = loop t (v':vs) xs
+            | otherwise = L () (reverse (t:vs)):loop t' [v'] xs
+      [] -> error "Algebra.displayVars: [] cannot happen"
 
 displayVar :: Context -> Term -> (SExpr (), SExpr ())
 displayVar ctx (I x) = displaySortId "mesg" ctx x

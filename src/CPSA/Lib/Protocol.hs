@@ -6,12 +6,6 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
-{-# LANGUAGE CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 module CPSA.Lib.Protocol (Event (..), evtTerms, evtMesgTerms, evtMap, evt,
     recvTerm, Trace, stripSync, tterms, originates,
     originationPos, gainedPos, genGainedPos, firstOccurs,

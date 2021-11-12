@@ -18,16 +18,25 @@
     (trace
      (send (exp (gen) x))
      (recv (cat (exp (gen) y)
-		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul y x)))))
-     (send (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul y x)))))
+		(enc (enc (exp (gen) y)
+			  (exp (gen) x) (privk b))
+		     (exp (gen) (mul y x)))))
+     
+     (send (enc (enc (exp (gen) x)
+		     (exp (gen) y) (privk a))
+		(exp (gen) (mul y x)))))
     (uniq-gen x))
   (defrole resp
     (vars (y rndx) (x expt) (a b name))
     (trace
      (recv (exp (gen) x))
      (send (cat (exp (gen) y)
-		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul x y)))))
-     (recv (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul x y)))))
+		(enc (enc (exp (gen) y)
+			  (exp (gen) x) (privk b))
+		     (exp (gen) (mul x y)))))
+     (recv (enc (enc (exp (gen) x)
+		     (exp (gen) y) (privk a))
+		(exp (gen) (mul x y)))))
     (uniq-gen y))
 )
 
@@ -49,8 +58,10 @@
     (trace
      (send (exp (gen) x))
      (recv (cat (exp (gen) y)
-		(enc (enc (exp (gen) y) (exp (gen) x) (privk b)) (exp (gen) (mul y x)))))
-     (send (enc (enc (exp (gen) x) (exp (gen) y) (privk a)) (exp (gen) (mul y x)))))
+		(enc (enc (exp (gen) y)
+			  (exp (gen) x) (privk b)) (exp (gen) (mul y x)))))
+     (send (enc (enc (exp (gen) x)
+		     (exp (gen) y) (privk a)) (exp (gen) (mul y x)))))
 					;(uniq-gen x)
     )
   (defrole weak-resp

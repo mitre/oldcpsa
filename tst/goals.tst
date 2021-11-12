@@ -1,6 +1,6 @@
 (herald goals)
 
-(comment "CPSA 3.6.6")
+(comment "CPSA 3.6.8")
 (comment "All input read from tst/goals.scm")
 
 (defprotocol ns basic

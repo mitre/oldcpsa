@@ -138,6 +138,8 @@ tdrawer h conf margin pp toc t =
       case toc of
         True -> anchor h (\_ -> topid) id
         False -> hPutStr h $ " " ++ show id
+      hPutStr h ", POV"
+      anchor h (\_ -> itemid id) id
       hPutStrLn h ".</p>"
       hPutStrLn h ""
       let (width, height, es) = tree conf t

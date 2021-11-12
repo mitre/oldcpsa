@@ -1,10 +1,37 @@
+2021-11-12  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.8
+
+2021-11-05  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (addBaseListener): Added a stronger
+	method for solving some Diffie-Hellman authentication tests.  The
+	method handles the special case in which the critical term has the
+	form (exp (gen) (mul ...)) and all of variables in the exponent
+	are random exponents (rndx).  It uses baseRndx to add listeners.
+
+	* src/CPSA/DiffieHellman/Algebra.hs (baseRndx): When all of the
+	factors in a group use rndx variables, baseRndx returns a list of
+	concatenations of each variable with the base term exponentiated
+	with the group without the variable.
+
+2021-11-02  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Graph/ExpandedView.hs (tdrawer): Added POV link in
+	tree.
+
+2021-09-10  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/lib/Expand.hs (macroExpand): Made it an error to apply
+	a macro to the wrong number of arguments.
+
 2021-04-27  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.7
 
 2021-04-27  Joshua D. Guttman  <guttman@mitre.org>
 
-	* clarified package description (deorigination)
+	* cpsa.cabal:  Clarified package description (deorigination)
 
 2021-04-14  John D. Ramsdell  <ramsdell@mitre.org>
 

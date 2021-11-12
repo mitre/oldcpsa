@@ -14,11 +14,7 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
-{-# LANGUAGE MultiParamTypeClasses, CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module CPSA.Basic.Algebra (name, origin) where
 
@@ -123,7 +119,7 @@ data Symbol
     | Cat                       -- Term concatenation (Pairing really)
     | Enc                       -- Encryption
     | Hash                      -- Hashing
-      deriving (Show, Eq, Ord, Enum, Bounded)
+      deriving (Show, Eq, Ord)
 
 -- A Basic Crypto Algebra Term
 
@@ -150,6 +146,15 @@ isVar (F s [I _]) =
     -- Sorts: text, data, name, skey, and akey
     s == Text || s == Data || s == Name || s == Skey || s == Akey || s == Tag
 isVar _ = False
+
+varSym :: Symbol -> Bool
+varSym Text = True
+varSym Data = True
+varSym Name = True
+varSym Skey = True
+varSym Akey = True
+varSym Tag = True
+varSym _ = False
 
 -- Note that isVar of (D _) is false.
 isStrdVar :: Term -> Bool
@@ -289,12 +294,8 @@ doubleTermWellFormed xts t0 t1 =
 
 -- Is the sort of the term a base sort?
 isAtom :: Term -> Bool
-isAtom (I _) = False
-isAtom (C _) = True
-isAtom (F s _) =
-    s == Text || s == Data || s == Name || s == Skey || s == Akey || s == Tag
-isAtom (D _) = False
-isAtom (Z _) = False
+isAtom (F s _) = varSym s
+isAtom _ = False
 
 -- Is the term numeric?
 isNum :: Term -> Bool
@@ -623,6 +624,10 @@ basePrecursor :: Gen -> Term -> (Gen, Term)
 basePrecursor _ _ =
   error "Algebra.basePrecursor: Not implemented for the basic algebra"
 
+baseRndx :: Term -> Maybe [Term]
+baseRndx _ =
+  error "Algebra.baseRndx: Not implemented for the basic algebra"
+
 {-
 mostGenPrecursors :: Gen -> Term -> [(Gen, Term)]
 mostGenPrecursors _ _ = []
@@ -636,6 +641,7 @@ instance C.Gen Term Gen where
     clone = clone
     loadVars = loadVars
     basePrecursor = basePrecursor
+    baseRndx = baseRndx
 
 -- Functions used in both unification and matching
 
@@ -950,8 +956,9 @@ loadVars gen sexprs =
 
 loadVarPair :: MonadFail m => SExpr Pos -> m [(SExpr Pos, SExpr Pos)]
 loadVarPair (L _ (x:y:xs)) =
-    let (t:vs) = reverse (x:y:xs) in
-    return [(v,t) | v <- reverse vs]
+    case reverse (x:y:xs) of
+      t : vs -> return [(v,t) | v <- reverse vs]
+      [] -> error "Algebra.loadVarPair: [] cannot happen"
 loadVarPair x = fail (shows (annotation x) "Bad variable declaration")
 
 loadVar :: MonadFail m => (Gen, [Term]) -> (SExpr Pos, SExpr Pos) ->
@@ -1132,13 +1139,15 @@ newtype Context = Context [(Id, String)] deriving Show
 displayVars :: Context -> [Term] -> [SExpr ()]
 displayVars _ [] = []
 displayVars ctx vars =
-    let (v,t):pairs = map (displayVar ctx) vars in
-    loop t [v] pairs
-    where
-      loop t vs [] = [L () (reverse (t:vs))]
-      loop t vs ((v',t'):xs)
-          | t == t' = loop t (v':vs) xs
-          | otherwise = L () (reverse (t:vs)):loop t' [v'] xs
+    case map (displayVar ctx) vars of
+      (v,t):pairs ->
+        loop t [v] pairs
+        where
+          loop t vs [] = [L () (reverse (t:vs))]
+          loop t vs ((v',t'):xs)
+            | t == t' = loop t (v':vs) xs
+            | otherwise = L () (reverse (t:vs)):loop t' [v'] xs
+      [] -> error "Algebra.displayVars: [] cannot happen"
 
 displayVar :: Context -> Term -> (SExpr (), SExpr ())
 displayVar ctx (I x) = displaySortId "mesg" ctx x

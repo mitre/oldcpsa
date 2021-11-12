@@ -7,8 +7,6 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
-{-# LANGUAGE CPP #-}
-
 module CPSA.Lib.Utilities where
 
 import qualified Data.Set as S
@@ -33,11 +31,7 @@ instance Monad ReturnFail where
     Fail l >>= _   = Fail l
     Return r >>= k = k r
 
-#if (MIN_VERSION_base(4,13,0))
 instance MonadFail ReturnFail where
-#else
-#define MonadFail Monad
-#endif
     fail s         = Fail s
 
 adjoin :: Eq a => a -> [a] -> [a]

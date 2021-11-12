@@ -1,6 +1,6 @@
 (herald wrap-decrypt (bound 10))
 
-(comment "CPSA 3.6.6")
+(comment "CPSA 3.6.8")
 (comment "All input read from tst/wrap_decrypt.lsp")
 (comment "Strand count bounded at 10")
 

@@ -8,9 +8,11 @@ well-known cryptographic protocols.
 
 CPSA attempts to enumerate all essentially different executions
 possible for a cryptographic protocol.  We call them the shapes of the
-protocol.  Naturally occurring protocols have only finitely many,
+protocol.  Many naturally occurring protocols have only finitely many,
 indeed very few shapes.  Authentication and secrecy properties are
-easy to determine from them, as are attacks and anomalies.
+easy to determine from them, as are attacks and anomalies, and an
+auxiliary tool reads off strongest authentication and secrecy goals
+from the shapes.
 
 For each input problem, the CPSA program is given some initial
 behavior, and it discovers what shapes are compatible with it.
@@ -41,7 +43,6 @@ INSTALLING FROM A TARBALL
 
 Build and install with:
 
-$ cabal configure
 $ cabal build
 $ cabal install
 : To find the directory containing documentation and samples, type:
@@ -70,7 +71,6 @@ Core and then run:
 
 C:\...> cabal update
 C:\...> cabal install parallel
-C:\...> cabal configure
 C:\...> cabal build
 C:\...> cabal install
 
@@ -101,15 +101,21 @@ detail.
 
 TEST SUITE
 
+Cabal currently fails to preserve permissions correctly.  To fix this
+problem, type:
+
+$ /bin/sh fixperms
+
 : To run the test suite type:
 $ ./cpsatst
 
-Tests with the .scm extension are expected to complete without error,
-tests with the .lsp extension are expected to fail, and tests with the
-.lisp extension are not run.  New users should read tst/README, and
-then browse the files it suggests while reading CPSA documentation.
+Tests with the .scm extension and .prot extension are expected to
+complete without error, tests with the .lsp extension are expected to
+fail, and tests with the .lisp extension are not run.  New users
+should read tst/README, and then browse the files it suggests while
+reading CPSA documentation.
 
-Don't develop your protocols in the tst directory.  The Makefile is
+Don't develop your protocols in the tst directory.  The script is
 optimized for testing the cpsa program, not analyzing protocols.
 
 ADDITIONAL PROGRAMS

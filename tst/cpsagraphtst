@@ -1,0 +1,12 @@
+#! /bin/sh
+
+# Graph all expected test output.
+
+PROG=cpsagraph
+
+for i in *.tst
+do
+  o=`basename $i .tst`_tst.xhtml
+  echo $PROG -o $o $i
+  $PROG -o $o $i
+done

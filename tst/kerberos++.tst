@@ -1,4 +1,4 @@
-(comment "CPSA 3.6.6")
+(comment "CPSA 3.6.8")
 (comment "All input read from tst/kerberos++.scm")
 
 (defprotocol kerberos basic

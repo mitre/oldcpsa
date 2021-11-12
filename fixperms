@@ -1,0 +1,11 @@
+#! /bin/sh
+
+# This script fixes a bug in Cabal.  When it creates a source
+# distribution, it fails to add execution permission to scripts in the
+# distribution.  Correct this by executing:
+#
+# $ /bin/sh fixperms
+#
+
+chmod +x cpsatst tst/checktst tst/updatetst tst/cpsagraphtst
+

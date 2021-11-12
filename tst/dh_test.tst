@@ -1,7 +1,7 @@
 (herald "Diffie-Hellman protocol, man-in-the-middle attack"
   (algebra diffie-hellman) (bound 20))
 
-(comment "CPSA 3.6.6")
+(comment "CPSA 3.6.8")
 (comment "All input read from tst/dh_test.scm")
 (comment "Strand count bounded at 20")
 

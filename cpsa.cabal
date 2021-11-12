@@ -1,5 +1,5 @@
 Name:                   cpsa
-Version:                3.6.7
+Version:                3.6.8
 Maintainer:             mliskov@mitre.org
 Cabal-Version:          >= 1.10
 License:                BSD3
@@ -16,14 +16,13 @@ Description:
   shapes.
   .
   For each input problem, the CPSA program is given some initial
-  behavior, and it discovers what shapes are compatible with it.
-  Normally, the initial behavior is from the point of view of one
-  participant.  The analysis reveals what the other participants must
-  have done, given the participant's view.  The search is complete,
-  i.e. we proved every shape can in fact be found in a finite number
-  of steps, relative to a procedural semantics of protocol roles.
-  This version of CPSA has the ability to analyze Diffie-Hellman
-  protocols.
+  behavior, and it discovers what shapes are compatible with
+  it. Normally, the initial behavior is from the point of view of one
+  participant. The analysis reveals what the other participants must
+  have done, given the participant's view. The search is complete,
+  i.e. we proved every shape can be found in a finite number of steps,
+  relative to a procedural semantics of protocol roles.  This version
+  of CPSA has the ability to analyze Diffie-Hellman protocols.
   .
   The package contains a set of programs used to perform the analysis
   and display it in a browser.  Program documentation is in the doc
@@ -72,7 +71,7 @@ Data-Files:
 
 Data-Dir:               doc
 Extra-Source-Files:
-  Makefile ChangeLog README.txt NEWS mkghci cpsatst setup.bat
+  Makefile ChangeLog README.txt NEWS mkghci fixperms cpsatst setup.bat
   src/cpsa.el src/cpsaops.scm src/cpsa.pl src/pp.pl
   src/sexpr.pl src/ghcmemlimit src/cpsajson.py src/split.py
   src/ocaml/Makefile src/ocaml/README src/ocaml/cpsa.d.itarget
@@ -81,39 +80,56 @@ Extra-Source-Files:
   src/ocaml/main.mli src/ocaml/pp.ml src/ocaml/token.ml
   src/ocaml/token.mli src/ocaml/scanner.mll src/ocaml/sexpr.ml
   src/ocaml/sexpr.mli src/ocaml/sexpr_type.ml
-  tst/checktst tst/updatetst tst/graphtst
+  tst/checktst tst/updatetst tst/cpsagraphtst
   tst/Makefile tst/Make.hs tst/README
-  tst/axiom2.scm tst/axiom2.tst tst/blanchet.scm tst/blanchet.tst
-  tst/bltk_example.lisp tst/bltk_example.tst tst/bltk_test.scm
-  tst/bltk_test.tst tst/dh-ca.scm tst/dh-ca.tst tst/dh_mim2.scm
-  tst/dh_mim2.tst tst/dh_mim.scm tst/dh_mim.tst tst/dhnsl_basic.scm
-  tst/dhnsl_basic.tst tst/dhnsl.lisp tst/dhnsl.tst tst/dhnsl_use.scm
-  tst/dhnsl_use.tst tst/dh_sig.scm tst/dh_sig.tst tst/dh_test.scm
-  tst/dh_test.tst tst/enrich.scm tst/enrich.tst tst/envelope.scm
-  tst/envelope.tst tst/ffgg.scm tst/ffgg.tst tst/fnof_or.scm
-  tst/fnof_or.tst tst/fnof_test.scm tst/fnof_test.tst
+  tst/aik.scm tst/aik.tst tst/attest.scm tst/attest.tst tst/axiom2.scm
+  tst/axiom2.tst tst/blanchet.scm tst/blanchet.tst tst/bltk_or.scm
+  tst/bltk_or.tst tst/bltk_test.scm tst/bltk_test.tst tst/comment.scm
+  tst/comment.tst tst/comp_test.scm tst/comp_test.tst tst/dh-ca.scm
+  tst/dh-ca.tst tst/dh_group_sig.scm tst/dh_group_sig.tst
+  tst/dh_mim.scm tst/dh_mim.tst tst/dh_mim2.scm tst/dh_mim2.tst
+  tst/dh_mim_nobase.scm tst/dh_mim_nobase.tst tst/dh_sig.scm
+  tst/dh_sig.tst tst/dh_test.scm tst/dh_test.tst tst/dhcr_um.scm
+  tst/dhcr_um.tst tst/dhcr_um3.scm tst/dhcr_um3.tst tst/dhcr_umx.scm
+  tst/dhcr_umx.tst tst/dhnsl_basic.scm tst/dhnsl_basic.tst
+  tst/dhnsl_use.scm tst/dhnsl_use.tst tst/doorsep.scm tst/doorsep.tst
+  tst/doorsep2invk.scm tst/doorsep2invk.tst tst/eadh_um.scm
+  tst/eadh_um.tst tst/enrich.scm tst/enrich.tst tst/envelope.scm
+  tst/envelope.tst tst/envelope_short.scm tst/envelope_short.tst
+  tst/eq_test.scm tst/eq_test.tst tst/ffgg.scm tst/ffgg.tst
+  tst/fluffy_draft03_gske.scm tst/fluffy_draft03_gske.tst
+  tst/fnof_or.scm tst/fnof_or.tst tst/fnof_test.scm tst/fnof_test.tst
   tst/fnof_woolam.scm tst/fnof_woolam.tst tst/fnof_yahalom.scm
   tst/fnof_yahalom.tst tst/goals.scm tst/goals.tst tst/iadh_um.scm
-  tst/iadh_um.tst tst/injection.scm tst/injection.tst
-  tst/kerberos++.scm tst/kerberos++.tst tst/lt_test.scm
-  tst/lt_test.tst tst/neq_test.scm
-  tst/neq_test.tst tst/ns.scm tst/ns.tst tst/or.scm tst/or.tst
-  tst/owang.scm tst/owang.tst tst/owat.scm tst/owat.tst tst/pkinit.scm
-  tst/pkinit.tst tst/plaindh.scm tst/plaindh.tst tst/priority_test.scm
-  tst/priority_test.tst tst/staticdh.scm tst/staticdh.tst
-  tst/station2.scm tst/station2.tst
-  tst/subsort_test.scm tst/subsort_test.tst
-  tst/test_small.scm tst/test_small.tst tst/unilateral.scm
-  tst/unilateral.tst tst/uniq-gen-test.scm tst/uniq-gen-test.tst
-  tst/wang.tst tst/woolam.scm tst/woolam.tst tst/wrap_decrypt.lsp
-  tst/wrap_decrypt.tst tst/yahalom.scm tst/yahalom.tst
-  tst/aik.scm tst/aik.tst tst/reflect.scm tst/reflect.tst
-  tst/station.scm tst/station.tst tst/kerb.scm tst/kerb.tst
-  tst/attest.scm tst/attest.tst tst/comp_test.scm tst/comp_test.tst
-  tst/fluffy_draft03_gske.scm tst/fluffy_draft03_gske.tst
-  tst/ordered.scm tst/ordered.tst tst/prottrans.scm tst/prottrans.tst
-  tst/role_uniq.scm tst/role_uniq.tst tst/rule-order.scm
-  tst/rule-order.tst tst/trust-anchor.scm tst/trust-anchor.tst
+  tst/iadh_um.tst tst/iadh_um_eq.scm tst/iadh_um_eq.tst
+  tst/iadh_um_joshua.scm tst/iadh_um_joshua.tst tst/iadh_umx.scm
+  tst/iadh_umx.tst tst/injection.scm tst/injection.tst tst/kerb.scm
+  tst/kerb.tst tst/kerberos++.scm tst/kerberos++.tst tst/lt_test.scm
+  tst/lt_test.tst tst/neq_test.scm tst/neq_test.tst tst/nh-ca-w-dh.scm
+  tst/nh-ca-w-dh.tst tst/nh-ca.scm tst/nh-ca.tst tst/nhcr_um.scm
+  tst/nhcr_um.tst tst/nhcr_um3.scm tst/nhcr_um3.tst tst/nhcr_umx.scm
+  tst/nhcr_umx.tst tst/ns.scm tst/ns.tst tst/or.scm tst/or.tst
+  tst/ordered.scm tst/ordered.tst tst/owang.scm tst/owang.tst
+  tst/owat.scm tst/owat.tst tst/pkinit.scm tst/pkinit.tst
+  tst/plaindh.scm tst/plaindh.tst tst/precursor.scm tst/precursor.tst
+  tst/priority_test.scm tst/priority_test.tst tst/prottrans.scm
+  tst/prottrans.tst tst/reflect.scm tst/reflect.tst tst/reflect_dh.scm
+  tst/reflect_dh.tst tst/role_uniq.scm tst/role_uniq.tst
+  tst/rule-order.scm tst/rule-order.tst tst/staticdh.scm
+  tst/staticdh.tst tst/station.scm tst/station.tst tst/station2.scm
+  tst/station2.tst tst/station_newhope.scm tst/station_newhope.tst
+  tst/station_nobase.scm tst/station_nobase.tst tst/stationbase.scm
+  tst/stationbase.tst tst/subsort_test.scm tst/subsort_test.tst
+  tst/tag_test.scm tst/tag_test.tst tst/target.scm tst/target.tst
+  tst/test_g.scm tst/test_g.tst tst/test_small.scm tst/test_small.tst
+  tst/thinning.scm tst/thinning.tst tst/trust-anchor.scm
+  tst/trust-anchor.tst tst/ugen_test.scm tst/ugen_test.tst
+  tst/unilateral.scm tst/unilateral.tst tst/uniq-gen-test.scm
+  tst/uniq-gen-test.tst tst/uniq_orig_doesnt_fail.scm
+  tst/uniq_orig_doesnt_fail.tst tst/wd-goalssat.scm
+  tst/wd-goalssat.tst tst/wd-gs-simple.scm tst/wd-gs-simple.tst
+  tst/woolam.scm tst/woolam.tst tst/yahalom.scm tst/yahalom.tst
+  tst/yolo.scm tst/yolo.tst tst/wrap_decrypt.lsp tst/wrap_decrypt.tst
   tst/blanchet_doorsep.prot tst/blanchet_doorsep.tst
 
 Source-Repository head
@@ -123,7 +139,7 @@ Source-Repository head
 Executable cpsa
   Main-Is:              CPSA/Lib/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers, parallel
+  Build-Depends:        base >= 4.13 && < 5, containers, parallel
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports -threaded -rtsopts
   Hs-Source-Dirs:       src
@@ -139,7 +155,7 @@ Executable cpsa
 Executable cpsagraph
   Main-Is:              CPSA/Graph/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers
+  Build-Depends:        base >= 4.13 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
   Hs-Source-Dirs:       src
@@ -154,7 +170,7 @@ Executable cpsagraph
 Executable cpsashapes
   Main-Is:              CPSA/Shapes/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers
+  Build-Depends:        base >= 4.13 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
   Hs-Source-Dirs:       src
@@ -166,7 +182,7 @@ Executable cpsashapes
 Executable cpsaannotations
   Main-Is:              CPSA/Annotations/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers
+  Build-Depends:        base >= 4.13 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
   Hs-Source-Dirs:       src
@@ -191,7 +207,7 @@ Executable cpsadiff
 Executable cpsasas
   Main-Is:              CPSA/SAS/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers
+  Build-Depends:        base >= 4.13 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
   Hs-Source-Dirs:       src
@@ -251,7 +267,7 @@ Executable cpsadebase
 Executable cpsamatch
   Main-Is:              CPSA/Match/Main.hs
   Default-Language:     Haskell2010
-  Build-Depends:        base >= 4 && < 5, containers
+  Build-Depends:        base >= 4.13 && < 5, containers
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
   Hs-Source-Dirs:       src

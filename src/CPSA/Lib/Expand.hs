@@ -6,12 +6,6 @@
 -- modify it under the terms of the BSD License as published by the
 -- University of California.
 
-{-# LANGUAGE CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 module CPSA.Lib.Expand (expand, readSExprs, Macro,
                         expandSExpr, bound, getMacroName,
                         getMacroArgs, getMacroBody) where
@@ -133,20 +127,27 @@ macroExpand :: MonadFail m => [Macro] -> Pos ->  Int ->
 macroExpand _ pos limit _
     | limit <= 0 = fail (shows pos "Expansion limit exceeded")
 macroExpand macs pos limit sexpr@(L _ (S _ sym : xs)) =
-    case macroExpand1 macs sym xs of
-      Nothing -> return sexpr   -- Nothing to do
-      Just sexpr -> macroExpand macs pos (limit - 1) sexpr
+    do
+      result <- macroExpand1 macs pos sym xs
+      case result of
+        Nothing -> return sexpr   -- Nothing to do
+        Just sexpr -> macroExpand macs pos (limit - 1) sexpr
 macroExpand _ _ _ sexpr = return sexpr
 
 -- Expand one macro call or return Nothing
 
-macroExpand1 :: [Macro] -> String -> [SExpr Pos] -> Maybe (SExpr Pos)
-macroExpand1 [] _ _ = Nothing
-macroExpand1 (mac : macs) sym xs
-    | name mac == sym && length (args mac) == length xs =
-        Just (apply mac xs)
+macroExpand1 :: MonadFail m => [Macro] -> Pos -> String ->
+                [SExpr Pos] -> m (Maybe (SExpr Pos))
+macroExpand1 [] _ _ _ = return Nothing
+macroExpand1 (mac : macs) pos sym xs
+    | name mac == sym =
+      if length (args mac) == length xs then
+        return (Just (apply mac xs))
+      else
+        fail (shows pos ("Expected argument count for macro " ++
+                         sym ++ " is " ++ show (args mac)))
     | otherwise =
-        macroExpand1 macs sym xs
+        macroExpand1 macs pos sym xs
 
 -- Apply a macro to some parameters
 

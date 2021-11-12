@@ -13,7 +13,7 @@ module CPSA.Lib.Declaration
         dterms, dlocs, daux, declInst, declInstAux, DeclInst, dkugenFull,
         dkabsent, declsTerms, addDeclInst, declMember, nsdecls,
         DeclInstList, Declaration, DeclInFormat(..), DeclOutFormat(..),
-        DeclList, declarationRoleTags, 
+        DeclList, declarationRoleTags,
 --        BasicOutFmt, MultiTermOutFmt, NullOutFmt, BasicRoleOutFmt, GeneralOutFmt,
 --        BasicInFmt, MultiTermInFmt, NullInFmt, TwoTermInFmt,
         declCheck, Loc, avoidTerms,
@@ -460,5 +460,3 @@ subsortCheck decls =
    where
      failures = [t1 | (tag1,t1) <- pairs, (tag2,t2) <- pairs, t1 == t2, tag1 /= tag2]
      pairs = map (\ di -> (daux di, head $ dterms di)) $ tagDecls "subsort" decls
-
-

@@ -3,7 +3,7 @@
 for f in *.tst
 do
   b=`basename $f .tst`
-  if test ! -f $b.scm -a ! -f $b.lsp
+  if test ! -f $b.scm -a ! -f $b.lsp -a ! -f $b.prot -a ! -f $b.lisp
   then
     echo $f
   fi

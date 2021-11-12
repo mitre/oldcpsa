@@ -30,12 +30,6 @@ The form (clone A B) says make role B have the same messages as A up
 to this point in the specification.
 -}
 
-{-# LANGUAGE CPP #-}
-
-#if !(MIN_VERSION_base(4,13,0))
-#define MonadFail Monad
-#endif
-
 module Main (main) where
 
 import Numeric
@@ -224,7 +218,6 @@ chmsg (L _ [S _ "chmsg", S _ chan, term]) =
   [S () chan, strip term]
 chmsg (L _ [S _ "chmsg", term]) = [strip term]
 chmsg term = [strip term]
-
 
 update :: String -> SExpr () -> Env -> Env
 update role msg [] = [(role, [msg])]
