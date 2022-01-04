@@ -1,3 +1,13 @@
+2022-01-04  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.9
+
+2021-12-08  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/Strand.hs (origUgenDiffStrand): Expunge skeletons
+	that have a value that is both uniq orig and uniq gen, and start
+	on different strands.
+
 2021-11-12  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.8

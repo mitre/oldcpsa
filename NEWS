@@ -1,5 +1,10 @@
 CPSA NEWS
 
+  January 2022:
+
+* Release 3.6.9 expunges skeletons that have a value that is both uniq
+  orig and uniq gen, and start on different strands.
+
   November 2021:
 
 * Release 3.6.8 adds a stronger method for solving Diffie-Hellman
@@ -163,4 +168,3 @@ The most important new features included are:
 * New, improved documentation.  Included with the release is the CPSA
   manual which thoroughly documents the new and existing features of
   the tool and is also a good starting place for new users.
-
