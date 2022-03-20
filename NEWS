@@ -1,5 +1,10 @@
 CPSA NEWS
 
+  March 2022:
+
+* Release 3.6.10 allows double quote and backslash in S-expressions so
+  that they can contain Windows file names.
+
   January 2022:
 
 * Release 3.6.9 expunges skeletons that have a value that is both uniq

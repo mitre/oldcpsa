@@ -1,6 +1,6 @@
 (herald yolo)
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/yolo.scm")
 
 (defprotocol yolo basic

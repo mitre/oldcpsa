@@ -3,7 +3,7 @@
     origination are not always preserved for skeleton uniq-orig
     assumptions) (algebra diffie-hellman))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/ugen_test.scm")
 
 (defprotocol uof diffie-hellman

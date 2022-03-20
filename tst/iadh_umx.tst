@@ -1,7 +1,7 @@
 (herald "IADH: unified model (UM), criss-cross variant" (bound 20)
   (limit 2000) (algebra diffie-hellman))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/iadh_umx.scm")
 (comment "Strand count bounded at 20")
 

@@ -1,6 +1,6 @@
 (herald "Signed group DH exchange" (algebra diffie-hellman) (limit 100))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/dh_group_sig.scm")
 (comment "Step count limited to 100")
 

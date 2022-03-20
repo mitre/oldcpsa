@@ -1,6 +1,6 @@
 (herald "small test" (algebra diffie-hellman))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/test_g.scm")
 
 (defprotocol test1 diffie-hellman

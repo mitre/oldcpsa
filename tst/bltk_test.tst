@@ -1,6 +1,6 @@
 (herald "bltk Test File" (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/bltk_test.scm")
 
 (defprotocol test diffie-hellman

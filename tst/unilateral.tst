@@ -1,6 +1,6 @@
 (herald unilateral)
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/unilateral.scm")
 
 (defprotocol unilateral basic

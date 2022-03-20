@@ -2,7 +2,7 @@
   (comment "This protocol contains a man-in-the-middle"
     "attack discovered by Galvin Lowe."))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/injection.scm")
 
 (defprotocol ns diffie-hellman

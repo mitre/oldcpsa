@@ -1,7 +1,7 @@
 (herald "Yahalom Protocol with Forwarding Removed"
   (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/yahalom.scm")
 
 (defprotocol yahalom diffie-hellman

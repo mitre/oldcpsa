@@ -1,7 +1,7 @@
 (herald "NHCR: unified model (UMX) criss-cross" (bound 20) (limit 8000)
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.7")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/nhcr_umx.scm")
 (comment "Step count limited to 8000")
 (comment "Strand count bounded at 20")

@@ -1,3 +1,12 @@
+2022-03-20  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.10
+
+2022-03-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/Lib/SExpr.hs: Allow double quote and backslash in
+	strings so that S-expressions can contain Windows file names.
+
 2022-01-04  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.9

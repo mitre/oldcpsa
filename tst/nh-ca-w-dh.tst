@@ -1,6 +1,6 @@
 (herald nhca (algebra diffie-hellman) (bound 20))
 
-(comment "CPSA 3.6.7")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/nh-ca-w-dh.scm")
 (comment "Strand count bounded at 20")
 

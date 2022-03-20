@@ -2,7 +2,7 @@
   (comment "First, third, and fourth skeletons should have a shape,"
     "second should be dead."))
 
-(comment "CPSA 3.6.8")
+(comment "CPSA 3.6.10")
 (comment "All input read from tst/subsort_test.scm")
 
 (defprotocol subsorttest basic

@@ -240,7 +240,7 @@ cpsaVersion = showString "CPSA " (showVersion version)
 
 comment :: String -> SExpr ()
 comment msg =
-    L () [S () "comment", Q () msg]
+    L () [S () "comment", stringSExpr msg]
 
 writeComment :: Handle -> Int -> String -> IO ()
 writeComment h margin msg =
