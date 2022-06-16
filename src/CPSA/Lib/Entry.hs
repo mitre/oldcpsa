@@ -268,7 +268,7 @@ gentlyReadSExpr p =
             return x
         Left err ->
             do
-              hPutStrLn stderr (show err)
+              hPutStrLn stderr err
               return Nothing
 
 -- Exception handling for IO errors

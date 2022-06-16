@@ -1,5 +1,9 @@
 CPSA NEWS
 
+  June 2022:
+
+* Release 3.6.11 removes extra quotes in some error messages.
+
   March 2022:
 
 * Release 3.6.10 allows double quote and backslash in S-expressions so

@@ -1,7 +1,7 @@
 (herald "Wrap-Decrypt example, simplified" (bound 24) (limit 500)
   (goals-sat))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/wd-gs-simple.scm")
 (comment "Step count limited to 500")
 (comment "Strand count bounded at 24")

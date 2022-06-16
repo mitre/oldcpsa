@@ -2,7 +2,7 @@
   "Yahalom Protocol with Forwarding Removed, using fnof to emulate ltk function"
   (bound 12))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/fnof_yahalom.scm")
 
 (defprotocol yahalom basic

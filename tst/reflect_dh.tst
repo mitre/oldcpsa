@@ -1,6 +1,6 @@
 (herald reflect (algebra diffie-hellman))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/reflect_dh.scm")
 
 (defprotocol reflect diffie-hellman

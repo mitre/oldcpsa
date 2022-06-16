@@ -2,7 +2,7 @@
   (comment "Standard version using variables of sort mesg")
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/bltk_or.scm")
 
 (defprotocol or diffie-hellman

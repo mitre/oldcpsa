@@ -96,7 +96,7 @@ step output name origin margin state sexpr =
       x <- tryIO (sas name origin state sexpr)
       case x of
         Left err ->
-            abort (show err)
+            abort err
         Right (acc, Nothing) ->
             after output margin acc sexpr
         Right (acc, Just x) ->

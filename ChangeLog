@@ -1,3 +1,12 @@
+2022-06-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* cpsa.cabal (Version): Tagged as 3.6.11
+
+2022-04-07  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/CPSA/{Graph,SAS,Shapes}/Main.hs: Removed extra quotes in
+	error messages.
+
 2022-03-20  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* cpsa.cabal (Version): Tagged as 3.6.10

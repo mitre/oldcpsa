@@ -63,4 +63,4 @@ step output margin sexpr =
             writeLnSExpr output margin sexpr
             return ()
         Left err ->
-            abort (show err)
+            abort err

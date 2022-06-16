@@ -2,7 +2,7 @@
   (comment "First skeleton should have a shape,"
     "second, and hird should be dead."))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/eq_test.scm")
 
 (defprotocol eqtest basic

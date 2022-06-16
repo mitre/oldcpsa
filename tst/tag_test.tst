@@ -1,6 +1,6 @@
 (herald "Tag Test File" (algebra diffie-hellman) (bound 12))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/tag_test.scm")
 
 (defprotocol test diffie-hellman

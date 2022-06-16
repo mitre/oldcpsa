@@ -44,7 +44,7 @@ INSTALLING FROM A TARBALL
 Build and install with:
 
 $ cabal build
-$ cabal install
+$ cabal install --overwrite-policy=always
 : To find the directory containing documentation and samples, type:
 $ cpsa4 -h
 
@@ -72,7 +72,7 @@ Core and then run:
 C:\...> cabal update
 C:\...> cabal install parallel
 C:\...> cabal build
-C:\...> cabal install
+C:\...> cabal install --overwrite-policy=always
 
 Documentation and samples are in the directory given by
 C:\...> cpsa -h

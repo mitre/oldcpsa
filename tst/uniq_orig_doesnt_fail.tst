@@ -3,7 +3,7 @@
     origination are not always preserved for skeleton uniq-orig
     assumptions))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/uniq_orig_doesnt_fail.scm")
 
 (defprotocol uof basic

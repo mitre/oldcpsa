@@ -49,7 +49,7 @@ loadAll p params =
     do
       preskels <- tryIO (loadDefs p)
       case preskels of
-        Left err -> abort (show err)
+        Left err -> abort err
         Right (cmts, preskels) ->
             do
               h <- outputHandle (file params)
@@ -89,7 +89,7 @@ treeless p params =
     do
       preskel <- tryIO (loadFirst p)
       case preskel of
-        Left err -> abort (show err)
+        Left err -> abort err
         Right (cmts, preskel, state) ->
             do
               h <- outputHandle (file params)
@@ -100,7 +100,7 @@ treeless p params =
               ans <- tryIO (treelessView h conf (margin params)
                                          cmts preskel state)
               case ans of
-                Left err -> abort (show err)
+                Left err -> abort err
                 Right () -> return ()
 
 -- LaTeX graphing.
@@ -109,7 +109,7 @@ latex p params =
     do
       preskel <- tryIO (loadFirst p)
       case preskel of
-        Left err -> abort (show err)
+        Left err -> abort err
         Right (cmts, preskel, state) ->
             do
               h <- outputHandle (file params)
@@ -120,7 +120,7 @@ latex p params =
               let pp = printer conf
               ans <- tryIO (latexView h (margin params) pp cmts preskel state)
               case ans of
-                Left err -> abort (show err)
+                Left err -> abort err
                 Right () -> return ()
 
 -- Command line option flags

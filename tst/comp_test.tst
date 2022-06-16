@@ -1,6 +1,6 @@
 (herald "Main Example")
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/comp_test.scm")
 
 (defprotocol main-ex-src basic

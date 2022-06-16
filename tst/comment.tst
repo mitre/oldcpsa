@@ -1,6 +1,6 @@
 (herald comment)
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/comment.scm")
 
 (defprotocol comment basic

@@ -1,6 +1,6 @@
 (herald "Wrap-Decrypt example" (bound 24) (limit 2000) (goals-sat))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/wd-goalssat.scm")
 (comment "Strand count bounded at 24")
 (comment "Stop when goals satisfied")

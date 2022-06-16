@@ -1,7 +1,7 @@
 (herald "Station-to-station protocol no base vars"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/station_nobase.scm")
 
 (defprotocol station-to-station diffie-hellman

@@ -1,7 +1,7 @@
 (herald "Diffie-Hellman enhanced Needham-Schroeder-Lowe Protocol"
   (algebra diffie-hellman))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/dhnsl_basic.scm")
 
 (defprotocol dhnsl diffie-hellman

@@ -1,6 +1,6 @@
 (herald precursor (algebra diffie-hellman) (bound 6))
 
-(comment "CPSA 3.6.10")
+(comment "CPSA 3.6.11")
 (comment "All input read from tst/precursor.scm")
 (comment "Strand count bounded at 6")
 

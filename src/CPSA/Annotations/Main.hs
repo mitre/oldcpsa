@@ -68,4 +68,4 @@ step output name origin margin ps sexpr =
               writeLnSExpr output margin sexpr
               return ps
         Left err ->
-            abort (show err)
+            abort err
