@@ -4,9 +4,9 @@
 ;; The protocol aims to provide mutual authentication in addition to key establishment.
 ;; This model does not include timestamps or optional fields.
 (defprotocol fluffy basic
- (defrole client 
+ (defrole client
   (vars (a b s name) (n1 n2 text) (k skey) (m mesg))
-  (trace 
+  (trace
    (send (cat "req" a s b (enc (hash (cat "req" a s b)) a n1 (ltk s a))))
    (recv (cat "resp" a s b m (enc s b n1 k (ltk s a))))
    (send (cat "est" a s b m (enc (hash (cat "est" a s b m)) a n2 k)))
@@ -44,4 +44,3 @@
  (defstrand sp 2 (a a) (b b) (s s) (n2 n2) (k k))
  (non-orig (ltk s b) (ltk s a))
  (comment "Service Principal's point-of-view"))
-

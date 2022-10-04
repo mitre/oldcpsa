@@ -76,4 +76,3 @@
   (defstrand resp 5 (a a) (b b))
   (non-orig (privk a) (privk b))
 )
-

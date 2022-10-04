@@ -1,7 +1,7 @@
 ;;; Mark Ryan's envelope protocol, implemented using TPMs.
 ;;; The protocol includes roles to emulate interactions with a simplified
 ;;; TPM (trusted platform module) that only has a single Platform
-;;; Configuration Register (PCR).  
+;;; Configuration Register (PCR).
 
 ;;; The true protocol is encoded in the "alice" role.  Alice is a
 ;;; teenager who wants to go out for an evening and maintain privacy
@@ -13,7 +13,7 @@
 ;;; in either of two ways, but not in both: they can extend with
 ;;; "obtain", which will enable decryption of 'v'.  Or, they can
 ;;; extend with "refuse", which serves to represent permanently declining
-;;; the option to open the envelope.  
+;;; the option to open the envelope.
 
 (herald "Envelope Protocol" (bound 20))
 
@@ -126,4 +126,3 @@
   (vars (v data))
   (deflistener v)
   (defstrand alice 7 (v v)))
-

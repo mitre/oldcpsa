@@ -61,7 +61,7 @@
 				tne tno "false")))
      (tran state (extend value state)))
     (uniq-orig tne)
-    ;; (non-orig (invk tpmkey))  ; JDG:  This assumption irrelevant 
+    ;; (non-orig (invk tpmkey))  ; JDG:  This assumption irrelevant
     )
 
   ;; This role creates a key whose use is restricted to a requested
@@ -114,7 +114,7 @@
      (send (enc v k)))
     (uniq-orig n v tno esk)
     (neq (tno n))
-    (non-orig aik esk1 (invk tpmkey)	; JDG:  This assumption important 
+    (non-orig aik esk1 (invk tpmkey)	; JDG:  This assumption important
 	      )))
 
 ;;; Initial skeleton

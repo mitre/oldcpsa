@@ -39,7 +39,7 @@
 ;;; Third query:  Two responder strands cannot be completed to any
 ;;; execution, in this case with an initiator strand present too.
 ;;; CPSA's output now reports (unrealized (0 1)), together with the
-;;; same comment that the input cannot be made into a skeleton.  
+;;; same comment that the input cannot be made into a skeleton.
 
 (defskeleton yolo
   (vars (a name)(n text))

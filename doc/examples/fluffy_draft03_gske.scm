@@ -3,9 +3,9 @@
 
 ;; This model does not include timestamps or optional fields.
 (defprotocol fluffy basic
- (defrole sp 
+ (defrole sp
   (vars (b s name) (nb g text) (gk skey))
-  (trace 
+  (trace
    (send (cat "req" s g (enc b nb (ltk s b))))
    (recv (cat "resp" b (enc s g nb gk (ltk s b))))))
  (defrole keyserv
@@ -45,6 +45,3 @@
  (non-orig (ltk s a))
  (uniq-orig na)
  (comment "Clients's point-of-view"))
-
-
-

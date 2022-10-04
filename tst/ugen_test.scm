@@ -1,7 +1,7 @@
 (herald "Ugen test"
 	(comment This protocol demonstrates a bug in CPSA: points of
 origination are not always preserved for skeleton uniq-orig
-assumptions) (algebra diffie-hellman)) 
+assumptions) (algebra diffie-hellman))
 
 (defprotocol uof diffie-hellman
   (defrole init
@@ -19,7 +19,7 @@ assumptions) (algebra diffie-hellman))
 )
 
 ;;; The responder point-of-view
-(defskeleton uof 
+(defskeleton uof
   (vars (a b name) (x2 rndx))
   (defstrand resp 3 (a a) (b b) (x2 x2))
   (non-orig (ltk a b))
@@ -27,7 +27,7 @@ assumptions) (algebra diffie-hellman))
   (comment "Responder point-of-view"))
 
 ;;; The responder point-of-view
-(defskeleton uof 
+(defskeleton uof
   (vars (a b name) (x2 rndx) (x1 expt))
   (defstrand resp 3 (a a) (b b) (x2 x2) (x1 x1))
   (non-orig (ltk a b))
@@ -57,4 +57,3 @@ assumptions) (algebra diffie-hellman))
   (defstrand resp 3 (a a) (b b) (x2 x2))
   (non-orig (ltk a b))
   (comment "Responder point-of-view"))
-

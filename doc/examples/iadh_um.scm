@@ -47,7 +47,6 @@
     (fn-of ("principal-of" (l self))))
   )
 
-
 ;; Implicit authentication: participants will agree on the resulting key
 ;; foo(key).  Therefore they should agree on the names A and B.
  (defskeleton iadh-um
@@ -60,7 +59,7 @@
   (comment "Implicit authentication")
 )
 
- ;; Security: 
+ ;; Security:
 (defskeleton iadh-um
   (vars (e1 e2 l rndx) (lp expt) (A B name))
   (defstrand participant 5 (e e1) (l l) (ep e2) (lp lp) (self A) (peer B))
@@ -68,6 +67,3 @@
   (deflistener (hash (exp (gen) (mul l lp)) (exp (gen) (mul e1 e2))))
   (non-orig (privk A) (privk B))
 )
-
-
- 

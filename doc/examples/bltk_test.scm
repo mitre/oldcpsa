@@ -5,7 +5,7 @@
 (defprotocol test diffie-hellman
   (defrole r
     (vars (a b name) (n text))
-    (trace 
+    (trace
      (send (enc n (bltk a b)))
      (recv (enc n (bltk b a))))
     (uniq-orig n)))
@@ -34,23 +34,22 @@
 (defprotocol test2 diffie-hellman
   (defrole r
     (vars (a b name) (n text))
-    (trace 
+    (trace
      (send (enc n (ltk a b)))
      (recv (enc n (ltk b a))))
     (uniq-orig n)))
 
 ;; The only way to realize this skeleton is to learn that a = b. This
-;; is in contrast to the first skeleton above. 
+;; is in contrast to the first skeleton above.
 (defskeleton test2
    (vars (a b name))
    (defstrand r 2 (a a) (b b))
    (non-orig (ltk a b)))
 
-
 ;; This protocol demonstrates that the position of the names a and b
 ;; in (bltk a b) are not enough to determine which principal is
 ;; inhabiting the role. The first send of each role commits to the
-;; identity of itself and its peer. 
+;; identity of itself and its peer.
 (defprotocol test3 diffie-hellman
   (defrole recvr
     (vars (a b name) (n text))
@@ -71,4 +70,3 @@
   (vars (a b name))
   (defstrand recvr 2 (a a) (b b))
   (non-orig (bltk a b)))
-

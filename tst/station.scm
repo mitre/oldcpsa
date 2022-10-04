@@ -21,7 +21,7 @@
 		(enc (enc (exp (gen) y)
 			  (exp (gen) x) (privk b))
 		     (exp (gen) (mul y x)))))
-     
+
      (send (enc (enc (exp (gen) x)
 		     (exp (gen) y) (privk a))
 		(exp (gen) (mul y x)))))

@@ -2,9 +2,9 @@
 
 ; In this example, the initiator and responder roles participate in a
 ; Diffie-Hellman exchange, and then a nonce is transmitted by the
-; initiator and received by the responder.  
+; initiator and received by the responder.
 
-; A man-in-the-middle attack is possible, because there is no 
+; A man-in-the-middle attack is possible, because there is no
 ; attempt made to authenticate either of the parties.  Therefore, the
 ; adversary may emulate the responder to the initator and vice versa.
 
@@ -28,7 +28,6 @@
     (uniq-gen y))
   (comment "Diffie-hellman key exchange followed by an encryption"))
 
-
 (defskeleton dh_mim
   (vars (n text) (hx hy base) (x y rndx))
   (defstrand init 3 (n n) (h hy) (x x))
@@ -37,4 +36,3 @@
   (uniq-orig n)
   (pen-non-orig x y)
   (comment "Agreement on the encrypted text only"))
-

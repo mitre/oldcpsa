@@ -15,7 +15,6 @@
   )
 )
 
-
 ; Node 4 should realize first, then node 2, then node 3.
 (defskeleton priority_test
    (vars (n1 text))

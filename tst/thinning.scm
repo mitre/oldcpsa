@@ -65,7 +65,6 @@
   ;; (neq (right left))  ;; Two makes the problem reappear.
   (non-orig (privk left) (privk right) (privk admin)))
 
-
 (defskeleton provision
   (vars (left right admin name))
   (defstrand supplicant 2 (self left) (pal right) (admin admin))
@@ -73,7 +72,6 @@
   (pen-non-orig (bltk left right))
   (neq (left right)) ;; One fixes the problem.
   (non-orig (privk left) (privk right) (privk admin)))
-
 
 (defskeleton provision
   (vars (left right admin name))

@@ -1,7 +1,7 @@
 (herald "Uniq orig fail"
 	(comment This protocol demonstrates a bug in CPSA: points of
 origination are not always preserved for skeleton uniq-orig
-assumptions)) 
+assumptions))
 
 (defprotocol uof basic
   (defrole init
@@ -20,7 +20,7 @@ assumptions))
 )
 
 ;;; The responder point-of-view
-(defskeleton uof 
+(defskeleton uof
   (vars (a b name) (n2 text))
   (defstrand resp 3 (a a) (b b) (n2 n2))
   (non-orig (ltk a b))
@@ -28,7 +28,7 @@ assumptions))
   (comment "Responder point-of-view"))
 
 ;;; The responder point-of-view
-(defskeleton uof 
+(defskeleton uof
   (vars (a b name) (n2 text))
   (defstrand resp 3 (a a) (b b) (n2 n2))
   (non-orig (ltk a b))
@@ -36,7 +36,7 @@ assumptions))
   (comment "Responder point-of-view"))
 
 ;;; The responder point-of-view
-(defskeleton uof 
+(defskeleton uof
   (vars (a b name) (n2 text))
   (defstrand resp 3 (a a) (b b) (n2 n2))
   (non-orig (ltk a b))
@@ -61,10 +61,9 @@ assumptions))
 )
 
 ;;; The responder point-of-view
-(defskeleton uof2 
+(defskeleton uof2
   (vars (a b name) (n2 text))
   (defstrand resp 3 (a a) (b b) (n2 n2))
   (non-orig (ltk a b))
   (uniq-orig n2)
   (comment "Responder point-of-view"))
-
