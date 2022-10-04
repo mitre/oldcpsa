@@ -8,4 +8,4 @@ all:    $(SRCS:%.scm=%_shapes.xhtml) $(SRCS:%.scm=%.xhtml) \
 	$(SRCS:%.lsp=%_shapes.xhtml) $(SRCS:%.lsp=%.xhtml)
 
 clean:
-	-rm *.txt *.xhtml
+	$(RM) *.txt *.xhtml
