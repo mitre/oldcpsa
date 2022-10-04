@@ -1,0 +1,4 @@
+tst/*.txt
+tst/*.xhtml
+doc/examples/*.xhtml
+dist-newstyle/
